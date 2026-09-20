@@ -9,7 +9,7 @@ const ASSETS_TO_CACHE = [
   './media.html',
   './manifest.json',
   './kaushal-institute.png',
-  './kaushalji.png',
+  './Kaushalji.png',
   'https://cdn-icons-png.flaticon.com/512/149/149071.png'
 ];
 
