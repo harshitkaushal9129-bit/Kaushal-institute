@@ -24,6 +24,11 @@
     .dropdown-menu ul li a:hover, .dropdown-menu ul li button:hover { background-color: rgba(0,0,0,0.05); }
     .header-center { position: absolute; left: 50%; transform: translateX(-50%); font-size: 22px; font-weight: bold; letter-spacing: 1px; text-align: center; color: var(--title-color); cursor: pointer; }
     .header-right { display: flex; align-items: center; gap: 12px; position: relative; }
+    
+    /* Share Icon Button Style in Header */
+    .share-btn-header { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; font-size: 18px; padding: 6px 10px; border-radius: 50%; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .share-btn-header:hover { background: var(--primary-color); transform: scale(1.05); }
+
     .user-profile { display: flex; align-items: center; cursor: pointer; padding: 4px; border-radius: 50%; transition: background 0.2s; }
     .user-profile:hover { background-color: rgba(255,255,255,0.1); }
     .user-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--title-color); }
@@ -83,6 +88,11 @@
     .modal-box { background: var(--card-bg); color: var(--card-text); padding: 25px; border-radius: 10px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: relative; }
     .modal-box h3 { margin-bottom: 15px; }
     .modal-box p { font-size: 14px; margin-bottom: 8px; opacity: 0.9; }
+    
+    /* Contact Modal Share Button */
+    .contact-share-btn { margin-top: 15px; width: 100%; padding: 10px; background: #16a34a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
+    .contact-share-btn:hover { background: #15803d; }
+
     .close-modal { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; border: none; background: none; color: inherit; }
   </style>
 </head>
@@ -113,6 +123,9 @@
     </div>
     <div class="header-center" id="logoHomeBtn" title="Click to go Home">Kaushal Institute</div>
     <div class="header-right">
+      <!-- Added Header Share Button -->
+      <button class="share-btn-header" id="headerShareBtn" title="Share App">🔗</button>
+      
       <div class="user-profile" id="userProfileBtn" title="Click to view profile">
         <img src="" alt="User Pic" id="headerUserPic" class="user-avatar">
       </div>
@@ -200,6 +213,7 @@
     </div>
   </div>
 
+  <!-- Contact Us Modal with Share Option -->
   <div class="modal-overlay" id="contactModal">
     <div class="modal-box">
       <button class="close-modal" id="closeContactModalBtn">&times;</button>
@@ -208,6 +222,10 @@
       <p><strong>Developer:</strong> Harshit Kaushal</p>
       <p><strong>Email:</strong> harshitkaushal9129@gmail.com</p>
       <p><strong>Contact:</strong> +91 9129191898</p>
+      <!-- Added Share Button inside Contact Us -->
+      <button class="contact-share-btn" id="modalShareBtn">
+        📲 Share Web App
+      </button>
     </div>
   </div>
 
@@ -286,7 +304,35 @@
       document.getElementById('logoutBtn').addEventListener('click', logout);
       document.getElementById('registerForm').addEventListener('submit', handleRegister);
       document.getElementById('loginForm').addEventListener('submit', handleLogin);
+
+      // Event Listeners for Share functionality
+      document.getElementById('headerShareBtn').addEventListener('click', shareApp);
+      document.getElementById('modalShareBtn').addEventListener('click', shareApp);
     });
+
+    // Share Portal Function
+    async function shareApp() {
+      const shareData = {
+        title: 'Kaushal Institute Portal',
+        text: 'Join Kaushal Institute Portal to access course study materials, video lectures, and exams!',
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+        } catch (err) {
+          console.log('Share error or canceled:', err);
+        }
+      } else {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          alert('Portal URL Link Copied to Clipboard!');
+        } catch (err) {
+          alert('Copy link manually: ' + window.location.href);
+        }
+      }
+    }
 
     function switchTab(tab) {
       const regForm = document.getElementById('registerForm');
