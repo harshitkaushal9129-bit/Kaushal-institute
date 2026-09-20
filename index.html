@@ -4,106 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kaushal Institute - Portal</title>
-  
-  <!-- External Manifest Link -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1e293b">
 
   <style>
-    :root { 
-      --bg-color: #f0f2f5; 
-      --header-bg: #1e293b; 
-      --card-bg: #ffffff; 
-      --text-color: #334155; 
-      --card-text: #333333; 
-      --input-border: #cbd5e1; 
-      --title-color: #38bdf8; 
-      --primary-color: #2563eb; 
-    }
-    body.dark-theme { 
-      --bg-color: #0f172a; 
-      --header-bg: #1e293b; 
-      --card-bg: #1e293b; 
-      --text-color: #f8fafc; 
-      --card-text: #f1f5f9; 
-      --input-border: #475569; 
-      --title-color: #38bdf8; 
-    }
+    :root { --bg-color: #f0f2f5; --header-bg: #1e293b; --card-bg: #ffffff; --text-color: #334155; --card-text: #333333; --input-border: #cbd5e1; --title-color: #38bdf8; --primary-color: #2563eb; }
+    body.dark-theme { --bg-color: #0f172a; --header-bg: #1e293b; --card-bg: #1e293b; --text-color: #f8fafc; --card-text: #f1f5f9; --input-border: #475569; --title-color: #38bdf8; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; -webkit-user-select: none; }
     body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s; padding-bottom: 50px; }
-    
-    /* Universal Sticky Header Bar */
-    .top-header-bar {
-      background-color: var(--header-bg);
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 16px;
-      position: relative;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      z-index: 1000;
-    }
-
-    /* Top Audio Player Trigger Bar Style */
-    .header-audio-trigger {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 6px 12px;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      max-width: 250px;
-    }
-    .header-audio-trigger:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-1px);
-    }
-    .audio-icon-pulse {
-      font-size: 16px;
-      color: var(--title-color);
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(1); opacity: 0.8; }
-    }
-    .audio-trigger-info {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-    .audio-trigger-info span.title {
-      font-size: 12px;
-      font-weight: bold;
-      color: white;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-    .audio-trigger-info span.subtitle {
-      font-size: 10px;
-      color: #94a3b8;
-    }
-    .quick-play-btn {
-      background: var(--primary-color);
-      border: none;
-      color: white;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 10px;
-      margin-left: auto;
-    }
-
+    .top-header-bar { background-color: var(--header-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.15); z-index: 1000; }
+    .header-audio-trigger { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); padding: 6px 12px; border-radius: 20px; cursor: pointer; transition: all 0.2s ease; max-width: 250px; }
+    .header-audio-trigger:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-1px); }
+    .audio-icon-pulse { font-size: 16px; color: var(--title-color); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.2); opacity: 1; } }
+    .audio-trigger-info { display: flex; flex-direction: column; overflow: hidden; white-space: nowrap; }
+    .audio-trigger-info span.title { font-size: 12px; font-weight: bold; color: white; text-overflow: ellipsis; overflow: hidden; }
+    .audio-trigger-info span.subtitle { font-size: 10px; color: #94a3b8; }
+    .quick-play-btn { background: var(--primary-color); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; margin-left: auto; }
     header { background-color: var(--header-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
     .header-left { position: relative; display: flex; align-items: center; gap: 10px; }
     .menu-btn { font-size: 24px; cursor: pointer; background: none; border: none; color: white; padding: 5px 10px; }
@@ -114,10 +31,8 @@
     .dropdown-menu ul li a:hover, .dropdown-menu ul li button:hover { background-color: rgba(0,0,0,0.05); }
     .header-center { position: absolute; left: 50%; transform: translateX(-50%); font-size: 22px; font-weight: bold; letter-spacing: 1px; text-align: center; color: var(--title-color); cursor: pointer; }
     .header-right { display: flex; align-items: center; gap: 12px; position: relative; }
-    
     .share-btn-header { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; font-size: 18px; padding: 6px 10px; border-radius: 50%; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
     .share-btn-header:hover { background: var(--primary-color); transform: scale(1.05); }
-
     .user-profile { display: flex; align-items: center; cursor: pointer; padding: 4px; border-radius: 50%; transition: background 0.2s; }
     .user-profile:hover { background-color: rgba(255,255,255,0.1); }
     .user-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--title-color); }
@@ -166,140 +81,38 @@
     .resource-card a { display: inline-block; padding: 8px 14px; background: var(--primary-color); color: white; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; }
     .resource-card a:hover { background: #1d4ed8; }
     .badge-course { background: #e0e7ff; color: #3730a3; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
-    
     .view-all-box { background: var(--card-bg); border: 2px dashed var(--primary-color); border-radius: 10px; padding: 20px; text-align: center; margin-bottom: 25px; }
     .view-all-box h3 { font-size: 18px; margin-bottom: 8px; color: var(--primary-color); }
     .view-all-box p { font-size: 13px; margin-bottom: 12px; opacity: 0.8; }
     .btn-resource-page { display: inline-block; background: var(--primary-color); color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; }
-
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; }
     .modal-overlay.active { display: flex; }
     .modal-box { background: var(--card-bg); color: var(--card-text); padding: 25px; border-radius: 10px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: relative; }
     .modal-box h3 { margin-bottom: 15px; }
     .modal-box p { font-size: 14px; margin-bottom: 8px; opacity: 0.9; }
-    
-    /* Contact Modal Share Button */
     .contact-share-btn { margin-top: 15px; width: 100%; padding: 10px; background: #16a34a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
     .contact-share-btn:hover { background: #15803d; }
-
-    /* Audio Player Modal Specific Styling */
-    .audio-player-card {
-      background: var(--card-bg);
-      color: var(--card-text);
-      border-radius: 16px;
-      padding: 24px;
-      width: 90%;
-      max-width: 420px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      position: relative;
-      text-align: center;
-    }
-    .audio-user-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 15px;
-      border-bottom: 1px solid var(--input-border);
-      padding-bottom: 10px;
-    }
-    .audio-user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .audio-user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--title-color);
-    }
-    .audio-user-details h5 {
-      font-size: 14px;
-      text-align: left;
-    }
-    .audio-user-details p {
-      font-size: 11px;
-      opacity: 0.7;
-      text-align: left;
-    }
-    .audio-artwork {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #2563eb, #38bdf8);
-      margin: 10px auto 15px auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      color: white;
-      box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
-    }
-    .audio-details h4 {
-      font-size: 18px;
-      color: var(--primary-color);
-      margin-bottom: 4px;
-    }
-    .audio-details p {
-      font-size: 13px;
-      opacity: 0.8;
-      margin-bottom: 15px;
-    }
-    .audio-controls-custom {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 15px;
-    }
-    .audio-btn-ctrl {
-      background: var(--header-bg);
-      color: white;
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      transition: background 0.2s;
-    }
-    .audio-btn-ctrl:hover {
-      background: var(--primary-color);
-    }
-    .audio-playlist {
-      max-height: 140px;
-      overflow-y: auto;
-      margin-top: 15px;
-      text-align: left;
-      border: 1px solid var(--input-border);
-      border-radius: 8px;
-      padding: 5px;
-    }
-    .playlist-item {
-      padding: 8px 12px;
-      font-size: 12px;
-      border-bottom: 1px solid var(--input-border);
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-radius: 4px;
-    }
+    .audio-player-card { background: var(--card-bg); color: var(--card-text); border-radius: 16px; padding: 24px; width: 90%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; text-align: center; }
+    .audio-user-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid var(--input-border); padding-bottom: 10px; }
+    .audio-user-info { display: flex; align-items: center; gap: 10px; }
+    .audio-user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--title-color); }
+    .audio-user-details h5 { font-size: 14px; text-align: left; }
+    .audio-user-details p { font-size: 11px; opacity: 0.7; text-align: left; }
+    .audio-artwork { width: 110px; height: 110px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #38bdf8); margin: 10px auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 40px; color: white; box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3); }
+    .audio-details h4 { font-size: 18px; color: var(--primary-color); margin-bottom: 4px; }
+    .audio-details p { font-size: 13px; opacity: 0.8; margin-bottom: 15px; }
+    .audio-controls-custom { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 15px; }
+    .audio-btn-ctrl { background: var(--header-bg); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: background 0.2s; }
+    .audio-btn-ctrl:hover { background: var(--primary-color); }
+    .audio-playlist { max-height: 140px; overflow-y: auto; margin-top: 15px; text-align: left; border: 1px solid var(--input-border); border-radius: 8px; padding: 5px; }
+    .playlist-item { padding: 8px 12px; font-size: 12px; border-bottom: 1px solid var(--input-border); cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-radius: 4px; }
     .playlist-item:last-child { border-bottom: none; }
-    .playlist-item.active {
-      background: rgba(37, 99, 235, 0.15);
-      color: var(--primary-color);
-      font-weight: bold;
-    }
-
+    .playlist-item.active { background: rgba(37, 99, 235, 0.15); color: var(--primary-color); font-weight: bold; }
     .close-modal { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; border: none; background: none; color: inherit; }
   </style>
 </head>
 <body>
+
 
   <!-- Persistent Universal Header with Audio Player Bar -->
   <div class="top-header-bar">
