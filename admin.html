@@ -41,7 +41,6 @@
     .content-item { background: #0f172a; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); }
     .del-btn { background: #ef4444; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
 
-    /* Table Styles */
     .table-responsive { overflow-x: auto; margin-top: 15px; }
     table { width: 100%; border-collapse: collapse; text-align: left; }
     th, td { padding: 12px 10px; border-bottom: 1px solid var(--border-color); font-size: 13px; }
@@ -126,7 +125,7 @@
       </form>
     </div>
 
-    <!-- Audio Upload Section (Realtime DB Base64) -->
+    <!-- Audio Upload Section -->
     <div class="card">
       <h2>4. Upload Audio File (Max 10MB)</h2>
       <form id="audioUploadForm">
@@ -148,7 +147,7 @@
       <ul class="content-list" id="audioList"></ul>
     </div>
 
-    <!-- Video Upload Section (Realtime DB Base64) -->
+    <!-- Video Upload Section -->
     <div class="card">
       <h2>5. Upload Video File (Max 10MB)</h2>
       <form id="videoUploadForm">
@@ -170,7 +169,7 @@
       <ul class="content-list" id="videoList"></ul>
     </div>
 
-    <!-- PDF Upload Section (Realtime DB Base64) -->
+    <!-- PDF Upload Section -->
     <div class="card">
       <h2>6. Upload PDF Study Material File</h2>
       <form id="pdfUploadForm">
@@ -193,7 +192,6 @@
     </div>
   </div>
 
-  <!-- Firebase Realtime Database Only -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, get, child, set, remove, update } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
@@ -212,6 +210,7 @@
     const db = getDatabase(app);
 
     const DEFAULT_FEES = { 'ADCA': '12000', 'CCC': '3500', 'Tally': '4500', 'OLevel': '15000' };
+    let cachedFees = DEFAULT_FEES;
 
     window.verifyAdminPass = function() {
       const pass = document.getElementById('adminPassInput').value;
@@ -223,14 +222,23 @@
       }
     };
 
-    function getFees() {
-      const savedFees = localStorage.getItem('course_fees');
-      return savedFees ? JSON.parse(savedFees) : DEFAULT_FEES;
+    async function fetchFeesFromFirebase() {
+      try {
+        const snapshot = await get(child(ref(db), 'course_fees'));
+        if (snapshot.exists()) {
+          cachedFees = snapshot.val();
+        } else {
+          await set(ref(db, 'course_fees'), DEFAULT_FEES);
+          cachedFees = DEFAULT_FEES;
+        }
+      } catch (e) {
+        console.log("Failed to fetch fees from Firebase, using default.", e);
+      }
+      return cachedFees;
     }
 
-    // Dynamic Options Update Karne Ke Liye Function
-    function populateCourseDropdowns() {
-      const fees = getFees();
+    async function populateCourseDropdowns() {
+      const fees = await fetchFeesFromFirebase();
       const feeSelect = document.getElementById('feeCourseSelect');
       const audioSelect = document.getElementById('audioCourseSelect');
       const vidSelect = document.getElementById('vidCourseSelect');
@@ -248,43 +256,39 @@
       loadCurrentFee();
     }
 
-    // Naya Course Add Karne Ka Event Handler
-    document.getElementById('addCourseForm').addEventListener('submit', function(e) {
+    document.getElementById('addCourseForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const courseName = document.getElementById('newCourseNameInput').value.trim();
       const courseFee = document.getElementById('newCourseFeeInput').value.trim();
 
       if (!courseName || !courseFee) return;
 
-      const fees = getFees();
-      fees[courseName] = courseFee;
-
-      localStorage.setItem('course_fees', JSON.stringify(fees));
-      populateCourseDropdowns();
-
-      alert(`New Course "${courseName}" added successfully with Fee ₹${courseFee}!`);
+      cachedFees[courseName] = courseFee;
+      await set(ref(db, 'course_fees'), cachedFees);
+      
+      await populateCourseDropdowns();
+      alert(`New Course "${courseName}" added successfully to Firebase with Fee ₹${courseFee}!`);
       this.reset();
     });
 
     window.loadCurrentFee = function() {
       const course = document.getElementById('feeCourseSelect').value;
-      const fees = getFees();
       if(course) {
-        document.getElementById('newFeeInput').value = fees[course] || '';
+        document.getElementById('newFeeInput').value = cachedFees[course] || '';
       }
     };
 
-    document.getElementById('feeUpdateForm').addEventListener('submit', function(e) {
+    document.getElementById('feeUpdateForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const course = document.getElementById('feeCourseSelect').value;
       const feeVal = document.getElementById('newFeeInput').value;
-      const fees = getFees();
-      fees[course] = feeVal;
-      localStorage.setItem('course_fees', JSON.stringify(fees));
-      alert(`Fees for ${course} updated to ₹${feeVal} successfully!`);
+      
+      cachedFees[course] = feeVal;
+      await set(ref(db, 'course_fees'), cachedFees);
+      
+      alert(`Fees for ${course} updated to ₹${feeVal} successfully across all devices!`);
     });
 
-    // Helper: File Ko Base64 Me Convert Karne Ke Liye
     function convertFileToBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -294,7 +298,6 @@
       });
     }
 
-    // Student Access Permission Load & Render
     async function loadStudentPermissions() {
       const tbody = document.getElementById('permissionTableBody');
       tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Loading Submissions...</td></tr>';
@@ -358,7 +361,7 @@
       }
     };
 
-    // Audio Upload (Direct to Realtime DB)
+    // Audio Upload
     document.getElementById('audioUploadForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const course = document.getElementById('audioCourseSelect').value;
@@ -371,7 +374,7 @@
       const file = fileInput.files[0];
 
       if (file.size > 10 * 1024 * 1024) {
-        alert('File size is larger than 10MB! Please upload smaller files.');
+        alert('File size is larger than 10MB!');
         return;
       }
 
@@ -434,7 +437,7 @@
       }
     };
 
-    // Video Upload (Direct to Realtime DB)
+    // Video Upload
     document.getElementById('videoUploadForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const course = document.getElementById('vidCourseSelect').value;
@@ -447,7 +450,7 @@
       const file = fileInput.files[0];
 
       if (file.size > 10 * 1024 * 1024) {
-        alert('File size is larger than 10MB! Please upload smaller files into Realtime DB.');
+        alert('File size is larger than 10MB!');
         return;
       }
 
@@ -510,7 +513,7 @@
       }
     };
 
-    // PDF Upload (Direct to Realtime DB)
+    // PDF Upload
     document.getElementById('pdfUploadForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const course = document.getElementById('pdfCourseSelect').value;
@@ -586,7 +589,8 @@
       }
     };
 
-    function initAdminData() {
+    async function initAdminData() {
+      await fetchFeesFromFirebase();
       populateCourseDropdowns();
       loadStudentPermissions();
       renderAudios();
