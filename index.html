@@ -5,22 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kaushal Institute - Portal</title>
   
-  <!-- Inline Manifest (No external manifest.json needed) -->
-  <link rel="manifest" href='data:application/manifest+json,{
-    "name": "Kaushal Institute Portal",
-    "short_name": "Kaushal Portal",
-    "start_url": ".",
-    "display": "standalone",
-    "background_color": "#0f172a",
-    "theme_color": "#1e293b",
-    "description": "Kaushal Institute Student Portal and Learning Dashboard",
-    "icons": [
-      { "src": "https://via.placeholder.com/192", "sizes": "192x192", "type": "image/png" },
-      { "src": "https://via.placeholder.com/512", "sizes": "512x512", "type": "image/png" }
-    ]
-  }'>
-  
+  <!-- External Manifest Link -->
+  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1e293b">
+
   <style>
     :root { --bg-color: #f0f2f5; --header-bg: #1e293b; --card-bg: #ffffff; --text-color: #334155; --card-text: #333333; --input-border: #cbd5e1; --title-color: #38bdf8; --primary-color: #2563eb; }
     body.dark-theme { --bg-color: #0f172a; --header-bg: #1e293b; --card-bg: #1e293b; --text-color: #f8fafc; --card-text: #f1f5f9; --input-border: #475569; --title-color: #38bdf8; }
@@ -84,6 +72,12 @@
     .resource-card a { display: inline-block; padding: 8px 14px; background: var(--primary-color); color: white; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; }
     .resource-card a:hover { background: #1d4ed8; }
     .badge-course { background: #e0e7ff; color: #3730a3; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
+    
+    .view-all-box { background: var(--card-bg); border: 2px dashed var(--primary-color); border-radius: 10px; padding: 20px; text-align: center; margin-bottom: 25px; }
+    .view-all-box h3 { font-size: 18px; margin-bottom: 8px; color: var(--primary-color); }
+    .view-all-box p { font-size: 13px; margin-bottom: 12px; opacity: 0.8; }
+    .btn-resource-page { display: inline-block; background: var(--primary-color); color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; }
+
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
     .modal-overlay.active { display: flex; }
     .modal-box { background: var(--card-bg); color: var(--card-text); padding: 25px; border-radius: 10px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: relative; }
@@ -99,6 +93,7 @@
       Welcome to Kaushal Institute Portal! Check notifications below for recent updates.
     </marquee>
   </div>
+
   <header id="mainHeader" class="hidden">
     <div class="header-left">
       <button class="menu-btn" id="menuBtn">&#8942;</button>
@@ -106,6 +101,7 @@
         <ul>
           <li><a href="#" id="homeLink">🏠 Home (Main Page)</a></li>
           <li><a href="#" id="dashLink">📊 Student Dashboard</a></li>
+          <li><a href="resources.html" style="font-weight: bold; color: var(--primary-color);">📚 Course Resources (All Files)</a></li>
           <li><a href="courses.html">Course Information</a></li>
           <li><a href="courses.html">Student Details</a></li>
           <li><a href="courses.html">Fee Structure</a></li>
@@ -129,6 +125,7 @@
       </div>
     </div>
   </header>
+
   <div class="container" id="authContainer">
     <div class="form-toggle">
       <button id="loginTabBtn" class="active">Login</button>
@@ -166,6 +163,7 @@
       <button type="submit" id="loginSubmitBtn" class="submit-btn">Login</button>
     </form>
   </div>
+
   <div id="homePageContent" class="main-notification-panel hidden">
     <div class="notice-card">
       <h3><span>🔔 Latest Notices & Notifications</span></h3>
@@ -174,14 +172,24 @@
       </div>
     </div>
   </div>
+
   <div id="dashboardContent" class="dashboard-container hidden">
     <div class="dash-header">
       <h2>Student Learning Dashboard</h2>
       <p style="opacity:0.8;">Access your course Video Lectures and PDF Resources here.</p>
     </div>
+
+    <!-- Direct Navigation Box to Resources Page -->
+    <div class="view-all-box">
+      <h3>📂 Course Wise Files & Study Material</h3>
+      <p>Course ke hisaab se sabhi Videos, PDFs aur Images filter karke dekhne aur download karne ke liye neeche button par click karein.</p>
+      <a href="resources.html" class="btn-resource-page">📁 Go To Course Resources Page</a>
+    </div>
+
     <div id="accessNotice" class="access-warning hidden">
       ⚠️ Aapki course fee verification pending hai ya access granted nahi hai. Payment karein aur UTR number submit karein taaki Admin dwara aapko saare Videos aur PDFs ka full access mil sake.
     </div>
+
     <div>
       <h3 class="section-title">🎥 Video Lectures</h3>
       <div class="resource-grid" id="videoGrid"></div>
@@ -191,18 +199,19 @@
       <div class="resource-grid" id="pdfGrid"></div>
     </div>
   </div>
+
   <div class="modal-overlay" id="contactModal">
     <div class="modal-box">
       <button class="close-modal" id="closeContactModalBtn">&times;</button>
       <h3>Developer Info</h3>
       <p><strong>Institute:</strong> Kaushal Institute</p>
       <p><strong>Developer:</strong> Harshit Kaushal</p>
-      <p><strong>Email:</strong>harshitkaushal9129@gmail.com</p>
+      <p><strong>Email:</strong> harshitkaushal9129@gmail.com</p>
       <p><strong>Contact:</strong> +91 9129191898</p>
     </div>
   </div>
 
-  <!-- Security, Anti-Hacking & Inline Service Worker Script -->
+  <!-- Security, Anti-Hacking & External Service Worker Script Registration -->
   <script>
     // 1. Disable Right Click Context Menu
     document.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -225,28 +234,11 @@
       }
     }, 1000);
 
-    // 4. Inline Service Worker Code Registration using Blob
+    // 4. Service Worker Registration (External sw.js file)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        const swCode = `
-          const CACHE_NAME = 'kaushal-portal-v2';
-          self.addEventListener('install', (e) => {
-            self.skipWaiting();
-          });
-          self.addEventListener('activate', (e) => {
-            e.waitUntil(clients.claim());
-          });
-          self.addEventListener('fetch', (e) => {
-            e.respondWith(
-              caches.match(e.request).then((res) => res || fetch(e.request))
-            );
-          });
-        `;
-        const blob = new Blob([swCode], { type: 'application/javascript' });
-        const blobUrl = URL.createObjectURL(blob);
-
-        navigator.serviceWorker.register(blobUrl)
-          .then((reg) => console.log('Inline Service Worker Registered Successfully!'))
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => console.log('Service Worker Registered Successfully!'))
           .catch((err) => console.error('Service Worker Registration Error:', err));
       });
     }
@@ -256,6 +248,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, push, set, get, child, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+    
     const firebaseConfig = {
       apiKey: "AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE",
       authDomain: "kaushal-institute-729bc.firebaseapp.com",
@@ -266,10 +259,12 @@
       appId: "1:699990199933:web:e5fae383e93de5d3c6ab14",
       measurementId: "G-4VRTVZ3JPJ"
     };
+
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     let regCaptcha = "";
     let loginCaptcha = "";
+
     window.addEventListener('DOMContentLoaded', () => {
       generateCaptcha('reg');
       generateCaptcha('login');
@@ -292,6 +287,7 @@
       document.getElementById('registerForm').addEventListener('submit', handleRegister);
       document.getElementById('loginForm').addEventListener('submit', handleLogin);
     });
+
     function switchTab(tab) {
       const regForm = document.getElementById('registerForm');
       const loginForm = document.getElementById('loginForm');
@@ -309,6 +305,7 @@
         generateCaptcha('login');
       }
     }
+
     function generateCaptcha(type) {
       const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       let result = "";
@@ -316,15 +313,18 @@
       if (type === 'reg') { regCaptcha = result; document.getElementById('regCaptchaDisplay').innerText = result; }
       else { loginCaptcha = result; document.getElementById('loginCaptchaDisplay').innerText = result; }
     }
+
     function toggleMenu(e) { e.stopPropagation(); document.getElementById('profileCard').classList.remove('active'); document.getElementById('dropdownMenu').classList.toggle('active'); }
     function toggleProfileCard(e) { e.stopPropagation(); document.getElementById('dropdownMenu').classList.remove('active'); document.getElementById('profileCard').classList.toggle('active'); }
     function toggleTheme() { document.body.classList.toggle('dark-theme'); localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light'); document.getElementById('dropdownMenu').classList.remove('active'); }
     function openContactModal(e) { e.preventDefault(); document.getElementById('dropdownMenu').classList.remove('active'); document.getElementById('contactModal').classList.add('active'); }
     function closeContactModal() { document.getElementById('contactModal').classList.remove('active'); }
+
     window.onclick = function(e) {
       if (!e.target.closest('.header-left')) document.getElementById('dropdownMenu').classList.remove('active');
       if (!e.target.closest('.user-profile') && !e.target.closest('.profile-card')) document.getElementById('profileCard').classList.remove('active');
     };
+
     function loadLiveNotifications() {
       const listContainer = document.getElementById('notificationsList');
       const notifRef = ref(db, 'notifications');
@@ -346,6 +346,7 @@
         }
       });
     }
+
     async function handleRegister(e) {
       e.preventDefault();
       const submitBtn = document.getElementById('regSubmitBtn');
@@ -356,14 +357,17 @@
       const password = document.getElementById('regPassword').value;
       const captchaInput = document.getElementById('regCaptchaInput').value;
       const picInput = document.getElementById('regPic').files[0];
+
       if (captchaInput !== regCaptcha) { errorDiv.innerText = "Captcha Code galat hai!"; generateCaptcha('reg'); return; }
       submitBtn.disabled = true; submitBtn.innerText = "Registering...";
+
       try {
         let localUsers = JSON.parse(localStorage.getItem('users') || '[]');
         if (localUsers.some(u => u.email === email || u.mobile === mobile || u.name.toLowerCase() === name.toLowerCase())) {
           errorDiv.innerText = "Invalid: Name, Email ya Mobile pahile se exist karta hai!";
           submitBtn.disabled = false; submitBtn.innerText = "Register"; return;
         }
+
         const reader = new FileReader();
         reader.onload = async function() {
           const newUser = { name, mobile, email, password, pic: reader.result, createdAt: new Date().toISOString() };
@@ -377,6 +381,7 @@
         reader.readAsDataURL(picInput);
       } catch (err) { errorDiv.innerText = "Server Error: " + err.message; submitBtn.disabled = false; submitBtn.innerText = "Register"; }
     }
+
     async function handleLogin(e) {
       e.preventDefault();
       const submitBtn = document.getElementById('loginSubmitBtn');
@@ -384,10 +389,13 @@
       const identifier = document.getElementById('loginIdentifier').value.trim();
       const password = document.getElementById('loginPassword').value;
       const captchaInput = document.getElementById('loginCaptchaInput').value;
+
       if (captchaInput !== loginCaptcha) { errorDiv.innerText = "Captcha Code galat hai!"; generateCaptcha('login'); return; }
       submitBtn.disabled = true; submitBtn.innerText = "Logging in...";
+
       let localUsers = JSON.parse(localStorage.getItem('users') || '[]');
       let loggedInUser = localUsers.find(u => (u.email === identifier || u.mobile === identifier || u.name.toLowerCase() === identifier.toLowerCase()) && u.password === password);
+
       if (!loggedInUser) {
         try {
           const snapshot = await get(child(ref(db), 'users'));
@@ -401,13 +409,16 @@
           }
         } catch (err) { console.error(err); }
       }
+
       submitBtn.disabled = false; submitBtn.innerText = "Login";
+
       if (loggedInUser) {
         localStorage.setItem('currentUser', JSON.stringify(loggedInUser));
         initPortalUser(loggedInUser);
         showMainPage();
       } else { errorDiv.innerText = "Invalid Credentials!"; generateCaptcha('login'); }
     }
+
     function initPortalUser(user) {
       document.getElementById('authContainer').classList.add('hidden');
       document.getElementById('mainHeader').classList.remove('hidden');
@@ -417,11 +428,13 @@
       document.getElementById('cardUserMobile').innerText = user.mobile;
       document.getElementById('cardUserEmail').innerText = user.email;
     }
+
     function showMainPage() {
       document.getElementById('dropdownMenu').classList.remove('active');
       document.getElementById('dashboardContent').classList.add('hidden');
       document.getElementById('homePageContent').classList.remove('hidden');
     }
+
     async function showDashboard() {
       document.getElementById('dropdownMenu').classList.remove('active');
       document.getElementById('homePageContent').classList.add('hidden');
@@ -429,10 +442,12 @@
       const user = JSON.parse(localStorage.getItem('currentUser'));
       if (user) { loadDashboardData(user); }
     }
+
     async function loadDashboardData(user) {
       let enrollments = JSON.parse(localStorage.getItem('course_enrollments') || '[]');
       let userEnrollment = enrollments.find(e => e.email === user.email || e.mobile === user.mobile);
       let isGranted = userEnrollment ? (userEnrollment.accessGranted || false) : false;
+
       if(!isGranted) {
         try {
           const snapshot = await get(child(ref(db), 'course_enrollments'));
@@ -446,10 +461,10 @@
           }
         } catch(e){}
       }
+
       const notice = document.getElementById('accessNotice');
       if(!isGranted) { notice.classList.remove('hidden'); } else { notice.classList.add('hidden'); }
 
-      // Dynamic Loading from Firebase with LocalStorage Fallback
       loadDashboardResources(isGranted);
     }
 
@@ -457,7 +472,7 @@
       const videoGrid = document.getElementById('videoGrid');
       const pdfGrid = document.getElementById('pdfGrid');
 
-      // 1. Fetch Videos Live from Firebase
+      // Fetch Videos Live from Firebase
       onValue(ref(db, 'course_videos'), (snapshot) => {
         videoGrid.innerHTML = '';
         let videos = [];
@@ -480,7 +495,7 @@
         }
       });
 
-      // 2. Fetch PDFs Live from Firebase
+      // Fetch PDFs Live from Firebase
       onValue(ref(db, 'course_pdfs'), (snapshot) => {
         pdfGrid.innerHTML = '';
         let pdfs = [];
@@ -505,6 +520,7 @@
     }
 
     function checkLoginStatus() { const currentUser = JSON.parse(localStorage.getItem('currentUser')); if (currentUser) { initPortalUser(currentUser); showMainPage(); } }
+    
     function logout() {
       localStorage.removeItem('currentUser');
       document.getElementById('mainHeader').classList.add('hidden');
