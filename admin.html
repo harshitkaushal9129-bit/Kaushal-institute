@@ -70,7 +70,7 @@
   <div class="container">
     <div class="header">
       <h1>Kaushal Institute - Admin Dashboard</h1>
-      <p style="color:#94a3b8;">Manage Course Fees, Student Permissions, Video Lectures & PDF Resources</p>
+      <p style="color:#94a3b8;">Manage Course Fees, Student Permissions, Audio, Video Lectures & PDF Resources</p>
     </div>
 
     <!-- Student Permission Section -->
@@ -94,7 +94,7 @@
       </div>
     </div>
 
-    <!-- Add New Course Section (Naya Course Add Karne Ke Liye) -->
+    <!-- Add New Course Section -->
     <div class="card">
       <h2>2. Add New Course</h2>
       <form id="addCourseForm">
@@ -126,9 +126,31 @@
       </form>
     </div>
 
+    <!-- Audio Upload Section (Realtime DB Base64) -->
+    <div class="card">
+      <h2>4. Upload Audio File (Max 10MB)</h2>
+      <form id="audioUploadForm">
+        <div class="form-group">
+          <label>Course</label>
+          <select id="audioCourseSelect"></select>
+        </div>
+        <div class="form-group">
+          <label>Audio Title</label>
+          <input type="text" id="audioTitle" placeholder="e.g. Chapter 1 Audio Lecture" required>
+        </div>
+        <div class="form-group">
+          <label>Select Audio File</label>
+          <input type="file" id="audioFile" accept="audio/*" required>
+        </div>
+        <button type="submit" class="btn btn-purple" id="audioBtn">Upload Audio File</button>
+        <div class="upload-status" id="audioStatus"></div>
+      </form>
+      <ul class="content-list" id="audioList"></ul>
+    </div>
+
     <!-- Video Upload Section (Realtime DB Base64) -->
     <div class="card">
-      <h2>4. Upload Video File (Max 10MB)</h2>
+      <h2>5. Upload Video File (Max 10MB)</h2>
       <form id="videoUploadForm">
         <div class="form-group">
           <label>Course</label>
@@ -150,7 +172,7 @@
 
     <!-- PDF Upload Section (Realtime DB Base64) -->
     <div class="card">
-      <h2>5. Upload PDF Study Material File</h2>
+      <h2>6. Upload PDF Study Material File</h2>
       <form id="pdfUploadForm">
         <div class="form-group">
           <label>Course</label>
@@ -210,6 +232,7 @@
     function populateCourseDropdowns() {
       const fees = getFees();
       const feeSelect = document.getElementById('feeCourseSelect');
+      const audioSelect = document.getElementById('audioCourseSelect');
       const vidSelect = document.getElementById('vidCourseSelect');
       const pdfSelect = document.getElementById('pdfCourseSelect');
 
@@ -218,6 +241,7 @@
         .join('');
 
       feeSelect.innerHTML = optionsHtml;
+      audioSelect.innerHTML = optionsHtml;
       vidSelect.innerHTML = optionsHtml;
       pdfSelect.innerHTML = optionsHtml;
 
@@ -331,6 +355,82 @@
         loadStudentPermissions();
       } catch (err) {
         alert("Failed to update status.");
+      }
+    };
+
+    // Audio Upload (Direct to Realtime DB)
+    document.getElementById('audioUploadForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const course = document.getElementById('audioCourseSelect').value;
+      const title = document.getElementById('audioTitle').value;
+      const fileInput = document.getElementById('audioFile');
+      const statusEl = document.getElementById('audioStatus');
+      const btn = document.getElementById('audioBtn');
+
+      if (!fileInput.files.length) return;
+      const file = fileInput.files[0];
+
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size is larger than 10MB! Please upload smaller files.');
+        return;
+      }
+
+      try {
+        btn.disabled = true;
+        statusEl.innerText = "Processing Audio Data...";
+        const base64Data = await convertFileToBase64(file);
+
+        statusEl.innerText = "Saving to Database...";
+        const audioId = Date.now();
+        await set(ref(db, `course_audios/${audioId}`), {
+          id: audioId,
+          course: course,
+          title: title,
+          url: base64Data
+        });
+
+        statusEl.innerText = "Audio Uploaded Successfully!";
+        this.reset();
+        renderAudios();
+        alert('Audio uploaded successfully!');
+      } catch (err) {
+        alert("Upload failed. Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    async function renderAudios() {
+      const list = document.getElementById('audioList');
+      list.innerHTML = '<li>Loading audios...</li>';
+      try {
+        const snapshot = await get(child(ref(db), 'course_audios'));
+        list.innerHTML = '';
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          for (let id in data) {
+            const a = data[id];
+            const li = document.createElement('li');
+            li.className = 'content-item';
+            li.innerHTML = `<span><strong>[${a.course}]</strong> ${a.title}</span> 
+            <div>
+              <a href="${a.url}" target="_blank" style="color:#38bdf8; margin-right:10px; font-size:12px;">Open Audio</a>
+              <button class="del-btn" onclick="deleteAudio('${id}')">Delete</button>
+            </div>`;
+            list.appendChild(li);
+          }
+        } else {
+          list.innerHTML = '<li style="font-size:12px; color:#94a3b8;">No audios uploaded.</li>';
+        }
+      } catch (e) {
+        list.innerHTML = '<li>Error loading audios</li>';
+      }
+    }
+
+    window.deleteAudio = async function(id) {
+      if(confirm("Are you sure you want to delete this audio?")){
+        await remove(ref(db, `course_audios/${id}`));
+        renderAudios();
       }
     };
 
@@ -489,6 +589,7 @@
     function initAdminData() {
       populateCourseDropdowns();
       loadStudentPermissions();
+      renderAudios();
       renderVideos();
       renderPdfs();
     }
