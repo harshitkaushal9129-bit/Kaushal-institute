@@ -3,85 +3,163 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kaushal Institute Universal Media Portal</title>
+<title>Kaushal Institute Universal Media Portal - Pro</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-body { background: #0f172a; color: #f8fafc; transition: 0.3s; min-height: 100vh; display: flex; flex-direction: column; }
-body.light-theme { background: #f4f6f9; color: #1e293b; }
-header { background: #0284c7; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-.btn { padding: 8px 16px; border: none; background: #0369a1; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-.btn:hover { background: #075985; }
-.container { padding: 20px; max-width: 1000px; margin: auto; width: 100%; flex: 1; }
-.import-card { background: #1e293b; border: 2px dashed #0284c7; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
-body.light-theme .import-card { background: #ffffff; border-color: #0284c7; }
-.import-btns { display: flex; gap: 15px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
-.file-btn { background: #0284c7; color: white; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+body { background: #090d16; color: #f8fafc; transition: 0.3s; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+body.light-theme { background: #f1f5f9; color: #1e293b; }
+
+header { background: linear-gradient(135deg, #0284c7, #0369a1); color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 10; }
+.logo-area { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 18px; letter-spacing: 0.5px; }
+
+.btn { padding: 8px 16px; border: none; background: #0284c7; color: white; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+.btn:hover { background: #0369a1; transform: translateY(-1px); }
+
+.container { padding: 25px; max-width: 1100px; margin: auto; width: 100%; flex: 1; margin-bottom: 100px; }
+
+.import-card { background: #1e293b; border: 2px dashed #0284c7; border-radius: 16px; padding: 25px; text-align: center; margin-bottom: 25px; transition: 0.3s; }
+body.light-theme .import-card { background: #ffffff; border-color: #0284c7; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.import-card.dragover { background: rgba(2, 132, 199, 0.15); border-color: #38bdf8; }
+
+.import-btns { display: flex; gap: 12px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
+.file-btn { background: #0284c7; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
+.file-btn:hover { background: #0369a1; }
 .file-btn input { display: none; }
-.toast-msg { display: none; background: #22c55e; color: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2); animation: fadeIn 0.4s ease; }
+
+.toast-msg { display: none; background: #22c55e; color: white; padding: 12px 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: fadeIn 0.4s ease; }
 .toast-msg.loading { background: #0284c7; }
 .toast-msg.error { background: #ef4444; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-.main-stage { background: #1e293b; border-radius: 12px; padding: 15px; text-align: center; min-height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; }
-body.light-theme .main-stage { background: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-#audioVisualizer { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #0284c7, #38bdf8); display: flex; align-items: center; justify-content: center; font-size: 40px; color: white; display: none; box-shadow: 0 0 20px rgba(2, 132, 199, 0.5); }
-.audio-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 1px solid #334155; color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-body.light-theme .audio-bar { background: #ffffff; border-top: 1px solid #e2e8f0; color: #1e293b; }
-.controls-group { display: flex; align-items: center; gap: 15px; }
-.ctrl-btn { background: #0284c7; border: none; color: white; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
-.playlist-box { background: #1e293b; border-radius: 12px; padding: 15px; max-height: 220px; overflow-y: auto; margin-bottom: 60px; }
-body.light-theme .playlist-box { background: #ffffff; }
-.playlist-item { padding: 10px 14px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-radius: 6px; }
+
+.main-stage { background: #1e293b; border-radius: 16px; padding: 20px; text-align: center; min-height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 25px; position: relative; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+body.light-theme .main-stage { background: #ffffff; box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+
+#videoElement, #imageElement { max-width: 100%; max-height: 340px; border-radius: 10px; object-fit: contain; display: none; }
+#visualizerCanvas { width: 100%; height: 140px; display: none; margin-top: 10px; }
+
+.playlist-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+.search-box { padding: 8px 14px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; width: 250px; outline: none; }
+body.light-theme .search-box { background: #f8fafc; color: #1e293b; border-color: #cbd5e1; }
+.filter-tabs { display: flex; gap: 6px; }
+.filter-tab { padding: 6px 12px; font-size: 12px; border-radius: 6px; border: none; background: #334155; color: white; cursor: pointer; }
+.filter-tab.active { background: #0284c7; }
+
+.playlist-box { background: #1e293b; border-radius: 16px; padding: 15px; max-height: 280px; overflow-y: auto; box-shadow: inset 0 2px 10px rgba(0,0,0,0.2); }
+body.light-theme .playlist-box { background: #ffffff; box-shadow: inset 0 2px 10px rgba(0,0,0,0.03); }
+.playlist-item { padding: 12px 16px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-radius: 8px; transition: 0.2s; margin-bottom: 4px; }
 body.light-theme .playlist-item { border-bottom-color: #f1f5f9; }
-.playlist-item:hover { background: rgba(2, 132, 199, 0.1); }
+.playlist-item:hover { background: rgba(2, 132, 199, 0.15); }
 .playlist-item.active { background: #0284c7 !important; color: white !important; }
-.badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+
+.badge { font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: bold; margin-left: 8px; }
 .badge-audio { background: #8b5cf6; color: white; }
 .badge-video { background: #ec4899; color: white; }
 .badge-image { background: #f59e0b; color: white; }
+
+/* Bottom Control Bar */
+.audio-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #334155; color: white; padding: 12px 25px; display: flex; flex-direction: column; gap: 8px; z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.4); }
+body.light-theme .audio-bar { background: rgba(255, 255, 255, 0.95); border-top: 1px solid #e2e8f0; color: #1e293b; }
+
+.progress-container { width: 100%; display: flex; align-items: center; gap: 10px; font-size: 11px; opacity: 0.9; }
+.progress-bar { flex: 1; height: 5px; background: #334155; border-radius: 3px; cursor: pointer; position: relative; appearance: none; accent-color: #0284c7; }
+
+.bar-main-row { display: flex; justify-content: space-between; align-items: center; }
+.track-info { display: flex; flex-direction: column; max-width: 300px; }
+.controls-group { display: flex; align-items: center; gap: 12px; }
+.ctrl-btn { background: #0284c7; border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+.ctrl-btn:hover { background: #0369a1; transform: scale(1.05); }
+.extra-controls { display: flex; align-items: center; gap: 15px; font-size: 13px; }
+select { background: #1e293b; color: white; border: 1px solid #334155; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+body.light-theme select { background: #f1f5f9; color: #1e293b; border-color: #cbd5e1; }
 </style>
 </head>
 <body>
+
 <header>
-  <div id="logoHomeBtn" style="font-weight:bold; font-size: 18px;">KAUSHAL INSTITUTE MEDIA PORTAL</div>
-  <div><button id="themeToggleBtn" class="btn">🌙/☀️</button></div>
+  <div class="logo-area">
+    <span>⚡ KAUSHAL INSTITUTE MEDIA PORTAL PRO</span>
+  </div>
+  <div><button id="themeToggleBtn" class="btn" style="padding: 6px 12px;">🌙 / ☀️</button></div>
 </header>
+
 <div class="container">
   <div class="toast-msg" id="toastMsg"></div>
-  <div class="import-card">
-    <h3>स्थानीय मीडिया लोड करें (Select Files or Directory)</h3>
-    <p style="font-size: 13px; opacity: 0.8; margin-top: 5px;">अपनी डिवाइसेज से ऑडियो, वीडियो या इमेजेस इंपोर्ट करें</p>
+
+  <div class="import-card" id="dropZone">
+    <h3>📂 मीडिया फाइलें या फ़ोल्डर यहाँ ड्रॉप करें</h3>
+    <p style="font-size: 13px; opacity: 0.8; margin-top: 5px;">हाई-परफॉरमेंस IndexedDB स्टोरेज के साथ ऑडियो, वीडियो और इमेजेस इंपोर्ट करें</p>
     <div class="import-btns">
-      <label class="file-btn">📂 फ़ोल्डर चुनें<input type="file" id="folderInput" webkitdirectory directory multiple></label>
+      <label class="file-btn">📁 फ़ोल्डर चुनें<input type="file" id="folderInput" webkitdirectory directory multiple></label>
       <label class="file-btn">📄 फाइलें चुनें<input type="file" id="fileInput" accept="audio/*,video/*,image/*" multiple></label>
-      <button class="btn" style="background:#ef4444;" id="clearDataBtn">🗑️ डेटा हटाएं</button>
+      <button class="btn" style="background:#ef4444;" id="clearDataBtn">🗑️ सभी डेटा साफ़ करें</button>
     </div>
   </div>
+
   <div class="main-stage">
-    <video id="videoElement" controls style="display:none; max-width:100%; max-height:320px; border-radius:8px;"></video>
-    <img id="imageElement" style="display:none; max-width:100%; max-height:320px; border-radius:8px; object-fit:contain;" alt="Media View">
-    <div id="audioVisualizer">🎵</div>
-    <div id="emptyState" style="opacity: 0.6;">कोई भी मीडिया चयनित नहीं है</div>
+    <video id="videoElement" controls></video>
+    <img id="imageElement" alt="Media Preview">
+    <canvas id="visualizerCanvas"></canvas>
+    <div id="emptyState" style="opacity: 0.6; font-size: 16px;">🎵 कोई भी मीडिया चयनित नहीं है</div>
   </div>
-  <h4 style="margin-bottom: 10px;">मीडिया प्लेलिस्ट:</h4>
+
+  <div class="playlist-toolbar">
+    <h4 style="font-size: 16px;">मीडिया प्लेलिस्ट (<span id="playlistCount">0</span>)</h4>
+    <div style="display:flex; gap: 10px; align-items:center;">
+      <input type="text" id="searchInput" class="search-box" placeholder="🔍 मीडिया खोजें...">
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">सभी</button>
+        <button class="filter-tab" data-filter="audio">ऑडियो</button>
+        <button class="filter-tab" data-filter="video">वीडियो</button>
+        <button class="filter-tab" data-filter="image">इमेज</button>
+      </div>
+    </div>
+  </div>
+
   <div class="playlist-box" id="mediaPlaylistContainer">
     <p style="font-size: 13px; text-align: center; opacity: 0.7;">कोई फाइल्स उपलब्ध नहीं हैं।</p>
   </div>
 </div>
-<div class="audio-bar">
-  <div>
-    <div id="barTrackTitle" style="font-weight: bold; font-size: 14px;">ट्रैक चुनें</div>
-    <div id="barTrackSubtitle" style="font-size: 11px; opacity: 0.8;">Media Player Off</div>
+
+<!-- Bottom Control Bar -->
+<div class="audio-bar" id="audioBarContainer" style="display:none;">
+  <div class="progress-container">
+    <span id="currentTime">00:00</span>
+    <input type="range" id="progressBar" class="progress-bar" value="0" min="0" max="100" step="0.1">
+    <span id="durationTime">00:00</span>
   </div>
-  <div class="controls-group">
-    <button class="ctrl-btn" id="prevBtn">⏮</button>
-    <button class="ctrl-btn" id="playPauseBtn">▶</button>
-    <button class="ctrl-btn" id="nextBtn">⏭</button>
+  <div class="bar-main-row">
+    <div class="track-info">
+      <div id="barTrackTitle" style="font-weight: bold; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">ट्रैक चुनें</div>
+      <div id="barTrackSubtitle" style="font-size: 11px; opacity: 0.8;">Media Player Off</div>
+    </div>
+    <div class="controls-group">
+      <button class="ctrl-btn" id="prevBtn" title="पिछला">⏮</button>
+      <button class="ctrl-btn" id="playPauseBtn" title="प्ले/पॉज़">▶</button>
+      <button class="ctrl-btn" id="nextBtn" title="अगला">⏭</button>
+    </div>
+    <div class="extra-controls">
+      <label style="font-size: 12px; display:flex; align-items:center; gap:4px;">स्पीड: 
+        <select id="playbackSpeed">
+          <option value="0.5">0.5x</option>
+          <option value="1" selected>1.0x</option>
+          <option value="1.25">1.25x</option>
+          <option value="1.5">1.5x</option>
+          <option value="2">2.0x</option>
+        </select>
+      </label>
+      <label style="font-size: 12px; display:flex; align-items:center; gap:4px;">वॉल्यूम: 
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" style="width: 70px; accent-color: #0284c7;">
+      </label>
+    </div>
   </div>
 </div>
+
 <audio id="mainAudioElement" style="display:none;"></audio>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE",
   authDomain: "kaushal-institute-729bc.firebaseapp.com",
@@ -92,129 +170,326 @@ const firebaseConfig = {
   appId: "1:699990199933:web:e5fae383e93de5d3c6ab14",
   measurementId: "G-4VRTVZ3JPJ"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-let combinedMediaList = [], currentMediaIndex = -1;
-const audioElement = document.getElementById('mainAudioElement'), videoElement = document.getElementById('videoElement'), imageElement = document.getElementById('imageElement'), audioVisualizer = document.getElementById('audioVisualizer'), emptyState = document.getElementById('emptyState');
-window.addEventListener('DOMContentLoaded', () => {
-  loadSavedLocalMedia();
+
+let dbInstance = null;
+let combinedMediaList = [], filteredMediaList = [], currentMediaIndex = -1;
+let currentFilter = 'all', searchQuery = '';
+let audioCtx = null, analyser = null, sourceNode = null;
+
+const audioElement = document.getElementById('mainAudioElement'),
+      videoElement = document.getElementById('videoElement'),
+      imageElement = document.getElementById('imageElement'),
+      visualizerCanvas = document.getElementById('visualizerCanvas'),
+      emptyState = document.getElementById('emptyState'),
+      canvasCtx = visualizerCanvas.getContext('2d');
+
+// IndexedDB Initialization for Large Files
+function initIndexedDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('KaushalMediaDB', 1);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => { dbInstance = request.result; resolve(dbInstance); };
+    request.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('files')) {
+        db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
+      }
+    };
+  });
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    await initIndexedDB();
+    loadStoredMedia();
+  } catch(err) {
+    console.error("IndexedDB Error:", err);
+  }
+  
   syncFirebaseData();
+
+  // Event Listeners
   document.getElementById('themeToggleBtn').addEventListener('click', () => document.body.classList.toggle('light-theme'));
   document.getElementById('folderInput').addEventListener('change', handleFileInput);
   document.getElementById('fileInput').addEventListener('change', handleFileInput);
-  document.getElementById('clearDataBtn').addEventListener('click', clearLocalData);
+  document.getElementById('clearDataBtn').addEventListener('click', clearAllData);
   document.getElementById('playPauseBtn').addEventListener('click', togglePlay);
   document.getElementById('prevBtn').addEventListener('click', playPrev);
   document.getElementById('nextBtn').addEventListener('click', playNext);
+  
+  document.getElementById('searchInput').addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase(); applyFilters(); });
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      e.target.classList.add('active');
+      currentFilter = e.target.getAttribute('data-filter');
+      applyFilters();
+    });
+  });
+
+  // Media playback events
   audioElement.addEventListener('ended', playNext);
   videoElement.addEventListener('ended', playNext);
+  audioElement.addEventListener('timeupdate', updateProgress);
+  videoElement.addEventListener('timeupdate', updateProgress);
+
+  document.getElementById('progressBar').addEventListener('input', (e) => {
+    const activeEl = getCurrentMediaElement();
+    if(activeEl && activeEl.duration) {
+      activeEl.currentTime = (e.target.value / 100) * activeEl.duration;
+    }
+  });
+
+  document.getElementById('volumeSlider').addEventListener('input', (e) => {
+    audioElement.volume = e.target.value;
+    videoElement.volume = e.target.value;
+  });
+
+  document.getElementById('playbackSpeed').addEventListener('change', (e) => {
+    const speed = parseFloat(e.target.value);
+    audioElement.playbackRate = speed;
+    videoElement.playbackRate = speed;
+  });
+
+  // Drag and Drop Zone
+  const dropZone = document.getElementById('dropZone');
+  ['dragenter', 'dragover'].forEach(name => dropZone.addEventListener(name, (e) => { e.preventDefault(); dropZone.classList.add('dragover'); }));
+  ['dragleave', 'drop'].forEach(name => dropZone.addEventListener(name, (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); }));
+  dropZone.addEventListener('drop', (e) => {
+    if(e.dataTransfer.files.length) {
+      handleFiles(Array.from(e.dataTransfer.files));
+    }
+  });
 });
-function handleFileInput(e) {
-  const files = Array.from(e.target.files);
-  if (!files.length) {
-    showToastMsg('⚠️ कोई भी फाइल सेलेक्ट नहीं की गई।', 'error');
+
+function handleFileInput(e) { handleFiles(Array.from(e.target.files)); }
+
+async function handleFiles(files) {
+  if (!files.length) return showToastMsg('⚠️ कोई भी फाइल सेलेक्ट नहीं की गई।', 'error');
+  showToastMsg('⏳ फाइलें सुरक्षित रूप से लोड हो रही हैं...', 'loading', 0);
+
+  const transaction = dbInstance.transaction(['files'], 'readwrite');
+  const store = transaction.objectStore('files');
+  
+  let countAdded = 0;
+  for (let file of files) {
+    let type = 'unknown';
+    if (file.type.startsWith('audio/')) type = 'audio';
+    else if (file.type.startsWith('video/')) type = 'video';
+    else if (file.type.startsWith('image/')) type = 'image';
+
+    if (type !== 'unknown') {
+      await new Promise((resolve) => {
+        const req = store.add({ title: file.name, type: type, blob: file, source: 'Local Storage' });
+        req.onsuccess = () => { countAdded++; resolve(); };
+      });
+    }
+  }
+
+  showToastMsg(`🎉 सफलता! कुल ${countAdded} फाइलें सेव हो गईं।`, 'success');
+  loadStoredMedia();
+}
+
+function loadStoredMedia() {
+  if(!dbInstance) return;
+  const transaction = dbInstance.transaction(['files'], 'readonly');
+  const store = transaction.objectStore('files');
+  const req = store.getAll();
+
+  req.onsuccess = () => {
+    const localFiles = req.result.map(item => ({
+      id: item.id,
+      title: item.title,
+      type: item.type,
+      url: URL.createObjectURL(item.blob),
+      source: 'Local Device'
+    }));
+    mergeAndRender(localFiles);
+  };
+}
+
+let firebaseTracks = [];
+function syncFirebaseData() {
+  onValue(ref(db, 'course_audios'), (snapshot) => {
+    firebaseTracks = [];
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      for (let key in data) {
+        firebaseTracks.push({ title: data[key].title || 'Firebase Audio', type: 'audio', url: data[key].url, source: 'Firebase Cloud' });
+      }
+    }
+    loadStoredMedia();
+  });
+}
+
+function mergeAndRender(localFiles) {
+  const transactionLocal = dbInstance ? localFiles : [];
+  combinedMediaList = [...transactionLocal, ...firebaseTracks];
+  applyFilters();
+}
+
+function applyFilters() {
+  filteredMediaList = combinedMediaList.filter(item => {
+    const matchesSearch = item.title.toLowerCase().includes(searchQuery);
+    const matchesTab = currentFilter === 'all' || item.type === currentFilter;
+    return matchesSearch && matchesTab;
+  });
+  renderPlaylist();
+}
+
+function renderPlaylist() {
+  const container = document.getElementById('mediaPlaylistContainer');
+  container.innerHTML = '';
+  document.getElementById('playlistCount').innerText = filteredMediaList.length;
+
+  if (!filteredMediaList.length) {
+    container.innerHTML = '<p style="font-size:13px; text-align:center; opacity:0.7;">कोई फाइल्स उपलब्ध नहीं हैं।</p>';
     return;
   }
-  showToastMsg('⏳ फाइलें लोड हो रही हैं, कृपया प्रतीक्षा करें...', 'loading', 0);
-  setTimeout(() => {
-    let localStoredFiles = JSON.parse(localStorage.getItem('user_media_list') || '[]');
-    let countAdded = 0;
-    files.forEach(file => {
-      let type = 'unknown';
-      if (file.type.startsWith('audio/')) type = 'audio';
-      else if (file.type.startsWith('video/')) type = 'video';
-      else if (file.type.startsWith('image/')) type = 'image';
-      if (type !== 'unknown') {
-        localStoredFiles.push({ title: file.name, type: type, url: URL.createObjectURL(file), source: 'Folder/File' });
-        countAdded++;
-      }
-    });
-    localStorage.setItem('user_media_list', JSON.stringify(localStoredFiles));
-    if (countAdded > 0) {
-      showToastMsg(`🎉 सफलता! कुल ${countAdded} नई फाइलें लोड हो गई हैं।`, 'success');
-    } else {
-      showToastMsg('⚠️ सेलेक्ट की गई फाइलों में कोई सपोर्टेड मीडिया (Audio/Video/Image) नहीं मिला।', 'error');
-    }
-    loadSavedLocalMedia();
-  }, 300);
+
+  filteredMediaList.forEach((item, idx) => {
+    const div = document.createElement('div');
+    const originalIndex = combinedMediaList.indexOf(item);
+    div.className = `playlist-item ${originalIndex === currentMediaIndex ? 'active' : ''}`;
+    
+    let badgeClass = item.type === 'video' ? 'badge-video' : (item.type === 'image' ? 'badge-image' : 'badge-audio');
+    div.innerHTML = `<div style="display:flex; align-items:center; overflow:hidden;"><strong style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:350px;">${item.title}</strong> <span class="badge ${badgeClass}">${item.type.toUpperCase()}</span></div><span style="font-size:11px; opacity:0.8; flex-shrink:0;">${item.source}</span>`;
+    
+    div.addEventListener('click', () => loadAndPlayMedia(originalIndex));
+    container.appendChild(div);
+  });
 }
+
+function loadAndPlayMedia(index) {
+  if (index < 0 || index >= combinedMediaList.length) return;
+  currentMediaIndex = index;
+  const media = combinedMediaList[currentMediaIndex];
+
+  audioElement.pause(); videoElement.pause();
+  videoElement.style.display = 'none'; imageElement.style.display = 'none'; visualizerCanvas.style.display = 'none'; emptyState.style.display = 'none';
+  document.getElementById('audioBarContainer').style.display = 'flex';
+
+  document.getElementById('barTrackTitle').innerText = media.title;
+  document.getElementById('barTrackSubtitle').innerText = `${media.type.toUpperCase()} | ${media.source}`;
+
+  if (media.type === 'audio') {
+    audioElement.src = media.url; 
+    audioElement.play().catch(e => console.log(e));
+    visualizerCanvas.style.display = 'block';
+    setupAudioVisualizer();
+    document.getElementById('playPauseBtn').innerText = '⏸';
+  } else if (media.type === 'video') {
+    videoElement.src = media.url; 
+    videoElement.style.display = 'block'; 
+    videoElement.play().catch(e => console.log(e));
+    document.getElementById('playPauseBtn').innerText = '⏸';
+  } else if (media.type === 'image') {
+    imageElement.src = media.url; 
+    imageElement.style.display = 'block';
+    document.getElementById('playPauseBtn').innerText = '▶';
+  }
+  renderPlaylist();
+}
+
+function setupAudioVisualizer() {
+  if (!audioCtx) {
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      sourceNode = audioCtx.createMediaElementSource(audioElement);
+      sourceNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+      analyser.fftSize = 64;
+    } catch(e) { console.log(e); }
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  visualize();
+}
+
+function visualize() {
+  if (!analyser || visualizerCanvas.style.display === 'none') return;
+  requestAnimationFrame(visualize);
+  const bufferLength = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
+  analyser.getByteFrequencyData(dataArray);
+
+  canvasCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+  visualizerCanvas.width = visualizerCanvas.offsetWidth;
+  visualizerCanvas.height = visualizerCanvas.offsetHeight;
+
+  let barWidth = (visualizerCanvas.width / bufferLength) * 2.5;
+  let barHeight;
+  let x = 0;
+
+  for (let i = 0; i < bufferLength; i++) {
+    barHeight = (dataArray[i] / 255) * visualizerCanvas.height;
+    canvasCtx.fillStyle = '#0284c7';
+    canvasCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth, barHeight);
+    x += barWidth + 2;
+  }
+}
+
+function getCurrentMediaElement() {
+  if (currentMediaIndex === -1) return null;
+  const type = combinedMediaList[currentMediaIndex].type;
+  return type === 'audio' ? audioElement : (type === 'video' ? videoElement : null);
+}
+
+function togglePlay() {
+  if (currentMediaIndex === -1 && combinedMediaList.length) return loadAndPlayMedia(0);
+  const activeEl = getCurrentMediaElement();
+  if (!activeEl) return;
+
+  if (activeEl.paused) {
+    activeEl.play();
+    document.getElementById('playPauseBtn').innerText = '⏸';
+  } else {
+    activeEl.pause();
+    document.getElementById('playPauseBtn').innerText = '▶';
+  }
+}
+
+function playNext() { if (combinedMediaList.length) loadAndPlayMedia((currentMediaIndex + 1) % combinedMediaList.length); }
+function playPrev() { if (combinedMediaList.length) loadAndPlayMedia((currentMediaIndex - 1 + combinedMediaList.length) % combinedMediaList.length); }
+
+function updateProgress() {
+  const activeEl = getCurrentMediaElement();
+  if(!activeEl || isNaN(activeEl.duration)) return;
+
+  const current = activeEl.currentTime;
+  const duration = activeEl.duration;
+  
+  document.getElementById('progressBar').value = (current / duration) * 100;
+  document.getElementById('currentTime').innerText = formatTime(current);
+  document.getElementById('durationTime').innerText = formatTime(duration);
+}
+
+function formatTime(seconds) {
+  let mins = Math.floor(seconds / 60);
+  let secs = Math.floor(seconds % 60);
+  return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+async function clearAllData() {
+  if(confirm('क्या आप वाकई सभी स्थानीय मीडिया डेटा को हटाना चाहते हैं?')) {
+    const tx = dbInstance.transaction(['files'], 'readwrite');
+    tx.objectStore('files').clear();
+    tx.oncomplete = () => {
+      showToastMsg('🗑️ सारा डेटा साफ़ कर दिया गया है!', 'error');
+      loadStoredMedia();
+    };
+  }
+}
+
 function showToastMsg(msg, type = 'success', timeout = 4000) {
   const toast = document.getElementById('toastMsg');
   toast.innerText = msg;
   toast.className = 'toast-msg ' + (type === 'loading' ? 'loading' : (type === 'error' ? 'error' : ''));
   toast.style.display = 'block';
-  if (timeout > 0) {
-    setTimeout(() => { toast.style.display = 'none'; }, timeout);
-  }
-}
-function loadSavedLocalMedia() {
-  renderCombinedList(JSON.parse(localStorage.getItem('user_media_list') || '[]'));
-}
-function syncFirebaseData() {
-  onValue(ref(db, 'course_audios'), (snapshot) => {
-    let fbList = [];
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      for (let key in data) {
-        fbList.push({ title: data[key].title || 'Firebase Track', type: 'audio', url: data[key].url, source: 'Firebase' });
-      }
-    }
-    renderCombinedList([...JSON.parse(localStorage.getItem('user_media_list') || '[]'), ...fbList]);
-  });
-}
-function renderCombinedList(list) {
-  combinedMediaList = list;
-  const container = document.getElementById('mediaPlaylistContainer');
-  container.innerHTML = '';
-  if (!combinedMediaList.length) {
-    container.innerHTML = '<p style="font-size:13px; text-align:center; opacity:0.7;">कोई फाइल्स उपलब्ध नहीं हैं।</p>';
-    return;
-  }
-  combinedMediaList.forEach((item, idx) => {
-    const div = document.createElement('div');
-    div.className = `playlist-item ${idx === currentMediaIndex ? 'active' : ''}`;
-    let badgeClass = item.type === 'video' ? 'badge-video' : (item.type === 'image' ? 'badge-image' : 'badge-audio');
-    div.innerHTML = `<div><strong>${item.title}</strong> <span class="badge ${badgeClass}">${item.type.toUpperCase()}</span></div><span style="font-size:11px; opacity:0.8;">${item.source}</span>`;
-    div.addEventListener('click', () => loadAndPlayMedia(idx));
-    container.appendChild(div);
-  });
-}
-function loadAndPlayMedia(index) {
-  if (index < 0 || index >= combinedMediaList.length) return;
-  currentMediaIndex = index;
-  const media = combinedMediaList[currentMediaIndex];
-  audioElement.pause(); videoElement.pause();
-  videoElement.style.display = 'none'; imageElement.style.display = 'none'; audioVisualizer.style.display = 'none'; emptyState.style.display = 'none';
-  document.getElementById('barTrackTitle').innerText = media.title;
-  document.getElementById('barTrackSubtitle').innerText = `${media.type.toUpperCase()} | ${media.source}`;
-  if (media.type === 'audio') {
-    audioElement.src = media.url; audioVisualizer.style.display = 'flex'; audioElement.play();
-    document.getElementById('playPauseBtn').innerText = '⏸';
-  } else if (media.type === 'video') {
-    videoElement.src = media.url; videoElement.style.display = 'block'; videoElement.play();
-    document.getElementById('playPauseBtn').innerText = '⏸';
-  } else if (media.type === 'image') {
-    imageElement.src = media.url; imageElement.style.display = 'block';
-    document.getElementById('playPauseBtn').innerText = '▶';
-  }
-  renderCombinedList(combinedMediaList);
-}
-function togglePlay() {
-  if (currentMediaIndex === -1 && combinedMediaList.length) return loadAndPlayMedia(0);
-  const media = combinedMediaList[currentMediaIndex];
-  if (!media) return;
-  if (media.type === 'audio') {
-    audioElement.paused ? (audioElement.play(), document.getElementById('playPauseBtn').innerText = '⏸') : (audioElement.pause(), document.getElementById('playPauseBtn').innerText = '▶');
-  } else if (media.type === 'video') {
-    videoElement.paused ? (videoElement.play(), document.getElementById('playPauseBtn').innerText = '⏸') : (videoElement.pause(), document.getElementById('playPauseBtn').innerText = '▶');
-  }
-}
-function playNext() { if (combinedMediaList.length) loadAndPlayMedia((currentMediaIndex + 1) % combinedMediaList.length); }
-function playPrev() { if (combinedMediaList.length) loadAndPlayMedia((currentMediaIndex - 1 + combinedMediaList.length) % combinedMediaList.length); }
-function clearLocalData() {
-  localStorage.removeItem('user_media_list');
-  showToastMsg('🗑️ डेटा साफ़ कर दिया गया है!', 'error');
-  loadSavedLocalMedia();
+  if (timeout > 0) setTimeout(() => { toast.style.display = 'none'; }, timeout);
 }
 </script>
 </body>
