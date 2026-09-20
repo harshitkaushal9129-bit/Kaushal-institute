@@ -1,6 +1,7 @@
 const CACHE_NAME = 'kaushal-portal-v3';
 const ASSETS_TO_CACHE = [
   './',
+  '/Kaushalji.png',
   './index.html',
   './resources.html',
   './manifest.json'
