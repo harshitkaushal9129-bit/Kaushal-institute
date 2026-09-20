@@ -8,41 +8,27 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 body { background: #0f172a; color: #f8fafc; transition: 0.3s; min-height: 100vh; display: flex; flex-direction: column; }
 body.light-theme { background: #f4f6f9; color: #1e293b; }
-
 header { background: #0284c7; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
 .btn { padding: 8px 16px; border: none; background: #0369a1; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
 .btn:hover { background: #075985; }
-
 .container { padding: 20px; max-width: 1000px; margin: auto; width: 100%; flex: 1; }
-
-/* Import Section */
-.import-card { background: #1e293b; border: 2px dashed #0284c7; border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 25px; }
+.import-card { background: #1e293b; border: 2px dashed #0284c7; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
 body.light-theme .import-card { background: #ffffff; border-color: #0284c7; }
 .import-btns { display: flex; gap: 15px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
 .file-btn { background: #0284c7; color: white; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
 .file-btn input { display: none; }
-
-/* Notification Banner */
 .toast-msg { display: none; background: #22c55e; color: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2); animation: fadeIn 0.4s ease; }
+.toast-msg.loading { background: #0284c7; }
+.toast-msg.error { background: #ef4444; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-/* Player Box */
-.main-stage { background: #1e293b; border-radius: 12px; padding: 15px; text-align: center; min-height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 25px; }
+.main-stage { background: #1e293b; border-radius: 12px; padding: 15px; text-align: center; min-height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; }
 body.light-theme .main-stage { background: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-
-#mediaViewer { max-width: 100%; max-height: 400px; border-radius: 8px; display: none; }
-#imageViewer { max-width: 100%; max-height: 400px; border-radius: 8px; object-fit: contain; display: none; }
-#audioVisualizer { width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, #0284c7, #38bdf8); display: flex; align-items: center; justify-content: center; font-size: 50px; color: white; display: none; box-shadow: 0 0 20px rgba(2, 132, 199, 0.5); }
-
-/* Bottom Bar Player Controls */
+#audioVisualizer { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #0284c7, #38bdf8); display: flex; align-items: center; justify-content: center; font-size: 40px; color: white; display: none; box-shadow: 0 0 20px rgba(2, 132, 199, 0.5); }
 .audio-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 1px solid #334155; color: white; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
 body.light-theme .audio-bar { background: #ffffff; border-top: 1px solid #e2e8f0; color: #1e293b; }
-
 .controls-group { display: flex; align-items: center; gap: 15px; }
 .ctrl-btn { background: #0284c7; border: none; color: white; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
-
-/* Playlist */
-.playlist-box { background: #1e293b; border-radius: 12px; padding: 15px; max-height: 250px; overflow-y: auto; }
+.playlist-box { background: #1e293b; border-radius: 12px; padding: 15px; max-height: 220px; overflow-y: auto; margin-bottom: 60px; }
 body.light-theme .playlist-box { background: #ffffff; }
 .playlist-item { padding: 10px 14px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-radius: 6px; }
 body.light-theme .playlist-item { border-bottom-color: #f1f5f9; }
@@ -55,51 +41,32 @@ body.light-theme .playlist-item { border-bottom-color: #f1f5f9; }
 </style>
 </head>
 <body>
-
 <header>
-  <div id="logoHomeBtn" style="font-weight:bold; font-size: 18px;">KAUSHAL INSTITUTE MEDIA PLAYER</div>
-  <div>
-    <button id="themeToggleBtn" class="btn">🌙/☀️</button>
-  </div>
+  <div id="logoHomeBtn" style="font-weight:bold; font-size: 18px;">KAUSHAL INSTITUTE MEDIA PORTAL</div>
+  <div><button id="themeToggleBtn" class="btn">🌙/☀️</button></div>
 </header>
-
 <div class="container">
-  <!-- Status Message Div -->
-  <div class="toast-msg" id="toastMsg">✅ डेटा सफलता से अपलोड/अपडेट हो चुका है!</div>
-
-  <!-- Folder/File selection controls -->
+  <div class="toast-msg" id="toastMsg"></div>
   <div class="import-card">
     <h3>स्थानीय मीडिया लोड करें (Select Files or Directory)</h3>
     <p style="font-size: 13px; opacity: 0.8; margin-top: 5px;">अपनी डिवाइसेज से ऑडियो, वीडियो या इमेजेस इंपोर्ट करें</p>
     <div class="import-btns">
-      <label class="file-btn">
-        📂 फ़ोल्डर चुनें
-        <input type="file" id="folderInput" webkitdirectory directory multiple>
-      </label>
-      <label class="file-btn">
-        📄 मल्टीपल फाइल्स चुनें
-        <input type="file" id="fileInput" accept="audio/*,video/*,image/*" multiple>
-      </label>
-      <button class="btn" style="background:#ef4444;" id="clearDataBtn">🗑️ लोकल डेटा हटाएं</button>
+      <label class="file-btn">📂 फ़ोल्डर चुनें<input type="file" id="folderInput" webkitdirectory directory multiple></label>
+      <label class="file-btn">📄 फाइलें चुनें<input type="file" id="fileInput" accept="audio/*,video/*,image/*" multiple></label>
+      <button class="btn" style="background:#ef4444;" id="clearDataBtn">🗑️ डेटा हटाएं</button>
     </div>
   </div>
-
-  <!-- Main View Area (Video / Image / Audio) -->
   <div class="main-stage">
-    <video id="videoElement" controls class="media-element" style="display:none; max-width:100%; max-height:360px;"></video>
-    <img id="imageElement" class="media-element" style="display:none; max-width:100%; max-height:360px;" alt="Media View">
+    <video id="videoElement" controls style="display:none; max-width:100%; max-height:320px; border-radius:8px;"></video>
+    <img id="imageElement" style="display:none; max-width:100%; max-height:320px; border-radius:8px; object-fit:contain;" alt="Media View">
     <div id="audioVisualizer">🎵</div>
     <div id="emptyState" style="opacity: 0.6;">कोई भी मीडिया चयनित नहीं है</div>
   </div>
-
-  <!-- Playlist Section -->
   <h4 style="margin-bottom: 10px;">मीडिया प्लेलिस्ट:</h4>
   <div class="playlist-box" id="mediaPlaylistContainer">
     <p style="font-size: 13px; text-align: center; opacity: 0.7;">कोई फाइल्स उपलब्ध नहीं हैं।</p>
   </div>
 </div>
-
-<!-- Footer Audio/Media Player Bar -->
 <div class="audio-bar">
   <div>
     <div id="barTrackTitle" style="font-weight: bold; font-size: 14px;">ट्रैक चुनें</div>
@@ -111,13 +78,10 @@ body.light-theme .playlist-item { border-bottom-color: #f1f5f9; }
     <button class="ctrl-btn" id="nextBtn">⏭</button>
   </div>
 </div>
-
 <audio id="mainAudioElement" style="display:none;"></audio>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE",
   authDomain: "kaushal-institute-729bc.firebaseapp.com",
@@ -128,207 +92,128 @@ const firebaseConfig = {
   appId: "1:699990199933:web:e5fae383e93de5d3c6ab14",
   measurementId: "G-4VRTVZ3JPJ"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
-let combinedMediaList = [];
-let currentMediaIndex = -1;
-
-const audioElement = document.getElementById('mainAudioElement');
-const videoElement = document.getElementById('videoElement');
-const imageElement = document.getElementById('imageElement');
-const audioVisualizer = document.getElementById('audioVisualizer');
-const emptyState = document.getElementById('emptyState');
-
+let combinedMediaList = [], currentMediaIndex = -1;
+const audioElement = document.getElementById('mainAudioElement'), videoElement = document.getElementById('videoElement'), imageElement = document.getElementById('imageElement'), audioVisualizer = document.getElementById('audioVisualizer'), emptyState = document.getElementById('emptyState');
 window.addEventListener('DOMContentLoaded', () => {
-  initPortal();
-
+  loadSavedLocalMedia();
+  syncFirebaseData();
   document.getElementById('themeToggleBtn').addEventListener('click', () => document.body.classList.toggle('light-theme'));
   document.getElementById('folderInput').addEventListener('change', handleFileInput);
   document.getElementById('fileInput').addEventListener('change', handleFileInput);
   document.getElementById('clearDataBtn').addEventListener('click', clearLocalData);
-
   document.getElementById('playPauseBtn').addEventListener('click', togglePlay);
   document.getElementById('prevBtn').addEventListener('click', playPrev);
   document.getElementById('nextBtn').addEventListener('click', playNext);
-
   audioElement.addEventListener('ended', playNext);
   videoElement.addEventListener('ended', playNext);
 });
-
-function initPortal() {
-  loadSavedLocalMedia();
-  syncFirebaseData();
-}
-
-// 1. फ़ोल्डर और मल्टीपल फाइल्स को हैंडल करना
 function handleFileInput(e) {
   const files = Array.from(e.target.files);
-  if (files.length === 0) return;
-
-  let localStoredFiles = JSON.parse(localStorage.getItem('user_media_list') || '[]');
-
-  files.forEach(file => {
-    let type = 'unknown';
-    if (file.type.startsWith('audio/')) type = 'audio';
-    else if (file.type.startsWith('video/')) type = 'video';
-    else if (file.type.startsWith('image/')) type = 'image';
-
-    if (type !== 'unknown') {
-      const mediaItem = {
-        title: file.name,
-        type: type,
-        url: URL.createObjectURL(file), // लाइव स्ट्रीमिंग यूआरएल
-        source: 'Folder/File'
-      };
-      localStoredFiles.push(mediaItem);
+  if (!files.length) {
+    showToastMsg('⚠️ कोई भी फाइल सेलेक्ट नहीं की गई।', 'error');
+    return;
+  }
+  showToastMsg('⏳ फाइलें लोड हो रही हैं, कृपया प्रतीक्षा करें...', 'loading', 0);
+  setTimeout(() => {
+    let localStoredFiles = JSON.parse(localStorage.getItem('user_media_list') || '[]');
+    let countAdded = 0;
+    files.forEach(file => {
+      let type = 'unknown';
+      if (file.type.startsWith('audio/')) type = 'audio';
+      else if (file.type.startsWith('video/')) type = 'video';
+      else if (file.type.startsWith('image/')) type = 'image';
+      if (type !== 'unknown') {
+        localStoredFiles.push({ title: file.name, type: type, url: URL.createObjectURL(file), source: 'Folder/File' });
+        countAdded++;
+      }
+    });
+    localStorage.setItem('user_media_list', JSON.stringify(localStoredFiles));
+    if (countAdded > 0) {
+      showToastMsg(`🎉 सफलता! कुल ${countAdded} नई फाइलें लोड हो गई हैं।`, 'success');
+    } else {
+      showToastMsg('⚠️ सेलेक्ट की गई फाइलों में कोई सपोर्टेड मीडिया (Audio/Video/Image) नहीं मिला।', 'error');
     }
-  });
-
-  // Local Storage सिंक
-  localStorage.setItem('user_media_list', JSON.stringify(localStoredFiles));
-  
-  showToastMsg(`🎉 कुल ${files.length} फाइलें सफलतापूर्वक लोड कर ली गई हैं!`);
-  loadSavedLocalMedia();
+    loadSavedLocalMedia();
+  }, 300);
 }
-
-// 2. सफलता का मैसेज दिखाएँ (Toast Alert)
-function showToastMsg(msg) {
+function showToastMsg(msg, type = 'success', timeout = 4000) {
   const toast = document.getElementById('toastMsg');
   toast.innerText = msg;
+  toast.className = 'toast-msg ' + (type === 'loading' ? 'loading' : (type === 'error' ? 'error' : ''));
   toast.style.display = 'block';
-  setTimeout(() => { toast.style.display = 'none'; }, 4000);
+  if (timeout > 0) {
+    setTimeout(() => { toast.style.display = 'none'; }, timeout);
+  }
 }
-
-// 3. Local Storage डेटा लोड करना
 function loadSavedLocalMedia() {
-  const localData = JSON.parse(localStorage.getItem('user_media_list') || '[]');
-  renderCombinedList(localData);
+  renderCombinedList(JSON.parse(localStorage.getItem('user_media_list') || '[]'));
 }
-
-// 4. Firebase सिंक
 function syncFirebaseData() {
   onValue(ref(db, 'course_audios'), (snapshot) => {
     let fbList = [];
     if (snapshot.exists()) {
       const data = snapshot.val();
       for (let key in data) {
-        fbList.push({
-          title: data[key].title || 'Firebase Track',
-          type: 'audio',
-          url: data[key].url,
-          source: 'Firebase'
-        });
+        fbList.push({ title: data[key].title || 'Firebase Track', type: 'audio', url: data[key].url, source: 'Firebase' });
       }
     }
-    const localData = JSON.parse(localStorage.getItem('user_media_list') || '[]');
-    renderCombinedList([...localData, ...fbList]);
+    renderCombinedList([...JSON.parse(localStorage.getItem('user_media_list') || '[]'), ...fbList]);
   });
 }
-
-// 5. मीडिया लिस्ट रेंडर करना
 function renderCombinedList(list) {
   combinedMediaList = list;
   const container = document.getElementById('mediaPlaylistContainer');
   container.innerHTML = '';
-
-  if (combinedMediaList.length === 0) {
+  if (!combinedMediaList.length) {
     container.innerHTML = '<p style="font-size:13px; text-align:center; opacity:0.7;">कोई फाइल्स उपलब्ध नहीं हैं।</p>';
     return;
   }
-
   combinedMediaList.forEach((item, idx) => {
     const div = document.createElement('div');
     div.className = `playlist-item ${idx === currentMediaIndex ? 'active' : ''}`;
-    
-    let badgeClass = 'badge-audio';
-    if(item.type === 'video') badgeClass = 'badge-video';
-    if(item.type === 'image') badgeClass = 'badge-image';
-
-    div.innerHTML = `
-      <div>
-        <strong>${item.title}</strong> 
-        <span class="badge ${badgeClass}">${item.type.toUpperCase()}</span>
-      </div>
-      <span style="font-size:11px; opacity:0.8;">${item.source}</span>
-    `;
+    let badgeClass = item.type === 'video' ? 'badge-video' : (item.type === 'image' ? 'badge-image' : 'badge-audio');
+    div.innerHTML = `<div><strong>${item.title}</strong> <span class="badge ${badgeClass}">${item.type.toUpperCase()}</span></div><span style="font-size:11px; opacity:0.8;">${item.source}</span>`;
     div.addEventListener('click', () => loadAndPlayMedia(idx));
     container.appendChild(div);
   });
 }
-
-// 6. ऑडियो/वीडियो/इमेज प्लेयर इंजन
 function loadAndPlayMedia(index) {
   if (index < 0 || index >= combinedMediaList.length) return;
-  
   currentMediaIndex = index;
   const media = combinedMediaList[currentMediaIndex];
-
-  // पूर्वाग्रह रीसेट करें
-  audioElement.pause();
-  videoElement.pause();
-  videoElement.style.display = 'none';
-  imageElement.style.display = 'none';
-  audioVisualizer.style.display = 'none';
-  emptyState.style.display = 'none';
-
-  // अपडेट प्लेयर बार UI
+  audioElement.pause(); videoElement.pause();
+  videoElement.style.display = 'none'; imageElement.style.display = 'none'; audioVisualizer.style.display = 'none'; emptyState.style.display = 'none';
   document.getElementById('barTrackTitle').innerText = media.title;
   document.getElementById('barTrackSubtitle').innerText = `${media.type.toUpperCase()} | ${media.source}`;
-
   if (media.type === 'audio') {
-    audioElement.src = media.url;
-    audioVisualizer.style.display = 'flex';
-    audioElement.play();
+    audioElement.src = media.url; audioVisualizer.style.display = 'flex'; audioElement.play();
     document.getElementById('playPauseBtn').innerText = '⏸';
-  } 
-  else if (media.type === 'video') {
-    videoElement.src = media.url;
-    videoElement.style.display = 'block';
-    videoElement.play();
+  } else if (media.type === 'video') {
+    videoElement.src = media.url; videoElement.style.display = 'block'; videoElement.play();
     document.getElementById('playPauseBtn').innerText = '⏸';
-  } 
-  else if (media.type === 'image') {
-    imageElement.src = media.url;
-    imageElement.style.display = 'block';
+  } else if (media.type === 'image') {
+    imageElement.src = media.url; imageElement.style.display = 'block';
     document.getElementById('playPauseBtn').innerText = '▶';
   }
-
   renderCombinedList(combinedMediaList);
 }
-
 function togglePlay() {
-  if (currentMediaIndex === -1 && combinedMediaList.length > 0) {
-    loadAndPlayMedia(0);
-    return;
-  }
-
+  if (currentMediaIndex === -1 && combinedMediaList.length) return loadAndPlayMedia(0);
   const media = combinedMediaList[currentMediaIndex];
   if (!media) return;
-
   if (media.type === 'audio') {
-    if (audioElement.paused) { audioElement.play(); document.getElementById('playPauseBtn').innerText = '⏸'; }
-    else { audioElement.pause(); document.getElementById('playPauseBtn').innerText = '▶'; }
+    audioElement.paused ? (audioElement.play(), document.getElementById('playPauseBtn').innerText = '⏸') : (audioElement.pause(), document.getElementById('playPauseBtn').innerText = '▶');
   } else if (media.type === 'video') {
-    if (videoElement.paused) { videoElement.play(); document.getElementById('playPauseBtn').innerText = '⏸'; }
-    else { videoElement.pause(); document.getElementById('playPauseBtn').innerText = '▶'; }
+    videoElement.paused ? (videoElement.play(), document.getElementById('playPauseBtn').innerText = '⏸') : (videoElement.pause(), document.getElementById('playPauseBtn').innerText = '▶');
   }
 }
-
-function playNext() {
-  if (combinedMediaList.length === 0) return;
-  loadAndPlayMedia((currentMediaIndex + 1) % combinedMediaList.length);
-}
-
-function playPrev() {
-  if (combinedMediaList.length === 0) return;
-  loadAndPlayMedia((currentMediaIndex - 1 + combinedMediaList.length) % combinedMediaList.length);
-}
-
+function playNext() { if (combinedMediaList.length) loadAndPlayMedia((currentMediaIndex + 1) % combinedMediaList.length); }
+function playPrev() { if (combinedMediaList.length) loadAndPlayMedia((currentMediaIndex - 1 + combinedMediaList.length) % combinedMediaList.length); }
 function clearLocalData() {
   localStorage.removeItem('user_media_list');
-  showToastMsg('🗑️ लोकल स्टोरेज डेटा साफ़ कर दिया गया है!');
+  showToastMsg('🗑️ डेटा साफ़ कर दिया गया है!', 'error');
   loadSavedLocalMedia();
 }
 </script>
