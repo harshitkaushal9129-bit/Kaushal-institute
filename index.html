@@ -237,6 +237,7 @@
       audioElement.addEventListener('pause', () => { document.getElementById('playPauseAudioBtn').innerText = '▶'; document.getElementById('barQuickPlayBtn').innerText = '▶'; }); 
     });
 
+    // Updated loadMediaPage with manual Script Execution logic
     async function loadMediaPage() {
       document.getElementById('dropdownMenu').classList.remove('active');
       document.getElementById('homePageContent').classList.add('hidden');
@@ -250,6 +251,20 @@
         if (response.ok) {
           const htmlText = await response.text();
           mediaContainer.innerHTML = htmlText;
+
+          // Executing embedded <script> tags from media.html manually
+          const scripts = mediaContainer.querySelectorAll('script');
+          scripts.forEach(oldScript => {
+            const newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(attr => {
+              newScript.setAttribute(attr.name, attr.value);
+            });
+            if (oldScript.innerHTML) {
+              newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+            }
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+          });
+
         } else {
           mediaContainer.innerHTML = '<div class="notice-card" style="text-align:center; color:#ef4444;">⚠️ media.html file nahi mili. Kripya check karein ki file root directory mein hai ya nahi.</div>';
         }
