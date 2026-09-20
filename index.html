@@ -112,196 +112,24 @@
   </style>
 </head>
 <body>
+<!-- Persistent Universal Header with Audio Player Bar -->
+<div class="top-header-bar"><div class="header-audio-trigger" id="audioTriggerBar" title="Click to open Audio Player"><span class="audio-icon-pulse">🎵</span><div class="audio-trigger-info"><span class="title" id="barTrackTitle">Kaushal Portal Audio</span><span class="subtitle" id="barTrackSubtitle">Tap to Listen</span></div><button class="quick-play-btn" id="barQuickPlayBtn">▶</button></div><div style="font-size: 13px; font-weight: bold; color: var(--title-color);">Kaushal Institute</div></div>
 
+<header id="mainHeader" class="hidden"><div class="header-left"><button class="menu-btn" id="menuBtn">&#8942;</button><div class="dropdown-menu" id="dropdownMenu"><ul><li><a href="#" id="homeLink">🏠 Home (Main Page)</a></li><li><a href="#" id="dashLink">📊 Student Dashboard</a></li><li><a href="resources.html" style="font-weight: bold; color: var(--primary-color);">📚 Course Resources (All Files)</a></li><li><a href="courses.html">Course Information</a></li><li><a href="courses.html">Student Details</a></li><li><a href="courses.html">Fee Structure</a></li><li><a href="#">Exam Schedule</a></li><li><button id="themeToggleBtn">Toggle Theme (Dark/Light)</button></li><li><a href="#" id="contactLink">Contact Us</a></li></ul></div></div><div class="header-center" id="logoHomeBtn" title="Click to go Home">Kaushal Institute</div><div class="header-right"><button class="share-btn-header" id="headerShareBtn" title="Share App">🔗</button><div class="user-profile" id="userProfileBtn" title="Click to view profile"><img src="" alt="User Pic" id="headerUserPic" class="user-avatar"></div><div class="profile-card" id="profileCard"><img src="" id="cardUserPic" alt="User Pic"><h4 id="cardUserName"></h4><p><strong>Mobile:</strong> <span id="cardUserMobile"></span></p><p><strong>Email:</strong> <span id="cardUserEmail"></span></p><button class="logout-btn" id="logoutBtn">Logout</button></div></div></header>
 
-  <!-- Persistent Universal Header with Audio Player Bar -->
-  <div class="top-header-bar">
-    <!-- Header Left Audio Trigger Chip -->
-    <div class="header-audio-trigger" id="audioTriggerBar" title="Click to open Audio Player">
-      <span class="audio-icon-pulse">🎵</span>
-      <div class="audio-trigger-info">
-        <span class="title" id="barTrackTitle">Kaushal Portal Audio</span>
-        <span class="subtitle" id="barTrackSubtitle">Tap to Listen</span>
-      </div>
-      <button class="quick-play-btn" id="barQuickPlayBtn">▶</button>
-    </div>
+<div class="ticker-bar"><span class="ticker-tag">📢 ANNOUNCEMENT</span><marquee behavior="scroll" direction="left" scrollamount="6" onmouseover="this.stop();" onmouseout="this.start();">Welcome to Kaushal Institute Portal! Check notifications below for recent updates.</marquee></div>
 
-    <!-- Right Quick Controls -->
-    <div style="font-size: 13px; font-weight: bold; color: var(--title-color);">
-      Kaushal Institute
-    </div>
-  </div>
+<div class="container" id="authContainer"><div class="form-toggle"><button id="loginTabBtn" class="active">Login</button><button id="registerTabBtn">Register</button></div><form id="registerForm" class="hidden"><div class="form-group"><label>Full Name</label><input type="text" id="regName" required></div><div class="form-group"><label>User Picture</label><input type="file" id="regPic" accept="image/*" required></div><div class="form-group"><label>Mobile Number</label><input type="tel" id="regMobile" required pattern="[0-9]{10}" placeholder="10 Digit Number"></div><div class="form-group"><label>Email ID</label><input type="email" id="regEmail" required></div><div class="form-group"><label>Password</label><input type="password" id="regPassword" required></div><div class="form-group"><label>Captcha</label><div class="captcha-box"><span class="captcha-code" id="regCaptchaDisplay"></span><button type="button" class="refresh-captcha" id="refreshRegCaptcha">&#8635;</button></div><input type="text" id="regCaptchaInput" placeholder="Enter Captcha" required></div><div id="regError" class="error-msg"></div><button type="submit" id="regSubmitBtn" class="submit-btn">Register</button></form><form id="loginForm"><div class="form-group"><label>Name / Mobile / Email</label><input type="text" id="loginIdentifier" placeholder="Enter Name, Mobile or Email" required></div><div class="form-group"><label>Password</label><input type="password" id="loginPassword" required></div><div class="form-group"><label>Captcha</label><div class="captcha-box"><span class="captcha-code" id="loginCaptchaDisplay"></span><button type="button" class="refresh-captcha" id="refreshLoginCaptcha">&#8635;</button></div><input type="text" id="loginCaptchaInput" placeholder="Enter Captcha" required></div><div id="loginError" class="error-msg"></div><button type="submit" id="loginSubmitBtn" class="submit-btn">Login</button></form></div>
 
-  <header id="mainHeader" class="hidden">
-    <div class="header-left">
-      <button class="menu-btn" id="menuBtn">&#8942;</button>
-      <div class="dropdown-menu" id="dropdownMenu">
-        <ul>
-          <li><a href="#" id="homeLink">🏠 Home (Main Page)</a></li>
-          <li><a href="#" id="dashLink">📊 Student Dashboard</a></li>
-          <li><a href="resources.html" style="font-weight: bold; color: var(--primary-color);">📚 Course Resources (All Files)</a></li>
-          <li><a href="courses.html">Course Information</a></li>
-          <li><a href="courses.html">Student Details</a></li>
-          <li><a href="courses.html">Fee Structure</a></li>
-          <li><a href="#">Exam Schedule</a></li>
-          <li><button id="themeToggleBtn">Toggle Theme (Dark/Light)</button></li>
-          <li><a href="#" id="contactLink">Contact Us</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="header-center" id="logoHomeBtn" title="Click to go Home">Kaushal Institute</div>
-    <div class="header-right">
-      <button class="share-btn-header" id="headerShareBtn" title="Share App">🔗</button>
-      
-      <div class="user-profile" id="userProfileBtn" title="Click to view profile">
-        <img src="" alt="User Pic" id="headerUserPic" class="user-avatar">
-      </div>
-      <div class="profile-card" id="profileCard">
-        <img src="" id="cardUserPic" alt="User Pic">
-        <h4 id="cardUserName"></h4>
-        <p><strong>Mobile:</strong> <span id="cardUserMobile"></span></p>
-        <p><strong>Email:</strong> <span id="cardUserEmail"></span></p>
-        <button class="logout-btn" id="logoutBtn">Logout</button>
-      </div>
-    </div>
-  </header>
+<div id="homePageContent" class="main-notification-panel hidden"><div class="notice-card"><h3><span>🔔 Latest Notices & Notifications</span></h3><div id="notificationsList"><p style="font-size:14px; opacity:0.7;">Loading notifications...</p></div></div></div>
 
-  <div class="ticker-bar">
-    <span class="ticker-tag">📢 ANNOUNCEMENT</span>
-    <marquee behavior="scroll" direction="left" scrollamount="6" onmouseover="this.stop();" onmouseout="this.start();">
-      Welcome to Kaushal Institute Portal! Check notifications below for recent updates.
-    </marquee>
-  </div>
+<div id="dashboardContent" class="dashboard-container hidden"><div class="dash-header"><h2>Student Learning Dashboard</h2><p style="opacity:0.8;">Access your course Video Lectures and PDF Resources here.</p></div><div class="view-all-box"><h3>📂 Course Wise Files & Study Material</h3><p>Course ke hisaab se sabhi Videos, PDFs aur Images filter karke dekhne aur download karne ke liye neeche button par click karein.</p><a href="resources.html" class="btn-resource-page">📁 Go To Course Resources Page</a></div><div id="accessNotice" class="access-warning hidden">⚠️ Aapki course fee verification pending hai ya access granted nahi hai. Payment karein aur UTR number submit karein taaki Admin dwara aapko saare Videos aur PDFs ka full access mil sake.</div><div><h3 class="section-title">🎥 Video Lectures</h3><div class="resource-grid" id="videoGrid"></div></div><div style="margin-top: 30px;"><h3 class="section-title">📄 PDF Notes & Study Material</h3><div class="resource-grid" id="pdfGrid"></div></div></div>
 
-  <div class="container" id="authContainer">
-    <div class="form-toggle">
-      <button id="loginTabBtn" class="active">Login</button>
-      <button id="registerTabBtn">Register</button>
-    </div>
-    <form id="registerForm" class="hidden">
-      <div class="form-group"><label>Full Name</label><input type="text" id="regName" required></div>
-      <div class="form-group"><label>User Picture</label><input type="file" id="regPic" accept="image/*" required></div>
-      <div class="form-group"><label>Mobile Number</label><input type="tel" id="regMobile" required pattern="[0-9]{10}" placeholder="10 Digit Number"></div>
-      <div class="form-group"><label>Email ID</label><input type="email" id="regEmail" required></div>
-      <div class="form-group"><label>Password</label><input type="password" id="regPassword" required></div>
-      <div class="form-group">
-        <label>Captcha</label>
-        <div class="captcha-box">
-          <span class="captcha-code" id="regCaptchaDisplay"></span>
-          <button type="button" class="refresh-captcha" id="refreshRegCaptcha">&#8635;</button>
-        </div>
-        <input type="text" id="regCaptchaInput" placeholder="Enter Captcha" required>
-      </div>
-      <div id="regError" class="error-msg"></div>
-      <button type="submit" id="regSubmitBtn" class="submit-btn">Register</button>
-    </form>
-    <form id="loginForm">
-      <div class="form-group"><label>Name / Mobile / Email</label><input type="text" id="loginIdentifier" placeholder="Enter Name, Mobile or Email" required></div>
-      <div class="form-group"><label>Password</label><input type="password" id="loginPassword" required></div>
-      <div class="form-group">
-        <label>Captcha</label>
-        <div class="captcha-box">
-          <span class="captcha-code" id="loginCaptchaDisplay"></span>
-          <button type="button" class="refresh-captcha" id="refreshLoginCaptcha">&#8635;</button>
-        </div>
-        <input type="text" id="loginCaptchaInput" placeholder="Enter Captcha" required>
-      </div>
-      <div id="loginError" class="error-msg"></div>
-      <button type="submit" id="loginSubmitBtn" class="submit-btn">Login</button>
-    </form>
-  </div>
+<!-- Audio Player Modal View -->
+<div class="modal-overlay" id="audioModal"><div class="audio-player-card"><button class="close-modal" id="closeAudioModalBtn">&times;</button><div class="audio-user-header"><div class="audio-user-info"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="User Avatar" id="audioPlayerAvatar" class="audio-user-avatar"><div class="audio-user-details"><h5 id="audioPlayerUserName">Guest User</h5><p id="audioPlayerUserRole">Portal Listener</p></div></div><span style="font-size:11px; background:var(--primary-color); color:white; padding:2px 8px; border-radius:10px;">Audio Player</span></div><div class="audio-artwork">🎧</div><div class="audio-details"><h4 id="audioTrackTitle">Select Audio Track</h4><p id="audioTrackCourse">Source: Firebase / Local</p></div><audio id="mainAudioElement" style="width: 100%; margin-bottom: 10px;" controls></audio><div class="audio-controls-custom"><button class="audio-btn-ctrl" id="prevAudioBtn" title="Previous Track">⏮</button><button class="audio-btn-ctrl" id="playPauseAudioBtn" title="Play/Pause">▶</button><button class="audio-btn-ctrl" id="nextAudioBtn" title="Next Track">⏭</button></div><div class="audio-playlist" id="audioPlaylistContainer"><p style="font-size:11px; opacity:0.6; text-align:center; padding:10px;">Loading Playlist...</p></div></div></div>
 
-  <div id="homePageContent" class="main-notification-panel hidden">
-    <div class="notice-card">
-      <h3><span>🔔 Latest Notices & Notifications</span></h3>
-      <div id="notificationsList">
-        <p style="font-size:14px; opacity:0.7;">Loading notifications...</p>
-      </div>
-    </div>
-  </div>
-
-  <div id="dashboardContent" class="dashboard-container hidden">
-    <div class="dash-header">
-      <h2>Student Learning Dashboard</h2>
-      <p style="opacity:0.8;">Access your course Video Lectures and PDF Resources here.</p>
-    </div>
-
-    <div class="view-all-box">
-      <h3>📂 Course Wise Files & Study Material</h3>
-      <p>Course ke hisaab se sabhi Videos, PDFs aur Images filter karke dekhne aur download karne ke liye neeche button par click karein.</p>
-      <a href="resources.html" class="btn-resource-page">📁 Go To Course Resources Page</a>
-    </div>
-
-    <div id="accessNotice" class="access-warning hidden">
-      ⚠️ Aapki course fee verification pending hai ya access granted nahi hai. Payment karein aur UTR number submit karein taaki Admin dwara aapko saare Videos aur PDFs ka full access mil sake.
-    </div>
-
-    <div>
-      <h3 class="section-title">🎥 Video Lectures</h3>
-      <div class="resource-grid" id="videoGrid"></div>
-    </div>
-    <div style="margin-top: 30px;">
-      <h3 class="section-title">📄 PDF Notes & Study Material</h3>
-      <div class="resource-grid" id="pdfGrid"></div>
-    </div>
-  </div>
-
-  <!-- Audio Player Modal View -->
-  <div class="modal-overlay" id="audioModal">
-    <div class="audio-player-card">
-      <button class="close-modal" id="closeAudioModalBtn">&times;</button>
-      
-      <!-- User Profile Header inside Audio Player -->
-      <div class="audio-user-header">
-        <div class="audio-user-info">
-          <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="User Avatar" id="audioPlayerAvatar" class="audio-user-avatar">
-          <div class="audio-user-details">
-            <h5 id="audioPlayerUserName">Guest User</h5>
-            <p id="audioPlayerUserRole">Portal Listener</p>
-          </div>
-        </div>
-        <span style="font-size:11px; background:var(--primary-color); color:white; padding:2px 8px; border-radius:10px;">Audio Player</span>
-      </div>
-
-      <div class="audio-artwork">🎧</div>
-
-      <div class="audio-details">
-        <h4 id="audioTrackTitle">Select Audio Track</h4>
-        <p id="audioTrackCourse">Source: Firebase / Local</p>
-      </div>
-
-      <!-- HTML5 Audio Element -->
-      <audio id="mainAudioElement" style="width: 100%; margin-bottom: 10px;" controls></audio>
-
-      <div class="audio-controls-custom">
-        <button class="audio-btn-ctrl" id="prevAudioBtn" title="Previous Track">⏮</button>
-        <button class="audio-btn-ctrl" id="playPauseAudioBtn" title="Play/Pause">▶</button>
-        <button class="audio-btn-ctrl" id="nextAudioBtn" title="Next Track">⏭</button>
-      </div>
-
-      <!-- Audio Track Selection List -->
-      <div class="audio-playlist" id="audioPlaylistContainer">
-        <p style="font-size:11px; opacity:0.6; text-align:center; padding:10px;">Loading Playlist...</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Contact Us Modal -->
-  <div class="modal-overlay" id="contactModal">
-    <div class="modal-box">
-      <button class="close-modal" id="closeContactModalBtn">&times;</button>
-      <h3>Developer Info</h3>
-      <p><strong>Institute:</strong> Kaushal Institute</p>
-      <p><strong>Developer:</strong> Harshit Kaushal</p>
-      <p><strong>Email:</strong> harshitkaushal9129@gmail.com</p>
-      <p><strong>Contact:</strong> +91 9129191898</p>
-      <button class="contact-share-btn" id="modalShareBtn">
-        📲 Share Web App
-      </button>
-    </div>
-  </div>
-
-  <!-- Security & Anti-Hacking Scripts -->
+<!-- Contact Us Modal -->
+<div class="modal-overlay" id="contactModal"><div class="modal-box"><button class="close-modal" id="closeContactModalBtn">&times;</button><h3>Developer Info</h3><p><strong>Institute:</strong> Kaushal Institute</p><p><strong>Developer:</strong> Harshit Kaushal</p><p><strong>Email:</strong> harshitkaushal9129@gmail.com</p><p><strong>Contact:</strong> +91 9129191898</p><button class="contact-share-btn" id="modalShareBtn">📲 Share Web App</button></div></div>
   <script>
     document.addEventListener('contextmenu', (e) => e.preventDefault());
 
@@ -330,481 +158,48 @@
     }
   </script>
 
-  <!-- Application Logic -->
-  <script type="module">
+<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, push, set, get, child, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
-    
-    const firebaseConfig = {
-      apiKey: "AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE",
-      authDomain: "kaushal-institute-729bc.firebaseapp.com",
-      databaseURL: "https://kaushal-institute-729bc-default-rtdb.firebaseio.com",
-      projectId: "kaushal-institute-729bc",
-      storageBucket: "kaushal-institute-729bc.firebasestorage.app",
-      messagingSenderId: "699990199933",
-      appId: "1:699990199933:web:e5fae383e93de5d3c6ab14",
-      measurementId: "G-4VRTVZ3JPJ"
-    };
 
+    const firebaseConfig = { apiKey: "AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE", authDomain: "kaushal-institute-729bc.firebaseapp.com", databaseURL: "https://kaushal-institute-729bc-default-rtdb.firebaseio.com", projectId: "kaushal-institute-729bc", storageBucket: "kaushal-institute-729bc.firebasestorage.app", messagingSenderId: "699990199933", appId: "1:699990199933:web:e5fae383e93de5d3c6ab14", measurementId: "G-4VRTVZ3JPJ" };
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    let regCaptcha = "";
-    let loginCaptcha = "";
-
-    // Audio Player State Variables
-    let audioList = [];
-    let currentAudioIndex = 0;
+    let regCaptcha = "", loginCaptcha = "", audioList = [], currentAudioIndex = 0;
     const audioElement = document.getElementById('mainAudioElement');
 
-    window.addEventListener('DOMContentLoaded', () => {
-      generateCaptcha('reg');
-      generateCaptcha('login');
-      checkLoginStatus();
-      loadLiveNotifications();
-      initAudioPlayer();
+    window.addEventListener('DOMContentLoaded', () => { generateCaptcha('reg'); generateCaptcha('login'); checkLoginStatus(); loadLiveNotifications(); initAudioPlayer(); if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-theme'); document.getElementById('registerTabBtn').addEventListener('click', () => switchTab('register')); document.getElementById('loginTabBtn').addEventListener('click', () => switchTab('login')); document.getElementById('refreshRegCaptcha').addEventListener('click', () => generateCaptcha('reg')); document.getElementById('refreshLoginCaptcha').addEventListener('click', () => generateCaptcha('login')); document.getElementById('menuBtn').addEventListener('click', toggleMenu); document.getElementById('userProfileBtn').addEventListener('click', toggleProfileCard); document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme); document.getElementById('contactLink').addEventListener('click', openContactModal); document.getElementById('closeContactModalBtn').addEventListener('click', closeContactModal); document.getElementById('homeLink').addEventListener('click', (e) => { e.preventDefault(); showMainPage(); }); document.getElementById('logoHomeBtn').addEventListener('click', () => showMainPage()); document.getElementById('dashLink').addEventListener('click', (e) => { e.preventDefault(); showDashboard(); }); document.getElementById('logoutBtn').addEventListener('click', logout); document.getElementById('registerForm').addEventListener('submit', handleRegister); document.getElementById('loginForm').addEventListener('submit', handleLogin); document.getElementById('headerShareBtn').addEventListener('click', shareApp); document.getElementById('modalShareBtn').addEventListener('click', shareApp); document.getElementById('audioTriggerBar').addEventListener('click', openAudioModal); document.getElementById('closeAudioModalBtn').addEventListener('click', closeAudioModal); document.getElementById('playPauseAudioBtn').addEventListener('click', toggleAudioPlay); document.getElementById('barQuickPlayBtn').addEventListener('click', (e) => { e.stopPropagation(); toggleAudioPlay(); }); document.getElementById('prevAudioBtn').addEventListener('click', playPrevAudio); document.getElementById('nextAudioBtn').addEventListener('click', playNextAudio); audioElement.addEventListener('ended', playNextAudio); audioElement.addEventListener('play', () => { document.getElementById('playPauseAudioBtn').innerText = '⏸'; document.getElementById('barQuickPlayBtn').innerText = '⏸'; }); audioElement.addEventListener('pause', () => { document.getElementById('playPauseAudioBtn').innerText = '▶'; document.getElementById('barQuickPlayBtn').innerText = '▶'; }); });
 
-      if (localStorage.getItem('theme') === 'dark') { document.body.classList.add('dark-theme'); }
-      document.getElementById('registerTabBtn').addEventListener('click', () => switchTab('register'));
-      document.getElementById('loginTabBtn').addEventListener('click', () => switchTab('login'));
-      document.getElementById('refreshRegCaptcha').addEventListener('click', () => generateCaptcha('reg'));
-      document.getElementById('refreshLoginCaptcha').addEventListener('click', () => generateCaptcha('login'));
-      document.getElementById('menuBtn').addEventListener('click', toggleMenu);
-      document.getElementById('userProfileBtn').addEventListener('click', toggleProfileCard);
-      document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
-      document.getElementById('contactLink').addEventListener('click', openContactModal);
-      document.getElementById('closeContactModalBtn').addEventListener('click', closeContactModal);
-      document.getElementById('homeLink').addEventListener('click', (e) => { e.preventDefault(); showMainPage(); });
-      document.getElementById('logoHomeBtn').addEventListener('click', () => showMainPage());
-      document.getElementById('dashLink').addEventListener('click', (e) => { e.preventDefault(); showDashboard(); });
-      document.getElementById('logoutBtn').addEventListener('click', logout);
-      document.getElementById('registerForm').addEventListener('submit', handleRegister);
-      document.getElementById('loginForm').addEventListener('submit', handleLogin);
-
-      document.getElementById('headerShareBtn').addEventListener('click', shareApp);
-      document.getElementById('modalShareBtn').addEventListener('click', shareApp);
-
-      // Audio Event Listeners
-      document.getElementById('audioTriggerBar').addEventListener('click', openAudioModal);
-      document.getElementById('closeAudioModalBtn').addEventListener('click', closeAudioModal);
-      document.getElementById('playPauseAudioBtn').addEventListener('click', toggleAudioPlay);
-      document.getElementById('barQuickPlayBtn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleAudioPlay();
-      });
-      document.getElementById('prevAudioBtn').addEventListener('click', playPrevAudio);
-      document.getElementById('nextAudioBtn').addEventListener('click', playNextAudio);
-
-      audioElement.addEventListener('ended', playNextAudio);
-      audioElement.addEventListener('play', () => {
-        document.getElementById('playPauseAudioBtn').innerText = '⏸';
-        document.getElementById('barQuickPlayBtn').innerText = '⏸';
-      });
-      audioElement.addEventListener('pause', () => {
-        document.getElementById('playPauseAudioBtn').innerText = '▶';
-        document.getElementById('barQuickPlayBtn').innerText = '▶';
-      });
-    });
-
-    /* Audio Player Implementation Functions */
-    function initAudioPlayer() {
-      // 1. Fetch Local Audio Tracks
-      let localAudios = JSON.parse(localStorage.getItem('course_audios') || '[]');
-
-      // Default demo track if completely empty
-      if (localAudios.length === 0) {
-        localAudios = [{
-          title: "Kaushal Institute Welcome Audio",
-          course: "General Info",
-          url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-        }];
-      }
-
-      audioList = [...localAudios];
-      renderAudioPlaylist();
-
-      // 2. Sync Firebase Live Audio Tracks
-      onValue(ref(db, 'course_audios'), (snapshot) => {
-        if (snapshot.exists()) {
-          const fbAudioData = snapshot.val();
-          const fbList = [];
-          for (let key in fbAudioData) {
-            fbList.push(fbAudioData[key]);
-          }
-          if (fbList.length > 0) {
-            audioList = [...fbList, ...localAudios];
-          }
-        }
-        renderAudioPlaylist();
-      });
-
-      updateAudioUserDisplay();
-    }
-
-    function renderAudioPlaylist() {
-      const container = document.getElementById('audioPlaylistContainer');
-      container.innerHTML = '';
-
-      if (audioList.length === 0) {
-        container.innerHTML = '<p style="font-size:12px; text-align:center; padding:8px;">No Audio files available.</p>';
-        return;
-      }
-
-      audioList.forEach((track, index) => {
-        const item = document.createElement('div');
-        item.className = `playlist-item ${index === currentAudioIndex ? 'active' : ''}`;
-        item.innerHTML = `
-          <div>
-            <div><strong>${track.title || 'Audio Track'}</strong></div>
-            <div style="font-size:10px; opacity:0.7;">${track.course || 'General'}</div>
-          </div>
-          <span>${index === currentAudioIndex ? '▶ Play' : ''}</span>
-        `;
-        item.addEventListener('click', () => loadAndPlayTrack(index));
-        container.appendChild(item);
-      });
-
-      if (audioList[currentAudioIndex]) {
-        updateTrackHeaderInfo(audioList[currentAudioIndex]);
-      }
-    }
-
-    function updateTrackHeaderInfo(track) {
-      document.getElementById('barTrackTitle').innerText = track.title || "Portal Audio";
-      document.getElementById('barTrackSubtitle').innerText = track.course || "Tap to open";
-      document.getElementById('audioTrackTitle').innerText = track.title || "Audio Track";
-      document.getElementById('audioTrackCourse').innerText = "Course: " + (track.course || "General");
-    }
-
-    function loadAndPlayTrack(index) {
-      if (index < 0 || index >= audioList.length) return;
-      currentAudioIndex = index;
-      const track = audioList[currentAudioIndex];
-
-      audioElement.src = track.url;
-      updateTrackHeaderInfo(track);
-      renderAudioPlaylist();
-
-      audioElement.play().then(() => {
-        document.getElementById('playPauseAudioBtn').innerText = '⏸';
-        document.getElementById('barQuickPlayBtn').innerText = '⏸';
-      }).catch(err => console.log("Audio Play Interrupted/Blocked: ", err));
-    }
-
-    function toggleAudioPlay() {
-      if (!audioElement.src && audioList.length > 0) {
-        loadAndPlayTrack(0);
-        return;
-      }
-
-      if (audioElement.paused) {
-        audioElement.play();
-      } else {
-        audioElement.pause();
-      }
-    }
-
-    function playNextAudio() {
-      let nextIndex = (currentAudioIndex + 1) % audioList.length;
-      loadAndPlayTrack(nextIndex);
-    }
-
-    function playPrevAudio() {
-      let prevIndex = (currentAudioIndex - 1 + audioList.length) % audioList.length;
-      loadAndPlayTrack(prevIndex);
-    }
-
-    function openAudioModal() {
-      updateAudioUserDisplay();
-      document.getElementById('audioModal').classList.add('active');
-    }
-
-    function closeAudioModal() {
-      document.getElementById('audioModal').classList.remove('active');
-    }
-
-    function updateAudioUserDisplay() {
-      const user = JSON.parse(localStorage.getItem('currentUser'));
-      const avatarImg = document.getElementById('audioPlayerAvatar');
-      const nameTxt = document.getElementById('audioPlayerUserName');
-      const roleTxt = document.getElementById('audioPlayerUserRole');
-
-      if (user) {
-        avatarImg.src = user.pic || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-        nameTxt.innerText = user.name || "Logged In User";
-        roleTxt.innerText = "Student Portal Member";
-      } else {
-        avatarImg.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-        nameTxt.innerText = "Guest Student";
-        roleTxt.innerText = "Please Login for full features";
-      }
-    }
-
-    async function shareApp() {
-      const shareData = {
-        title: 'Kaushal Institute Portal',
-        text: 'Join Kaushal Institute Portal to access course study materials, video lectures, and audio materials!',
-        url: window.location.href
-      };
-
-      if (navigator.share) {
-        try {
-          await navigator.share(shareData);
-        } catch (err) {
-          console.log('Share error or canceled:', err);
-        }
-      } else {
-        try {
-          await navigator.clipboard.writeText(window.location.href);
-          alert('Portal URL Link Copied to Clipboard!');
-        } catch (err) {
-          alert('Copy link manually: ' + window.location.href);
-        }
-      }
-    }
-
-    function switchTab(tab) {
-      const regForm = document.getElementById('registerForm');
-      const loginForm = document.getElementById('loginForm');
-      document.getElementById('regError').innerText = "";
-      document.getElementById('loginError').innerText = "";
-      if (tab === 'register') {
-        regForm.classList.remove('hidden'); loginForm.classList.add('hidden');
-        document.getElementById('registerTabBtn').classList.add('active');
-        document.getElementById('loginTabBtn').classList.remove('active');
-        generateCaptcha('reg');
-      } else {
-        loginForm.classList.remove('hidden'); regForm.classList.add('hidden');
-        document.getElementById('loginTabBtn').classList.add('active');
-        document.getElementById('registerTabBtn').classList.remove('active');
-        generateCaptcha('login');
-      }
-    }
-
-    function generateCaptcha(type) {
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      let result = "";
-      for (let i = 0; i < 6; i++) { result += chars.charAt(Math.floor(Math.random() * chars.length)); }
-      if (type === 'reg') { regCaptcha = result; document.getElementById('regCaptchaDisplay').innerText = result; }
-      else { loginCaptcha = result; document.getElementById('loginCaptchaDisplay').innerText = result; }
-    }
-
+    function isMp3File(url) { return (url && typeof url === 'string') ? url.trim().toLowerCase().split('?')[0].endsWith('.mp3') : false; }
+    function initAudioPlayer() { let localAudios = JSON.parse(localStorage.getItem('course_audios') || '[]').filter(item => isMp3File(item.url)); if (localAudios.length === 0) { localAudios = [{ title: "Kaushal Institute Welcome Audio", course: "General Info", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" }]; } audioList = [...localAudios]; renderAudioPlaylist(); onValue(ref(db, 'course_audios'), (snapshot) => { if (snapshot.exists()) { const fbAudioData = snapshot.val(), fbList = []; for (let key in fbAudioData) { if (isMp3File(fbAudioData[key]?.url)) fbList.push(fbAudioData[key]); } if (fbList.length > 0) audioList = [...fbList, ...localAudios]; } renderAudioPlaylist(); }); updateAudioUserDisplay(); }
+    function renderAudioPlaylist() { const container = document.getElementById('audioPlaylistContainer'); container.innerHTML = ''; if (audioList.length === 0) { container.innerHTML = '<p style="font-size:12px; text-align:center; padding:8px;">No valid MP3 audio files available.</p>'; return; } audioList.forEach((track, index) => { const item = document.createElement('div'); item.className = `playlist-item ${index === currentAudioIndex ? 'active' : ''}`; item.innerHTML = `<div><div><strong>${track.title || 'Audio Track'}</strong></div><div style="font-size:10px; opacity:0.7;">${track.course || 'General'}</div></div><span>${index === currentAudioIndex ? '▶ Play' : ''}</span>`; item.addEventListener('click', () => loadAndPlayTrack(index)); container.appendChild(item); }); if (audioList[currentAudioIndex]) updateTrackHeaderInfo(audioList[currentAudioIndex]); }
+    function updateTrackHeaderInfo(track) { document.getElementById('barTrackTitle').innerText = track.title || "Portal Audio"; document.getElementById('barTrackSubtitle').innerText = track.course || "Tap to open"; document.getElementById('audioTrackTitle').innerText = track.title || "Audio Track"; document.getElementById('audioTrackCourse').innerText = "Course: " + (track.course || "General"); }
+    function loadAndPlayTrack(index) { if (index < 0 || index >= audioList.length) return; currentAudioIndex = index; const track = audioList[currentAudioIndex]; if (!isMp3File(track.url)) { alert("Selected track is not a valid MP3 file!"); return; } audioElement.src = track.url; updateTrackHeaderInfo(track); renderAudioPlaylist(); audioElement.play().then(() => { document.getElementById('playPauseAudioBtn').innerText = '⏸'; document.getElementById('barQuickPlayBtn').innerText = '⏸'; }).catch(err => console.log("Audio Play Error: ", err)); }
+    function toggleAudioPlay() { if (!audioElement.src && audioList.length > 0) { loadAndPlayTrack(0); return; } if (audioElement.paused) audioElement.play(); else audioElement.pause(); }
+    function playNextAudio() { if (audioList.length > 0) loadAndPlayTrack((currentAudioIndex + 1) % audioList.length); }
+    function playPrevAudio() { if (audioList.length > 0) loadAndPlayTrack((currentAudioIndex - 1 + audioList.length) % audioList.length); }
+    function openAudioModal() { updateAudioUserDisplay(); document.getElementById('audioModal').classList.add('active'); }
+    function closeAudioModal() { document.getElementById('audioModal').classList.remove('active'); }
+    function updateAudioUserDisplay() { const user = JSON.parse(localStorage.getItem('currentUser')), avatarImg = document.getElementById('audioPlayerAvatar'), nameTxt = document.getElementById('audioPlayerUserName'), roleTxt = document.getElementById('audioPlayerUserRole'); if (user) { avatarImg.src = user.pic || "https://cdn-icons-png.flaticon.com/512/149/149071.png"; nameTxt.innerText = user.name || "Logged In User"; roleTxt.innerText = "Student Portal Member"; } else { avatarImg.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png"; nameTxt.innerText = "Guest Student"; roleTxt.innerText = "Please Login for full features"; } }
+    async function shareApp() { const shareData = { title: 'Kaushal Institute Portal', text: 'Join Kaushal Institute Portal to access course study materials, video lectures, and audio materials!', url: window.location.href }; if (navigator.share) { try { await navigator.share(shareData); } catch (err) { console.log('Share canceled:', err); } } else { try { await navigator.clipboard.writeText(window.location.href); alert('Portal URL Link Copied to Clipboard!'); } catch (err) { alert('Copy link manually: ' + window.location.href); } } }
+    function switchTab(tab) { const regForm = document.getElementById('registerForm'), loginForm = document.getElementById('loginForm'); document.getElementById('regError').innerText = ""; document.getElementById('loginError').innerText = ""; if (tab === 'register') { regForm.classList.remove('hidden'); loginForm.classList.add('hidden'); document.getElementById('registerTabBtn').classList.add('active'); document.getElementById('loginTabBtn').classList.remove('active'); generateCaptcha('reg'); } else { loginForm.classList.remove('hidden'); regForm.classList.add('hidden'); document.getElementById('loginTabBtn').classList.add('active'); document.getElementById('registerTabBtn').classList.remove('active'); generateCaptcha('login'); } }
+    function generateCaptcha(type) { const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; let result = ""; for (let i = 0; i < 6; i++) { result += chars.charAt(Math.floor(Math.random() * chars.length)); } if (type === 'reg') { regCaptcha = result; document.getElementById('regCaptchaDisplay').innerText = result; } else { loginCaptcha = result; document.getElementById('loginCaptchaDisplay').innerText = result; } }
     function toggleMenu(e) { e.stopPropagation(); document.getElementById('profileCard').classList.remove('active'); document.getElementById('dropdownMenu').classList.toggle('active'); }
     function toggleProfileCard(e) { e.stopPropagation(); document.getElementById('dropdownMenu').classList.remove('active'); document.getElementById('profileCard').classList.toggle('active'); }
     function toggleTheme() { document.body.classList.toggle('dark-theme'); localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light'); document.getElementById('dropdownMenu').classList.remove('active'); }
     function openContactModal(e) { e.preventDefault(); document.getElementById('dropdownMenu').classList.remove('active'); document.getElementById('contactModal').classList.add('active'); }
     function closeContactModal() { document.getElementById('contactModal').classList.remove('active'); }
-
-    window.onclick = function(e) {
-      if (!e.target.closest('.header-left')) document.getElementById('dropdownMenu').classList.remove('active');
-      if (!e.target.closest('.user-profile') && !e.target.closest('.profile-card')) document.getElementById('profileCard').classList.remove('active');
-    };
-
-    function loadLiveNotifications() {
-      const listContainer = document.getElementById('notificationsList');
-      const notifRef = ref(db, 'notifications');
-      onValue(notifRef, (snapshot) => {
-        listContainer.innerHTML = '';
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const items = [];
-          for (let key in data) { items.push({ id: key, ...data[key] }); }
-          items.reverse();
-          items.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'notification-item';
-            div.innerHTML = `<div class="notification-title">${item.title || 'Notice'}</div><div class="notification-msg">${item.message || item.text || ''}</div><div class="notification-time">${item.date || item.timestamp ? new Date(item.timestamp || item.date).toLocaleString() : ''}</div>`;
-            listContainer.appendChild(div);
-          });
-        } else {
-          listContainer.innerHTML = '<div class="notification-item"><div class="notification-title">Welcome to Kaushal Institute</div><div class="notification-msg">New admissions are open for ADCA, CCC, O Level & Web Development. Use Student Dashboard to view study materials.</div></div>';
-        }
-      });
-    }
-
-    async function handleRegister(e) {
-      e.preventDefault();
-      const submitBtn = document.getElementById('regSubmitBtn');
-      const errorDiv = document.getElementById('regError');
-      const name = document.getElementById('regName').value.trim();
-      const mobile = document.getElementById('regMobile').value.trim();
-      const email = document.getElementById('regEmail').value.trim();
-      const password = document.getElementById('regPassword').value;
-      const captchaInput = document.getElementById('regCaptchaInput').value;
-      const picInput = document.getElementById('regPic').files[0];
-
-      if (captchaInput !== regCaptcha) { errorDiv.innerText = "Captcha Code galat hai!"; generateCaptcha('reg'); return; }
-      submitBtn.disabled = true; submitBtn.innerText = "Registering...";
-
-      try {
-        let localUsers = JSON.parse(localStorage.getItem('users') || '[]');
-        if (localUsers.some(u => u.email === email || u.mobile === mobile || u.name.toLowerCase() === name.toLowerCase())) {
-          errorDiv.innerText = "Invalid: Name, Email ya Mobile pahile se exist karta hai!";
-          submitBtn.disabled = false; submitBtn.innerText = "Register"; return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = async function() {
-          const newUser = { name, mobile, email, password, pic: reader.result, createdAt: new Date().toISOString() };
-          localUsers.push(newUser); localStorage.setItem('users', JSON.stringify(localUsers));
-          await set(push(ref(db, 'users')), newUser);
-          alert("Registration Successful!");
-          document.getElementById('registerForm').reset();
-          submitBtn.disabled = false; submitBtn.innerText = "Register";
-          switchTab('login');
-        };
-        reader.readAsDataURL(picInput);
-      } catch (err) { errorDiv.innerText = "Server Error: " + err.message; submitBtn.disabled = false; submitBtn.innerText = "Register"; }
-    }
-
-    async function handleLogin(e) {
-      e.preventDefault();
-      const submitBtn = document.getElementById('loginSubmitBtn');
-      const errorDiv = document.getElementById('loginError');
-      const identifier = document.getElementById('loginIdentifier').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      const captchaInput = document.getElementById('loginCaptchaInput').value;
-
-      if (captchaInput !== loginCaptcha) { errorDiv.innerText = "Captcha Code galat hai!"; generateCaptcha('login'); return; }
-      submitBtn.disabled = true; submitBtn.innerText = "Logging in...";
-
-      let localUsers = JSON.parse(localStorage.getItem('users') || '[]');
-      let loggedInUser = localUsers.find(u => (u.email === identifier || u.mobile === identifier || u.name.toLowerCase() === identifier.toLowerCase()) && u.password === password);
-
-      if (!loggedInUser) {
-        try {
-          const snapshot = await get(child(ref(db), 'users'));
-          if (snapshot.exists()) {
-            const fbUsers = snapshot.val();
-            for (let k in fbUsers) {
-              if ((fbUsers[k].email === identifier || fbUsers[k].mobile === identifier || fbUsers[k].name.toLowerCase() === identifier.toLowerCase()) && fbUsers[k].password === password) {
-                loggedInUser = fbUsers[k]; break;
-              }
-            }
-          }
-        } catch (err) { console.error(err); }
-      }
-
-      submitBtn.disabled = false; submitBtn.innerText = "Login";
-
-      if (loggedInUser) {
-        localStorage.setItem('currentUser', JSON.stringify(loggedInUser));
-        initPortalUser(loggedInUser);
-        updateAudioUserDisplay();
-        showMainPage();
-      } else { errorDiv.innerText = "Invalid Credentials!"; generateCaptcha('login'); }
-    }
-
-    function initPortalUser(user) {
-      document.getElementById('authContainer').classList.add('hidden');
-      document.getElementById('mainHeader').classList.remove('hidden');
-      document.getElementById('headerUserPic').src = user.pic;
-      document.getElementById('cardUserPic').src = user.pic;
-      document.getElementById('cardUserName').innerText = user.name;
-      document.getElementById('cardUserMobile').innerText = user.mobile;
-      document.getElementById('cardUserEmail').innerText = user.email;
-    }
-
-    function showMainPage() {
-      document.getElementById('dropdownMenu').classList.remove('active');
-      document.getElementById('dashboardContent').classList.add('hidden');
-      document.getElementById('homePageContent').classList.remove('hidden');
-    }
-
-    async function showDashboard() {
-      document.getElementById('dropdownMenu').classList.remove('active');
-      document.getElementById('homePageContent').classList.add('hidden');
-      document.getElementById('dashboardContent').classList.remove('hidden');
-      const user = JSON.parse(localStorage.getItem('currentUser'));
-      if (user) { loadDashboardData(user); }
-    }
-
-    async function loadDashboardData(user) {
-      let enrollments = JSON.parse(localStorage.getItem('course_enrollments') || '[]');
-      let userEnrollment = enrollments.find(e => e.email === user.email || e.mobile === user.mobile);
-      let isGranted = userEnrollment ? (userEnrollment.accessGranted || false) : false;
-
-      if(!isGranted) {
-        try {
-          const snapshot = await get(child(ref(db), 'course_enrollments'));
-          if (snapshot.exists()) {
-            const fbData = snapshot.val();
-            for (let key in fbData) {
-              if ((fbData[key].email === user.email || fbData[key].mobile === user.mobile) && fbData[key].accessGranted) {
-                isGranted = true; break;
-              }
-            }
-          }
-        } catch(e){}
-      }
-
-      const notice = document.getElementById('accessNotice');
-      if(!isGranted) { notice.classList.remove('hidden'); } else { notice.classList.add('hidden'); }
-
-      loadDashboardResources(isGranted);
-    }
-
-    function loadDashboardResources(isGranted) {
-      const videoGrid = document.getElementById('videoGrid');
-      const pdfGrid = document.getElementById('pdfGrid');
-
-      onValue(ref(db, 'course_videos'), (snapshot) => {
-        videoGrid.innerHTML = '';
-        let videos = [];
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          for (let key in data) { videos.push(data[key]); }
-        } else {
-          videos = JSON.parse(localStorage.getItem('course_videos') || '[]');
-        }
-
-        if (videos.length === 0) {
-          videoGrid.innerHTML = '<p style="font-size:14px; opacity:0.7;">No video lectures uploaded yet.</p>';
-        } else {
-          videos.forEach(v => {
-            const card = document.createElement('div');
-            card.className = 'resource-card';
-            card.innerHTML = `<span class="badge-course">${v.course || 'General'}</span><h4>${v.title}</h4>${isGranted ? `<a href="${v.url}" target="_blank">Watch Video ▶</a>` : `<button style="padding:6px 10px; background:#94a3b8; color:white; border:none; border-radius:4px; cursor:not-allowed;" disabled>🔒 Access Locked</button>`}`;
-            videoGrid.appendChild(card);
-          });
-        }
-      });
-
-      onValue(ref(db, 'course_pdfs'), (snapshot) => {
-        pdfGrid.innerHTML = '';
-        let pdfs = [];
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          for (let key in data) { pdfs.push(data[key]); }
-        } else {
-          pdfs = JSON.parse(localStorage.getItem('course_pdfs') || '[]');
-        }
-
-        if (pdfs.length === 0) {
-          pdfGrid.innerHTML = '<p style="font-size:14px; opacity:0.7;">No PDF study materials uploaded yet.</p>';
-        } else {
-          pdfs.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'resource-card';
-            card.innerHTML = `<span class="badge-course">${p.course || 'General'}</span><h4>${p.title}</h4>${isGranted ? `<a href="${p.url}" target="_blank" style="background:#16a34a;">Download PDF 📥</a>` : `<button style="padding:6px 10px; background:#94a3b8; color:white; border:none; border-radius:4px; cursor:not-allowed;" disabled>🔒 Access Locked</button>`}`;
-            pdfGrid.appendChild(card);
-          });
-        }
-      });
-    }
-
+    window.onclick = function(e) { if (!e.target.closest('.header-left')) document.getElementById('dropdownMenu').classList.remove('active'); if (!e.target.closest('.user-profile') && !e.target.closest('.profile-card')) document.getElementById('profileCard').classList.remove('active'); };
+    function loadLiveNotifications() { const listContainer = document.getElementById('notificationsList'); onValue(ref(db, 'notifications'), (snapshot) => { listContainer.innerHTML = ''; if (snapshot.exists()) { const data = snapshot.val(), items = []; for (let key in data) { items.push({ id: key, ...data[key] }); } items.reverse(); items.forEach(item => { const div = document.createElement('div'); div.className = 'notification-item'; div.innerHTML = `<div class="notification-title">${item.title || 'Notice'}</div><div class="notification-msg">${item.message || item.text || ''}</div><div class="notification-time">${item.date || item.timestamp ? new Date(item.timestamp || item.date).toLocaleString() : ''}</div>`; listContainer.appendChild(div); }); } else { listContainer.innerHTML = '<div class="notification-item"><div class="notification-title">Welcome to Kaushal Institute</div><div class="notification-msg">New admissions are open for ADCA, CCC, O Level & Web Development. Use Student Dashboard to view study materials.</div></div>'; } }); }
+    async function handleRegister(e) { e.preventDefault(); const submitBtn = document.getElementById('regSubmitBtn'), errorDiv = document.getElementById('regError'), name = document.getElementById('regName').value.trim(), mobile = document.getElementById('regMobile').value.trim(), email = document.getElementById('regEmail').value.trim(), password = document.getElementById('regPassword').value, captchaInput = document.getElementById('regCaptchaInput').value, picInput = document.getElementById('regPic').files[0]; if (captchaInput !== regCaptcha) { errorDiv.innerText = "Captcha Code galat hai!"; generateCaptcha('reg'); return; } submitBtn.disabled = true; submitBtn.innerText = "Registering..."; try { let localUsers = JSON.parse(localStorage.getItem('users') || '[]'); if (localUsers.some(u => u.email === email || u.mobile === mobile || u.name.toLowerCase() === name.toLowerCase())) { errorDiv.innerText = "Invalid: Name, Email ya Mobile pahile se exist karta hai!"; submitBtn.disabled = false; submitBtn.innerText = "Register"; return; } const reader = new FileReader(); reader.onload = async function() { const newUser = { name, mobile, email, password, pic: reader.result, createdAt: new Date().toISOString() }; localUsers.push(newUser); localStorage.setItem('users', JSON.stringify(localUsers)); await set(push(ref(db, 'users')), newUser); alert("Registration Successful!"); document.getElementById('registerForm').reset(); submitBtn.disabled = false; submitBtn.innerText = "Register"; switchTab('login'); }; reader.readAsDataURL(picInput); } catch (err) { errorDiv.innerText = "Server Error: " + err.message; submitBtn.disabled = false; submitBtn.innerText = "Register"; } }
+    async function handleLogin(e) { e.preventDefault(); const submitBtn = document.getElementById('loginSubmitBtn'), errorDiv = document.getElementById('loginError'), identifier = document.getElementById('loginIdentifier').value.trim(), password = document.getElementById('loginPassword').value, captchaInput = document.getElementById('loginCaptchaInput').value; if (captchaInput !== loginCaptcha) { errorDiv.innerText = "Captcha Code galat hai!"; generateCaptcha('login'); return; } submitBtn.disabled = true; submitBtn.innerText = "Logging in..."; let localUsers = JSON.parse(localStorage.getItem('users') || '[]'), loggedInUser = localUsers.find(u => (u.email === identifier || u.mobile === identifier || u.name.toLowerCase() === identifier.toLowerCase()) && u.password === password); if (!loggedInUser) { try { const snapshot = await get(child(ref(db), 'users')); if (snapshot.exists()) { const fbUsers = snapshot.val(); for (let k in fbUsers) { if ((fbUsers[k].email === identifier || fbUsers[k].mobile === identifier || fbUsers[k].name.toLowerCase() === identifier.toLowerCase()) && fbUsers[k].password === password) { loggedInUser = fbUsers[k]; break; } } } } catch (err) { console.error(err); } } submitBtn.disabled = false; submitBtn.innerText = "Login"; if (loggedInUser) { localStorage.setItem('currentUser', JSON.stringify(loggedInUser)); initPortalUser(loggedInUser); updateAudioUserDisplay(); showMainPage(); } else { errorDiv.innerText = "Invalid Credentials!"; generateCaptcha('login'); } }
+    function initPortalUser(user) { document.getElementById('authContainer').classList.add('hidden'); document.getElementById('mainHeader').classList.remove('hidden'); document.getElementById('headerUserPic').src = user.pic; document.getElementById('cardUserPic').src = user.pic; document.getElementById('cardUserName').innerText = user.name; document.getElementById('cardUserMobile').innerText = user.mobile; document.getElementById('cardUserEmail').innerText = user.email; }
+    function showMainPage() { document.getElementById('dropdownMenu').classList.remove('active'); document.getElementById('dashboardContent').classList.add('hidden'); document.getElementById('homePageContent').classList.remove('hidden'); }
+    async function showDashboard() { document.getElementById('dropdownMenu').classList.remove('active'); document.getElementById('homePageContent').classList.add('hidden'); document.getElementById('dashboardContent').classList.remove('hidden'); const user = JSON.parse(localStorage.getItem('currentUser')); if (user) loadDashboardData(user); }
+    async function loadDashboardData(user) { let enrollments = JSON.parse(localStorage.getItem('course_enrollments') || '[]'), userEnrollment = enrollments.find(e => e.email === user.email || e.mobile === user.mobile), isGranted = userEnrollment ? (userEnrollment.accessGranted || false) : false; if (!isGranted) { try { const snapshot = await get(child(ref(db), 'course_enrollments')); if (snapshot.exists()) { const fbData = snapshot.val(); for (let key in fbData) { if ((fbData[key].email === user.email || fbData[key].mobile === user.mobile) && fbData[key].accessGranted) { isGranted = true; break; } } } } catch (e) {} } const notice = document.getElementById('accessNotice'); if (!isGranted) notice.classList.remove('hidden'); else notice.classList.add('hidden'); loadDashboardResources(isGranted); }
+    function loadDashboardResources(isGranted) { const videoGrid = document.getElementById('videoGrid'), pdfGrid = document.getElementById('pdfGrid'); onValue(ref(db, 'course_videos'), (snapshot) => { videoGrid.innerHTML = ''; let videos = snapshot.exists() ? Object.values(snapshot.val()) : JSON.parse(localStorage.getItem('course_videos') || '[]'); if (videos.length === 0) { videoGrid.innerHTML = '<p style="font-size:14px; opacity:0.7;">No video lectures uploaded yet.</p>'; } else { videos.forEach(v => { const card = document.createElement('div'); card.className = 'resource-card'; card.innerHTML = `<span class="badge-course">${v.course || 'General'}</span><h4>${v.title}</h4>${isGranted ? `<a href="${v.url}" target="_blank">Watch Video ▶</a>` : `<button style="padding:6px 10px; background:#94a3b8; color:white; border:none; border-radius:4px; cursor:not-allowed;" disabled>🔒 Access Locked</button>`}`; videoGrid.appendChild(card); }); } }); onValue(ref(db, 'course_pdfs'), (snapshot) => { pdfGrid.innerHTML = ''; let pdfs = snapshot.exists() ? Object.values(snapshot.val()) : JSON.parse(localStorage.getItem('course_pdfs') || '[]'); if (pdfs.length === 0) { pdfGrid.innerHTML = '<p style="font-size:14px; opacity:0.7;">No PDF study materials uploaded yet.</p>'; } else { pdfs.forEach(p => { const card = document.createElement('div'); card.className = 'resource-card'; card.innerHTML = `<span class="badge-course">${p.course || 'General'}</span><h4>${p.title}</h4>${isGranted ? `<a href="${p.url}" target="_blank" style="background:#16a34a;">Download PDF 📥</a>` : `<button style="padding:6px 10px; background:#94a3b8; color:white; border:none; border-radius:4px; cursor:not-allowed;" disabled>🔒 Access Locked</button>`}`; pdfGrid.appendChild(card); }); } }); }
     function checkLoginStatus() { const currentUser = JSON.parse(localStorage.getItem('currentUser')); if (currentUser) { initPortalUser(currentUser); showMainPage(); } }
-    
-    function logout() {
-      localStorage.removeItem('currentUser');
-      document.getElementById('mainHeader').classList.add('hidden');
-      document.getElementById('dashboardContent').classList.add('hidden');
-      document.getElementById('homePageContent').classList.add('hidden');
-      document.getElementById('profileCard').classList.remove('active');
-      document.getElementById('authContainer').classList.remove('hidden');
-      document.getElementById('loginForm').reset();
-      generateCaptcha('login');
-      updateAudioUserDisplay();
-    }
-  </script>
+    function logout() { localStorage.removeItem('currentUser'); document.getElementById('mainHeader').classList.add('hidden'); document.getElementById('dashboardContent').classList.add('hidden'); document.getElementById('homePageContent').classList.add('hidden'); document.getElementById('profileCard').classList.remove('active'); document.getElementById('authContainer').classList.remove('hidden'); document.getElementById('loginForm').reset(); generateCaptcha('login'); updateAudioUserDisplay(); }
+</script>
 </body>
 </html>
