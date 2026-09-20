@@ -8,7 +8,18 @@
     :root { --bg-color: #f0f2f5; --header-bg: #1e293b; --card-bg: #ffffff; --text-color: #334155; --card-text: #333333; --input-border: #cbd5e1; --title-color: #38bdf8; --primary-color: #2563eb; }
     body.dark-theme { --bg-color: #0f172a; --header-bg: #1e293b; --card-bg: #1e293b; --text-color: #f8fafc; --card-text: #f1f5f9; --input-border: #475569; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s; padding-bottom: 50px; }
+    
+    /* Security Overlay Protection for Screenshots */
+    body { 
+      background-color: var(--bg-color); 
+      color: var(--text-color); 
+      transition: background 0.3s; 
+      padding-bottom: 50px; 
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
     
     header { background-color: var(--header-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
     header h1 { font-size: 20px; color: var(--title-color); }
@@ -36,6 +47,70 @@
     .action-btn.disabled { background: #94a3b8; cursor: not-allowed; }
     
     .empty-msg { text-align: center; padding: 40px; font-size: 16px; opacity: 0.7; grid-column: 1 / -1; }
+
+    /* --- IN-PAGE VIDEO PLAYER MODAL & PROTECTION --- */
+    .video-modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+    }
+    .video-modal-overlay.active { display: flex; }
+
+    .video-modal-content {
+      background: #000;
+      width: 90%;
+      max-width: 850px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .video-header {
+      background: #1e293b;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+    .video-header h3 { font-size: 16px; color: #38bdf8; }
+    .close-modal-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      background: #000;
+    }
+
+    .video-wrapper video, .video-wrapper iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+
+    /* Prevent Context Menu and Dragging on Video */
+    .protected-video {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
@@ -74,6 +149,19 @@
 
   </div>
 
+  <!-- In-Page Secure Video Player Modal -->
+  <div class="video-modal-overlay" id="videoModal">
+    <div class="video-modal-content">
+      <div class="video-header">
+        <h3 id="modalVideoTitle">Playing Video</h3>
+        <button class="close-modal-btn" id="closeModalBtn">✖ Close</button>
+      </div>
+      <div class="video-wrapper" id="videoContainer">
+        <!-- Video element dynamically injected here -->
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase Integration Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
@@ -103,6 +191,7 @@
       await checkUserAccess();
       setupFilterEvents();
       loadAllResources();
+      setupSecurityProtections();
     });
 
     function checkTheme() {
@@ -158,7 +247,6 @@
     function loadAllResources() {
       allResources = [];
 
-      // Fetch Videos from Firebase Realtime Database
       onValue(ref(db, 'course_videos'), (snapshot) => {
         let videos = [];
         if (snapshot.exists()) {
@@ -168,7 +256,6 @@
           videos = (JSON.parse(localStorage.getItem('course_videos')) || []).map(item => ({ ...item, type: 'video' }));
         }
 
-        // Fetch PDFs
         onValue(ref(db, 'course_pdfs'), (pdfSnapshot) => {
           let pdfs = [];
           if (pdfSnapshot.exists()) {
@@ -178,7 +265,6 @@
             pdfs = (JSON.parse(localStorage.getItem('course_pdfs')) || []).map(item => ({ ...item, type: 'pdf' }));
           }
 
-          // Fetch Images
           onValue(ref(db, 'course_images'), (imgSnapshot) => {
             let images = [];
             if (imgSnapshot.exists()) {
@@ -188,7 +274,6 @@
               images = (JSON.parse(localStorage.getItem('course_images')) || []).map(item => ({ ...item, type: 'image' }));
             }
 
-            // Combine All Assets
             allResources = [...videos, ...pdfs, ...images];
             renderFilteredResources();
           });
@@ -223,7 +308,7 @@
         let actionBtn = '';
         if (isGranted) {
           if (item.type === 'video') {
-            actionBtn = `<a href="${item.url}" target="_blank" class="action-btn">Watch Video ▶</a>`;
+            actionBtn = `<button class="action-btn play-vid-btn" data-url="${item.url}" data-title="${item.title}">Watch Video ▶</button>`;
           } else if (item.type === 'pdf') {
             actionBtn = `<a href="${item.url}" target="_blank" class="action-btn green">Download PDF 📥</a>`;
           } else {
@@ -245,6 +330,105 @@
         `;
 
         grid.appendChild(card);
+      });
+
+      // Add Event Listeners to Video Play Buttons
+      document.querySelectorAll('.play-vid-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const url = e.target.getAttribute('data-url');
+          const title = e.target.getAttribute('data-title');
+          openVideoModal(url, title);
+        });
+      });
+    }
+
+    /* --- IN-PAGE VIDEO PLAYER HANDLER --- */
+    function openVideoModal(url, title) {
+      const modal = document.getElementById('videoModal');
+      const container = document.getElementById('videoContainer');
+      const titleElem = document.getElementById('modalVideoTitle');
+
+      titleElem.textContent = title || 'Course Video';
+      container.innerHTML = '';
+
+      // Check if Direct Video File (.mp4 / webm) or Embed / YouTube URL
+      if (url.match(/\.(mp4|webm|ogg)$/i) || !url.includes('http')) {
+        const video = document.createElement('video');
+        video.src = url;
+        video.controls = true;
+        video.autoplay = true;
+        video.className = 'protected-video';
+        video.controlsList = "nodownload noremoteplayback"; // Disable video download option
+        video.setAttribute('aria-label', title || 'Course Video');
+        video.oncontextmenu = (e) => e.preventDefault();
+        container.appendChild(video);
+      } else {
+        // Embed/IFrame handling for YouTube or Drive links
+        let embedUrl = url;
+        if (url.includes('youtube.com/watch?v=')) {
+          embedUrl = url.replace('watch?v=', 'embed/');
+        } else if (url.includes('youtu.be/')) {
+          embedUrl = url.replace('youtu.be/', 'youtube.com/embed/');
+        }
+        const iframe = document.createElement('iframe');
+        iframe.src = embedUrl;
+        iframe.allow = "autoplay; encrypted-media";
+        iframe.allowFullscreen = true;
+        iframe.className = 'protected-video';
+        container.appendChild(iframe);
+      }
+
+      modal.classList.add('active');
+    }
+
+    // Close Modal Handler
+    document.getElementById('closeModalBtn').addEventListener('click', closeVideoModal);
+    document.getElementById('videoModal').addEventListener('click', (e) => {
+      if (e.target.id === 'videoModal') closeVideoModal();
+    });
+
+    function closeVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const container = document.getElementById('videoContainer');
+      modal.classList.remove('active');
+      container.innerHTML = ''; // Stop video playback
+    }
+
+    /* --- SECURITY IMPLEMENTATIONS (DEVELOPER TOOLS & SCREENSHOT BLOCKS) --- */
+    function setupSecurityProtections() {
+      // 1. Right Click Block
+      document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+      // 2. Block Inspect Element & DevTools Shortcuts
+      document.addEventListener('keydown', (e) => {
+        // F12 Key
+        if (e.keyCode === 123) { e.preventDefault(); return false; }
+        
+        // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+        if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+          e.preventDefault(); return false;
+        }
+
+        // Ctrl+U (View Source)
+        if (e.ctrlKey && e.keyCode === 85) {
+          e.preventDefault(); return false;
+        }
+
+        // PrintScreen Key Block (Clears Clipboard)
+        if (e.key === "PrintScreen" || e.keyCode === 44) {
+          e.preventDefault();
+          navigator.clipboard.writeText("");
+          alert("Screenshots are strictly prohibited!");
+          return false;
+        }
+      });
+
+      // 3. Blur screen when user switches window/app (Prevents external screenshot tools)
+      window.addEventListener('blur', () => {
+        document.body.style.filter = "blur(15px)";
+      });
+      window.addEventListener('focus', () => {
+        document.body.style.filter = "none";
       });
     }
   </script>
