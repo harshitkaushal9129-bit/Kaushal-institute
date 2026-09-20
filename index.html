@@ -8,10 +8,39 @@
   <meta name="theme-color" content="#1e293b">
 
   <style>
-    :root { --bg-color: #f0f2f5; --header-bg: #1e293b; --card-bg: #ffffff; --text-color: #334155; --card-text: #333333; --input-border: #cbd5e1; --title-color: #38bdf8; --primary-color: #2563eb; }
-    body.dark-theme { --bg-color: #0f172a; --header-bg: #1e293b; --card-bg: #1e293b; --text-color: #f8fafc; --card-text: #f1f5f9; --input-border: #475569; --title-color: #38bdf8; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; -webkit-user-select: none; }
-    body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s; padding-bottom: 50px; }
+    :root { 
+      --bg-color: #f0f2f5; 
+      --header-bg: rgba(30, 41, 59, 0.95); 
+      --card-bg: rgba(255, 255, 255, 0.92); 
+      --text-color: #334155; 
+      --card-text: #333333; 
+      --input-border: #cbd5e1; 
+      --title-color: #38bdf8; 
+      --primary-color: #2563eb; 
+    }
+
+    body.dark-theme { 
+      --bg-color: #0f172a; 
+      --header-bg: rgba(30, 41, 59, 0.95); 
+      --card-bg: rgba(30, 41, 59, 0.90); 
+      --text-color: #f8fafc; 
+      --card-text: #f1f5f9; 
+      --input-border: #475569; 
+      --title-color: #38bdf8; 
+    }
+
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      user-select: none; 
+      -webkit-user-select: none; 
+    }
+    body { background-image: linear-gradient(rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.25)), url('kaushal-institute.png'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; color: var(--text-color); transition: background-image 0.4s ease, background-color 0.4s ease, color 0.3s ease; padding-bottom: 50px; }
+    body.dark-theme { background-image: linear-gradient(rgba(15, 23, 42, 0.80), rgba(15, 23, 42, 0.80)), url('YOUR_IMAGE_URL_HERE'); }
+    .container, .notice-card, .resource-card, .view-all-box, .profile-card, .modal-box, .audio-player-card {backdrop-filter: blur(8px);-webkit-backdrop-filter: blur(8px);}
+
     .top-header-bar { background-color: var(--header-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.15); z-index: 1000; }
     .header-audio-trigger { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); padding: 6px 12px; border-radius: 20px; cursor: pointer; transition: all 0.2s ease; max-width: 250px; }
     .header-audio-trigger:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-1px); }
@@ -109,7 +138,7 @@
     .playlist-item:last-child { border-bottom: none; }
     .playlist-item.active { background: rgba(37, 99, 235, 0.15); color: var(--primary-color); font-weight: bold; }
     .close-modal { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; border: none; background: none; color: inherit; }
-  </style>
+</style>
 </head>
 <body>
 <!-- Persistent Universal Header with Audio Player Bar -->
