@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications & Announcements - Kaushal Institute</title>
+  <style>
+    :root {
+      --bg-color: #f0f2f5;
+      --header-bg: #1e293b;
+      --card-bg: #ffffff;
+      --text-color: #334155;
+      --card-text: #333333;
+      --input-border: #cbd5e1;
+      --title-color: #38bdf8;
+      --primary-color: #2563eb;
+    }
+    body.dark-theme {
+      --bg-color: #0f172a;
+      --header-bg: #1e293b;
+      --card-bg: #1e293b;
+      --text-color: #f8fafc;
+      --card-text: #f1f5f9;
+      --input-border: #475569;
+      --title-color: #38bdf8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s; padding-bottom: 50px; }
+    
+    header {
+      background-color: var(--header-bg);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    .header-title { font-size: 20px; font-weight: bold; color: var(--title-color); text-decoration: none; }
+    .back-btn { color: white; text-decoration: none; background: #334155; padding: 6px 14px; border-radius: 5px; font-size: 14px; }
+    .back-btn:hover { background: #475569; }
+
+    .main-container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+
+    /* Notice Creator Panel (Admin Tools) */
+    .admin-card {
+      background: var(--card-bg);
+      color: var(--card-text);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border: 1px solid var(--input-border);
+      margin-bottom: 30px;
+    }
+    .admin-card h3 { color: var(--primary-color); margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+    
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-size: 14px; font-weight: 600; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
+      font-size: 14px;
+      background: transparent;
+      color: inherit;
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-primary { background-color: var(--primary-color); color: white; }
+    .btn-primary:hover { background-color: #1d4ed8; }
+    .btn-success { background-color: #16a34a; color: white; }
+    .btn-success:hover { background-color: #15803d; }
+    
+    /* Notification List View */
+    .notice-card {
+      background: var(--card-bg);
+      color: var(--card-text);
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 1px solid var(--input-border);
+    }
+    .notice-card h3 {
+      color: var(--primary-color);
+      font-size: 20px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--input-border);
+    }
+    .notification-item {
+      padding: 15px;
+      border-bottom: 1px solid var(--input-border);
+      margin-bottom: 12px;
+      background: rgba(0,0,0,0.02);
+      border-left: 5px solid var(--primary-color);
+      border-radius: 6px;
+      position: relative;
+    }
+    .notification-item.bulk { border-left-color: #16a34a; }
+    .notification-item:last-child { border-bottom: none; margin-bottom: 0; }
+    .notification-title { font-weight: bold; font-size: 16px; margin-bottom: 6px; color: var(--primary-color); display: flex; justify-content: space-between; align-items: center; }
+    .notification-msg { font-size: 14px; line-height: 1.5; white-space: pre-line; }
+    .notification-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 12px; opacity: 0.7; }
+    .badge-target { background: #e0e7ff; color: #3730a3; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+    .delete-btn { color: #ef4444; background: none; border: none; cursor: pointer; font-size: 13px; font-weight: bold; }
+    .delete-btn:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="header-title">Kaushal Institute</a>
+    <a href="index.html" class="back-btn">← Back to Portal</a>
+  </header>
+
+  <div class="main-container">
+    
+    <!-- Send Bulk & Single Notifications Panel -->
+    <div class="admin-card">
+      <h3>📢 Send Notice / Bulk Notification</h3>
+      <form id="noticeForm">
+        <div class="form-group">
+          <label>Target Audience (Sabhhi ko ya specific course ko send karein)</label>
+          <select id="noticeTarget">
+            <option value="All Students">All Students (Bulk Broadcast)</option>
+            <option value="ADCA">ADCA Batch</option>
+            <option value="O Level">NIELIT O Level Batch</option>
+            <option value="CCC">CCC Batch</option>
+            <option value="Web Development">Web Development Batch</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Notice Title / Subject</label>
+          <input type="text" id="noticeTitle" placeholder="e.g. Exam Schedule / Holiday Notice / Fee Reminder" required>
+        </div>
+        <div class="form-group">
+          <label>Notification Message</label>
+          <textarea id="noticeMessage" placeholder="Apna message detail mein likhein..." required></textarea>
+        </div>
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary" id="sendBtn">Broadcast Notice 🚀</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Live Live Notifications Feed -->
+    <div class="notice-card">
+      <h3>🔔 Published Announcements</h3>
+      <div id="notificationsList">
+        <p style="font-size:14px; opacity:0.7;">Loading notifications...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getDatabase, ref, push, set, remove, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE",
+      authDomain: "kaushal-institute-729bc.firebaseapp.com",
+      databaseURL: "https://kaushal-institute-729bc-default-rtdb.firebaseio.com",
+      projectId: "kaushal-institute-729bc",
+      storageBucket: "kaushal-institute-729bc.firebasestorage.app",
+      messagingSenderId: "699990199933",
+      appId: "1:699990199933:web:e5fae383e93de5d3c6ab14",
+      measurementId: "G-4VRTVZ3JPJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Apply Dark Theme from localStorage
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-theme');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadNotifications();
+      document.getElementById('noticeForm').addEventListener('submit', handleSendNotification);
+    });
+
+    // Handle Notice Broadcast
+    async function handleSendNotification(e) {
+      e.preventDefault();
+      const sendBtn = document.getElementById('sendBtn');
+      const target = document.getElementById('noticeTarget').value;
+      const title = document.getElementById('noticeTitle').value.trim();
+      const message = document.getElementById('noticeMessage').value.trim();
+
+      sendBtn.disabled = true;
+      sendBtn.innerText = "Sending Broadcast...";
+
+      const newNotice = {
+        title: title,
+        message: message,
+        target: target,
+        timestamp: new Date().toISOString(),
+        date: new Date().toLocaleString()
+      };
+
+      try {
+        // Save to Firebase Realtime Database
+        await set(push(ref(db, 'notifications')), newNotice);
+        
+        // Local Backup
+        let localNotifs = JSON.parse(localStorage.getItem('portal_notifications') || '[]');
+        localNotifs.unshift(newNotice);
+        localStorage.setItem('portal_notifications', JSON.stringify(localNotifs));
+
+        alert("Notification Broadcasted Successfully!");
+        document.getElementById('noticeForm').reset();
+      } catch (err) {
+        alert("Error sending notification: " + err.message);
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.innerText = "Broadcast Notice 🚀";
+      }
+    }
+
+    // Load & Realtime Sync Notifications
+    function loadNotifications() {
+      const listContainer = document.getElementById('notificationsList');
+      const notifRef = ref(db, 'notifications');
+
+      onValue(notifRef, (snapshot) => {
+        listContainer.innerHTML = '';
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const items = [];
+          
+          for (let key in data) {
+            items.push({ id: key, ...data[key] });
+          }
+          
+          // Latest notices on top
+          items.reverse();
+
+          items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = `notification-item ${item.target === 'All Students' ? 'bulk' : ''}`;
+            
+            div.innerHTML = `
+              <div class="notification-title">
+                <span>${item.title || 'Notice'}</span>
+                <span class="badge-target">${item.target || 'All'}</span>
+              </div>
+              <div class="notification-msg">${item.message || item.text || ''}</div>
+              <div class="notification-footer">
+                <span>🕒 ${item.date || (item.timestamp ? new Date(item.timestamp).toLocaleString() : '')}</span>
+                <button class="delete-btn" onclick="deleteNotification('${item.id}')">Delete 🗑️</button>
+              </div>
+            `;
+            listContainer.appendChild(div);
+          });
+        } else {
+          listContainer.innerHTML = '<p style="font-size:14px; opacity:0.7;">No notifications published yet.</p>';
+        }
+      });
+    }
+
+    // Delete Notice Functionality
+    window.deleteNotification = async function(id) {
+      if (confirm("Kya aap is notification ko delete karna chahte hain?")) {
+        try {
+          await remove(ref(db, `notifications/${id}`));
+          alert("Notice deleted!");
+        } catch (err) {
+          alert("Error: " + err.message);
+        }
+      }
+    };
+  </script>
+</body>
+</html>

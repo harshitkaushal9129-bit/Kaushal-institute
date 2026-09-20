@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaushal Institute - Portal</title>
+  
+  <!-- Inline Manifest (No external manifest.json needed) -->
+  <link rel="manifest" href='data:application/manifest+json,{
+    "name": "Kaushal Institute Portal",
+    "short_name": "Kaushal Portal",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#0f172a",
+    "theme_color": "#1e293b",
+    "description": "Kaushal Institute Student Portal and Learning Dashboard",
+    "icons": [
+      { "src": "https://via.placeholder.com/192", "sizes": "192x192", "type": "image/png" },
+      { "src": "https://via.placeholder.com/512", "sizes": "512x512", "type": "image/png" }
+    ]
+  }'>
+  
+  <meta name="theme-color" content="#1e293b">
+  <style>
+    :root { --bg-color: #f0f2f5; --header-bg: #1e293b; --card-bg: #ffffff; --text-color: #334155; --card-text: #333333; --input-border: #cbd5e1; --title-color: #38bdf8; --primary-color: #2563eb; }
+    body.dark-theme { --bg-color: #0f172a; --header-bg: #1e293b; --card-bg: #1e293b; --text-color: #f8fafc; --card-text: #f1f5f9; --input-border: #475569; --title-color: #38bdf8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; -webkit-user-select: none; }
+    body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s; padding-bottom: 50px; }
+    header { background-color: var(--header-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
+    .header-left { position: relative; }
+    .menu-btn { font-size: 24px; cursor: pointer; background: none; border: none; color: white; padding: 5px 10px; }
+    .dropdown-menu { display: none; position: absolute; top: 45px; left: 0; background-color: var(--card-bg); color: var(--card-text); width: 220px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-radius: 6px; overflow: hidden; z-index: 1000; }
+    .dropdown-menu.active { display: block; }
+    .dropdown-menu ul { list-style: none; }
+    .dropdown-menu ul li a, .dropdown-menu ul li button { display: block; width: 100%; text-align: left; padding: 12px 16px; color: var(--card-text); text-decoration: none; border: none; background: none; border-bottom: 1px solid rgba(0,0,0,0.1); cursor: pointer; font-size: 14px; transition: background 0.2s; }
+    .dropdown-menu ul li a:hover, .dropdown-menu ul li button:hover { background-color: rgba(0,0,0,0.05); }
+    .header-center { position: absolute; left: 50%; transform: translateX(-50%); font-size: 22px; font-weight: bold; letter-spacing: 1px; text-align: center; color: var(--title-color); cursor: pointer; }
+    .header-right { display: flex; align-items: center; gap: 12px; position: relative; }
+    .user-profile { display: flex; align-items: center; cursor: pointer; padding: 4px; border-radius: 50%; transition: background 0.2s; }
+    .user-profile:hover { background-color: rgba(255,255,255,0.1); }
+    .user-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--title-color); }
+    .profile-card { display: none; position: absolute; top: 55px; right: 0; background-color: var(--card-bg); color: var(--card-text); width: 260px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); border-radius: 8px; padding: 15px; z-index: 1000; text-align: center; }
+    .profile-card.active { display: block; }
+    .profile-card img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid var(--title-color); margin-bottom: 10px; }
+    .profile-card h4 { font-size: 16px; margin-bottom: 8px; }
+    .profile-card p { font-size: 13px; opacity: 0.8; margin-bottom: 5px; word-break: break-all; }
+    .logout-btn { background-color: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 13px; margin-top: 10px; width: 100%; transition: background 0.2s; font-weight: bold; }
+    .logout-btn:hover { background-color: #dc2626; }
+    .ticker-bar { background: #0284c7; color: white; padding: 8px 15px; display: flex; align-items: center; font-size: 14px; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .ticker-tag { background: #0369a1; padding: 3px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-right: 12px; white-space: nowrap; }
+    .container { max-width: 450px; margin: 30px auto; background: var(--card-bg); color: var(--card-text); padding: 25px 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    .form-toggle { display: flex; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; }
+    .form-toggle button { flex: 1; padding: 10px; background: none; border: none; font-size: 16px; font-weight: bold; cursor: pointer; color: #64748b; }
+    .form-toggle button.active { color: #2563eb; border-bottom: 3px solid #2563eb; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-size: 14px; }
+    .form-group input { width: 100%; padding: 10px; border: 1px solid var(--input-border); border-radius: 6px; font-size: 14px; background: transparent; color: inherit; user-select: text; -webkit-user-select: text; }
+    .captcha-box { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .captcha-code { background: #e2e8f0; padding: 8px 15px; font-weight: bold; font-size: 18px; letter-spacing: 4px; border-radius: 4px; user-select: none; color: #1e293b; }
+    .refresh-captcha { cursor: pointer; background: none; border: none; font-size: 18px; color: inherit; }
+    .submit-btn { width: 100%; padding: 12px; background-color: #2563eb; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    .submit-btn:hover { background-color: #1d4ed8; }
+    .submit-btn:disabled { background-color: #94a3b8; cursor: not-allowed; }
+    .error-msg { color: #ef4444; font-size: 13px; margin-top: 5px; }
+    .hidden { display: none !important; }
+    .main-notification-panel { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+    .notice-card { background: var(--card-bg); color: var(--card-text); border-radius: 12px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--input-border); margin-bottom: 25px; }
+    .notice-card h3 { color: var(--primary-color); font-size: 20px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+    .notification-item { padding: 12px 15px; border-bottom: 1px solid var(--input-border); margin-bottom: 10px; background: rgba(0,0,0,0.02); border-left: 4px solid var(--primary-color); border-radius: 4px; }
+    .notification-item:last-child { border-bottom: none; }
+    .notification-title { font-weight: bold; font-size: 16px; margin-bottom: 4px; color: var(--primary-color); }
+    .notification-msg { font-size: 14px; line-height: 1.5; }
+    .notification-time { font-size: 11px; opacity: 0.6; margin-top: 6px; text-align: right; }
+    .dashboard-container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+    .dash-header { text-align: center; margin-bottom: 25px; }
+    .dash-header h2 { color: var(--title-color); font-size: 26px; }
+    .access-warning { background: #fef3c7; color: #92400e; padding: 12px; border-radius: 8px; border: 1px solid #f59e0b; margin-bottom: 20px; font-size: 14px; text-align: center; font-weight: 600; }
+    .section-title { font-size: 20px; margin: 25px 0 15px 0; border-bottom: 2px solid var(--primary-color); display: inline-block; padding-bottom: 4px; color: var(--text-color); }
+    .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .resource-card { background: var(--card-bg); border-radius: 10px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid var(--input-border); transition: 0.3s; }
+    .resource-card:hover { transform: translateY(-3px); }
+    .resource-card h4 { font-size: 16px; margin-bottom: 8px; color: var(--primary-color); }
+    .resource-card p { font-size: 13px; opacity: 0.8; margin-bottom: 12px; }
+    .resource-card a { display: inline-block; padding: 8px 14px; background: var(--primary-color); color: white; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; }
+    .resource-card a:hover { background: #1d4ed8; }
+    .badge-course { background: #e0e7ff; color: #3730a3; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-bottom: 10px; display: inline-block; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
+    .modal-overlay.active { display: flex; }
+    .modal-box { background: var(--card-bg); color: var(--card-text); padding: 25px; border-radius: 10px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: relative; }
+    .modal-box h3 { margin-bottom: 15px; }
+    .modal-box p { font-size: 14px; margin-bottom: 8px; opacity: 0.9; }
+    .close-modal { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; border: none; background: none; color: inherit; }
+  </style>
+</head>
+<body>
+  <div class="ticker-bar">
+    <span class="ticker-tag">📢 ANNOUNCEMENT</span>
+    <marquee behavior="scroll" direction="left" scrollamount="6" onmouseover="this.stop();" onmouseout="this.start();">
+      Welcome to Kaushal Institute Portal! Check notifications below for recent updates.
+    </marquee>
+  </div>
+  <header id="mainHeader" class="hidden">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn">&#8942;</button>
+      <div class="dropdown-menu" id="dropdownMenu">
+        <ul>
+          <li><a href="#" id="homeLink">🏠 Home (Main Page)</a></li>
+          <li><a href="#" id="dashLink">📊 Student Dashboard</a></li>
+          <li><a href="courses.html">Course Information</a></li>
+          <li><a href="courses.html">Student Details</a></li>
+          <li><a href="courses.html">Fee Structure</a></li>
+          <li><a href="#">Exam Schedule</a></li>
+          <li><button id="themeToggleBtn">Toggle Theme (Dark/Light)</button></li>
+          <li><a href="#" id="contactLink">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="header-center" id="logoHomeBtn" title="Click to go Home">Kaushal Institute</div>
+    <div class="header-right">
+      <div class="user-profile" id="userProfileBtn" title="Click to view profile">
+        <img src="" alt="User Pic" id="headerUserPic" class="user-avatar">
+      </div>
+      <div class="profile-card" id="profileCard">
+        <img src="" id="cardUserPic" alt="User Pic">
+        <h4 id="cardUserName"></h4>
+        <p><strong>Mobile:</strong> <span id="cardUserMobile"></span></p>
+        <p><strong>Email:</strong> <span id="cardUserEmail"></span></p>
+        <button class="logout-btn" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+  </header>
+  <div class="container" id="authContainer">
+    <div class="form-toggle">
+      <button id="loginTabBtn" class="active">Login</button>
+      <button id="registerTabBtn">Register</button>
+    </div>
+    <form id="registerForm" class="hidden">
+      <div class="form-group"><label>Full Name</label><input type="text" id="regName" required></div>
+      <div class="form-group"><label>User Picture</label><input type="file" id="regPic" accept="image/*" required></div>
+      <div class="form-group"><label>Mobile Number</label><input type="tel" id="regMobile" required pattern="[0-9]{10}" placeholder="10 Digit Number"></div>
+      <div class="form-group"><label>Email ID</label><input type="email" id="regEmail" required></div>
+      <div class="form-group"><label>Password</label><input type="password" id="regPassword" required></div>
+      <div class="form-group">
+        <label>Captcha</label>
+        <div class="captcha-box">
+          <span class="captcha-code" id="regCaptchaDisplay"></span>
+          <button type="button" class="refresh-captcha" id="refreshRegCaptcha">&#8635;</button>
+        </div>
+        <input type="text" id="regCaptchaInput" placeholder="Enter Captcha" required>
+      </div>
+      <div id="regError" class="error-msg"></div>
+      <button type="submit" id="regSubmitBtn" class="submit-btn">Register</button>
+    </form>
+    <form id="loginForm">
+      <div class="form-group"><label>Name / Mobile / Email</label><input type="text" id="loginIdentifier" placeholder="Enter Name, Mobile or Email" required></div>
+      <div class="form-group"><label>Password</label><input type="password" id="loginPassword" required></div>
+      <div class="form-group">
+        <label>Captcha</label>
+        <div class="captcha-box">
+          <span class="captcha-code" id="loginCaptchaDisplay"></span>
+          <button type="button" class="refresh-captcha" id="refreshLoginCaptcha">&#8635;</button>
+        </div>
+        <input type="text" id="loginCaptchaInput" placeholder="Enter Captcha" required>
+      </div>
+      <div id="loginError" class="error-msg"></div>
+      <button type="submit" id="loginSubmitBtn" class="submit-btn">Login</button>
+    </form>
+  </div>
+  <div id="homePageContent" class="main-notification-panel hidden">
+    <div class="notice-card">
+      <h3><span>🔔 Latest Notices & Notifications</span></h3>
+      <div id="notificationsList">
+        <p style="font-size:14px; opacity:0.7;">Loading notifications...</p>
+      </div>
+    </div>
+  </div>
+  <div id="dashboardContent" class="dashboard-container hidden">
+    <div class="dash-header">
+      <h2>Student Learning Dashboard</h2>
+      <p style="opacity:0.8;">Access your course Video Lectures and PDF Resources here.</p>
+    </div>
+    <div id="accessNotice" class="access-warning hidden">
+      ⚠️ Aapki course fee verification pending hai ya access granted nahi hai. Payment karein aur UTR number submit karein taaki Admin dwara aapko saare Videos aur PDFs ka full access mil sake.
+    </div>
+    <div>
+      <h3 class="section-title">🎥 Video Lectures</h3>
+      <div class="resource-grid" id="videoGrid"></div>
+    </div>
+    <div style="margin-top: 30px;">
+      <h3 class="section-title">📄 PDF Notes & Study Material</h3>
+      <div class="resource-grid" id="pdfGrid"></div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="contactModal">
+    <div class="modal-box">
+      <button class="close-modal" id="closeContactModalBtn">&times;</button>
+      <h3>Developer Info</h3>
+      <p><strong>Institute:</strong> Kaushal Institute</p>
+      <p><strong>Developer:</strong> Harshit Kaushal</p>
+      <p><strong>Email:</strong>harshitkaushal9129@gmail.com</p>
+      <p><strong>Contact:</strong> +91 9129191898</p>
+    </div>
+  </div>
+
+  <!-- Security, Anti-Hacking & Inline Service Worker Script -->
+  <script>
+    // 1. Disable Right Click Context Menu
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    // 2. Block Inspect Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.keyCode === 123) { e.preventDefault(); return false; }
+      if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) { e.preventDefault(); return false; }
+      if (e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; }
+      if (e.ctrlKey && e.keyCode === 83) { e.preventDefault(); return false; }
+    });
+
+    // 3. Anti-DevTools Trapping
+    setInterval(() => {
+      const before = new Date().getTime();
+      debugger;
+      const after = new Date().getTime();
+      if (after - before > 100) {
+        document.body.innerHTML = "<h2 style='text-align:center; padding-top:50px; color:red;'>Developer tools are disabled on this portal for security reasons.</h2>";
+      }
+    }, 1000);
+
+    // 4. Inline Service Worker Code Registration using Blob
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        const swCode = `
+          const CACHE_NAME = 'kaushal-portal-v2';
+          self.addEventListener('install', (e) => {
+            self.skipWaiting();
+          });
+          self.addEventListener('activate', (e) => {
+            e.waitUntil(clients.claim());
+          });
+          self.addEventListener('fetch', (e) => {
+            e.respondWith(
+              caches.match(e.request).then((res) => res || fetch(e.request))
+            );
+          });
+        `;
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const blobUrl = URL.createObjectURL(blob);
+
+        navigator.serviceWorker.register(blobUrl)
+          .then((reg) => console.log('Inline Service Worker Registered Successfully!'))
+          .catch((err) => console.error('Service Worker Registration Error:', err));
+      });
+    }
+  </script>
+
+  <!-- Application Firebase Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getDatabase, ref, push, set, get, child, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE",
+      authDomain: "kaushal-institute-729bc.firebaseapp.com",
+      databaseURL: "https://kaushal-institute-729bc-default-rtdb.firebaseio.com",
+      projectId: "kaushal-institute-729bc",
+      storageBucket: "kaushal-institute-729bc.firebasestorage.app",
+      messagingSenderId: "699990199933",
+      appId: "1:699990199933:web:e5fae383e93de5d3c6ab14",
+      measurementId: "G-4VRTVZ3JPJ"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    let regCaptcha = "";
+    let loginCaptcha = "";
+    window.addEventListener('DOMContentLoaded', () => {
+      generateCaptcha('reg');
+      generateCaptcha('login');
+      checkLoginStatus();
+      loadLiveNotifications();
+      if (localStorage.getItem('theme') === 'dark') { document.body.classList.add('dark-theme'); }
+      document.getElementById('registerTabBtn').addEventListener('click', () => switchTab('register'));
+      document.getElementById('loginTabBtn').addEventListener('click', () => switchTab('login'));
+      document.getElementById('refreshRegCaptcha').addEventListener('click', () => generateCaptcha('reg'));
+      document.getElementById('refreshLoginCaptcha').addEventListener('click', () => generateCaptcha('login'));
+      document.getElementById('menuBtn').addEventListener('click', toggleMenu);
+      document.getElementById('userProfileBtn').addEventListener('click', toggleProfileCard);
+      document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+      document.getElementById('contactLink').addEventListener('click', openContactModal);
+      document.getElementById('closeContactModalBtn').addEventListener('click', closeContactModal);
+      document.getElementById('homeLink').addEventListener('click', (e) => { e.preventDefault(); showMainPage(); });
+      document.getElementById('logoHomeBtn').addEventListener('click', () => showMainPage());
+      document.getElementById('dashLink').addEventListener('click', (e) => { e.preventDefault(); showDashboard(); });
+      document.getElementById('logoutBtn').addEventListener('click', logout);
+      document.getElementById('registerForm').addEventListener('submit', handleRegister);
+      document.getElementById('loginForm').addEventListener('submit', handleLogin);
+    });
+    function switchTab(tab) {
+      const regForm = document.getElementById('registerForm');
+      const loginForm = document.getElementById('loginForm');
+      document.getElementById('regError').innerText = "";
+      document.getElementById('loginError').innerText = "";
+      if (tab === 'register') {
+        regForm.classList.remove('hidden'); loginForm.classList.add('hidden');
+        document.getElementById('registerTabBtn').classList.add('active');
+        document.getElementById('loginTabBtn').classList.remove('active');
+        generateCaptcha('reg');
+      } else {
+        loginForm.classList.remove('hidden'); regForm.classList.add('hidden');
+        document.getElementById('loginTabBtn').classList.add('active');
+        document.getElementById('registerTabBtn').classList.remove('active');
+        generateCaptcha('login');
+      }
+    }
+    function generateCaptcha(type) {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let result = "";
+      for (let i = 0; i < 6; i++) { result += chars.charAt(Math.floor(Math.random() * chars.length)); }
+      if (type === 'reg') { regCaptcha = result; document.getElementById('regCaptchaDisplay').innerText = result; }
+      else { loginCaptcha = result; document.getElementById('loginCaptchaDisplay').innerText = result; }
+    }
+    function toggleMenu(e) { e.stopPropagation(); document.getElementById('profileCard').classList.remove('active'); document.getElementById('dropdownMenu').classList.toggle('active'); }
+    function toggleProfileCard(e) { e.stopPropagation(); document.getElementById('dropdownMenu').classList.remove('active'); document.getElementById('profileCard').classList.toggle('active'); }
+    function toggleTheme() { document.body.classList.toggle('dark-theme'); localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light'); document.getElementById('dropdownMenu').classList.remove('active'); }
+    function openContactModal(e) { e.preventDefault(); document.getElementById('dropdownMenu').classList.remove('active'); document.getElementById('contactModal').classList.add('active'); }
+    function closeContactModal() { document.getElementById('contactModal').classList.remove('active'); }
+    window.onclick = function(e) {
+      if (!e.target.closest('.header-left')) document.getElementById('dropdownMenu').classList.remove('active');
+      if (!e.target.closest('.user-profile') && !e.target.closest('.profile-card')) document.getElementById('profileCard').classList.remove('active');
+    };
+    function loadLiveNotifications() {
+      const listContainer = document.getElementById('notificationsList');
+      const notifRef = ref(db, 'notifications');
+      onValue(notifRef, (snapshot) => {
+        listContainer.innerHTML = '';
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const items = [];
+          for (let key in data) { items.push({ id: key, ...data[key] }); }
+          items.reverse();
+          items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'notification-item';
+            div.innerHTML = `<div class="notification-title">${item.title || 'Notice'}</div><div class="notification-msg">${item.message || item.text || ''}</div><div class="notification-time">${item.date || item.timestamp ? new Date(item.timestamp || item.date).toLocaleString() : ''}</div>`;
+            listContainer.appendChild(div);
+          });
+        } else {
+          listContainer.innerHTML = '<div class="notification-item"><div class="notification-title">Welcome to Kaushal Institute</div><div class="notification-msg">New admissions are open for ADCA, CCC, O Level & Web Development. Use Student Dashboard to view study materials.</div></div>';
+        }
+      });
+    }
+    async function handleRegister(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('regSubmitBtn');
+      const errorDiv = document.getElementById('regError');
+      const name = document.getElementById('regName').value.trim();
+      const mobile = document.getElementById('regMobile').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const captchaInput = document.getElementById('regCaptchaInput').value;
+      const picInput = document.getElementById('regPic').files[0];
+      if (captchaInput !== regCaptcha) { errorDiv.innerText = "Captcha Code galat hai!"; generateCaptcha('reg'); return; }
+      submitBtn.disabled = true; submitBtn.innerText = "Registering...";
+      try {
+        let localUsers = JSON.parse(localStorage.getItem('users') || '[]');
+        if (localUsers.some(u => u.email === email || u.mobile === mobile || u.name.toLowerCase() === name.toLowerCase())) {
+          errorDiv.innerText = "Invalid: Name, Email ya Mobile pahile se exist karta hai!";
+          submitBtn.disabled = false; submitBtn.innerText = "Register"; return;
+        }
+        const reader = new FileReader();
+        reader.onload = async function() {
+          const newUser = { name, mobile, email, password, pic: reader.result, createdAt: new Date().toISOString() };
+          localUsers.push(newUser); localStorage.setItem('users', JSON.stringify(localUsers));
+          await set(push(ref(db, 'users')), newUser);
+          alert("Registration Successful!");
+          document.getElementById('registerForm').reset();
+          submitBtn.disabled = false; submitBtn.innerText = "Register";
+          switchTab('login');
+        };
+        reader.readAsDataURL(picInput);
+      } catch (err) { errorDiv.innerText = "Server Error: " + err.message; submitBtn.disabled = false; submitBtn.innerText = "Register"; }
+    }
+    async function handleLogin(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('loginSubmitBtn');
+      const errorDiv = document.getElementById('loginError');
+      const identifier = document.getElementById('loginIdentifier').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const captchaInput = document.getElementById('loginCaptchaInput').value;
+      if (captchaInput !== loginCaptcha) { errorDiv.innerText = "Captcha Code galat hai!"; generateCaptcha('login'); return; }
+      submitBtn.disabled = true; submitBtn.innerText = "Logging in...";
+      let localUsers = JSON.parse(localStorage.getItem('users') || '[]');
+      let loggedInUser = localUsers.find(u => (u.email === identifier || u.mobile === identifier || u.name.toLowerCase() === identifier.toLowerCase()) && u.password === password);
+      if (!loggedInUser) {
+        try {
+          const snapshot = await get(child(ref(db), 'users'));
+          if (snapshot.exists()) {
+            const fbUsers = snapshot.val();
+            for (let k in fbUsers) {
+              if ((fbUsers[k].email === identifier || fbUsers[k].mobile === identifier || fbUsers[k].name.toLowerCase() === identifier.toLowerCase()) && fbUsers[k].password === password) {
+                loggedInUser = fbUsers[k]; break;
+              }
+            }
+          }
+        } catch (err) { console.error(err); }
+      }
+      submitBtn.disabled = false; submitBtn.innerText = "Login";
+      if (loggedInUser) {
+        localStorage.setItem('currentUser', JSON.stringify(loggedInUser));
+        initPortalUser(loggedInUser);
+        showMainPage();
+      } else { errorDiv.innerText = "Invalid Credentials!"; generateCaptcha('login'); }
+    }
+    function initPortalUser(user) {
+      document.getElementById('authContainer').classList.add('hidden');
+      document.getElementById('mainHeader').classList.remove('hidden');
+      document.getElementById('headerUserPic').src = user.pic;
+      document.getElementById('cardUserPic').src = user.pic;
+      document.getElementById('cardUserName').innerText = user.name;
+      document.getElementById('cardUserMobile').innerText = user.mobile;
+      document.getElementById('cardUserEmail').innerText = user.email;
+    }
+    function showMainPage() {
+      document.getElementById('dropdownMenu').classList.remove('active');
+      document.getElementById('dashboardContent').classList.add('hidden');
+      document.getElementById('homePageContent').classList.remove('hidden');
+    }
+    async function showDashboard() {
+      document.getElementById('dropdownMenu').classList.remove('active');
+      document.getElementById('homePageContent').classList.add('hidden');
+      document.getElementById('dashboardContent').classList.remove('hidden');
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+      if (user) { loadDashboardData(user); }
+    }
+    async function loadDashboardData(user) {
+      let enrollments = JSON.parse(localStorage.getItem('course_enrollments') || '[]');
+      let userEnrollment = enrollments.find(e => e.email === user.email || e.mobile === user.mobile);
+      let isGranted = userEnrollment ? (userEnrollment.accessGranted || false) : false;
+      if(!isGranted) {
+        try {
+          const snapshot = await get(child(ref(db), 'course_enrollments'));
+          if (snapshot.exists()) {
+            const fbData = snapshot.val();
+            for (let key in fbData) {
+              if ((fbData[key].email === user.email || fbData[key].mobile === user.mobile) && fbData[key].accessGranted) {
+                isGranted = true; break;
+              }
+            }
+          }
+        } catch(e){}
+      }
+      const notice = document.getElementById('accessNotice');
+      if(!isGranted) { notice.classList.remove('hidden'); } else { notice.classList.add('hidden'); }
+
+      // Dynamic Loading from Firebase with LocalStorage Fallback
+      loadDashboardResources(isGranted);
+    }
+
+    function loadDashboardResources(isGranted) {
+      const videoGrid = document.getElementById('videoGrid');
+      const pdfGrid = document.getElementById('pdfGrid');
+
+      // 1. Fetch Videos Live from Firebase
+      onValue(ref(db, 'course_videos'), (snapshot) => {
+        videoGrid.innerHTML = '';
+        let videos = [];
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          for (let key in data) { videos.push(data[key]); }
+        } else {
+          videos = JSON.parse(localStorage.getItem('course_videos') || '[]');
+        }
+
+        if (videos.length === 0) {
+          videoGrid.innerHTML = '<p style="font-size:14px; opacity:0.7;">No video lectures uploaded yet.</p>';
+        } else {
+          videos.forEach(v => {
+            const card = document.createElement('div');
+            card.className = 'resource-card';
+            card.innerHTML = `<span class="badge-course">${v.course || 'General'}</span><h4>${v.title}</h4>${isGranted ? `<a href="${v.url}" target="_blank">Watch Video ▶</a>` : `<button style="padding:6px 10px; background:#94a3b8; color:white; border:none; border-radius:4px; cursor:not-allowed;" disabled>🔒 Access Locked</button>`}`;
+            videoGrid.appendChild(card);
+          });
+        }
+      });
+
+      // 2. Fetch PDFs Live from Firebase
+      onValue(ref(db, 'course_pdfs'), (snapshot) => {
+        pdfGrid.innerHTML = '';
+        let pdfs = [];
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          for (let key in data) { pdfs.push(data[key]); }
+        } else {
+          pdfs = JSON.parse(localStorage.getItem('course_pdfs') || '[]');
+        }
+
+        if (pdfs.length === 0) {
+          pdfGrid.innerHTML = '<p style="font-size:14px; opacity:0.7;">No PDF study materials uploaded yet.</p>';
+        } else {
+          pdfs.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'resource-card';
+            card.innerHTML = `<span class="badge-course">${p.course || 'General'}</span><h4>${p.title}</h4>${isGranted ? `<a href="${p.url}" target="_blank" style="background:#16a34a;">Download PDF 📥</a>` : `<button style="padding:6px 10px; background:#94a3b8; color:white; border:none; border-radius:4px; cursor:not-allowed;" disabled>🔒 Access Locked</button>`}`;
+            pdfGrid.appendChild(card);
+          });
+        }
+      });
+    }
+
+    function checkLoginStatus() { const currentUser = JSON.parse(localStorage.getItem('currentUser')); if (currentUser) { initPortalUser(currentUser); showMainPage(); } }
+    function logout() {
+      localStorage.removeItem('currentUser');
+      document.getElementById('mainHeader').classList.add('hidden');
+      document.getElementById('dashboardContent').classList.add('hidden');
+      document.getElementById('homePageContent').classList.add('hidden');
+      document.getElementById('profileCard').classList.remove('active');
+      document.getElementById('authContainer').classList.remove('hidden');
+      document.getElementById('loginForm').reset();
+      generateCaptcha('login');
+    }
+  </script>
+</body>
+</html>
