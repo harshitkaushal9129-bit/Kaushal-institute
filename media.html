@@ -3,120 +3,133 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kaushal Institute Universal Media Portal - Pro</title>
+<title>Kaushal Institute Pro Media & File Manager</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-body { background: #090d16; color: #f8fafc; transition: 0.3s; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-body.light-theme { background: #f1f5f9; color: #1e293b; }
+body { background: #0b0f19; color: #f1f5f9; transition: 0.3s; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+body.light-theme { background: #f8fafc; color: #1e293b; }
 
-header { background: linear-gradient(135deg, #0284c7, #0369a1); color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 10; }
-.logo-area { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 18px; letter-spacing: 0.5px; }
-
+/* Header */
+header { background: linear-gradient(135deg, #0284c7, #0369a1); color: white; padding: 14px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 100; }
+.logo-title { font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 10px; letter-spacing: 0.5px; }
 .btn { padding: 8px 16px; border: none; background: #0284c7; color: white; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 .btn:hover { background: #0369a1; transform: translateY(-1px); }
 
-.container { padding: 25px; max-width: 1100px; margin: auto; width: 100%; flex: 1; margin-bottom: 100px; }
+/* Main Layout Grid */
+.app-container { display: grid; grid-template-columns: 320px 1fr; gap: 20px; padding: 20px; max-width: 1400px; margin: auto; width: 100%; flex: 1; margin-bottom: 90px; }
+@media (max-width: 900px) { .app-container { grid-template-columns: 1fr; } }
 
-.import-card { background: #1e293b; border: 2px dashed #0284c7; border-radius: 16px; padding: 25px; text-align: center; margin-bottom: 25px; transition: 0.3s; }
-body.light-theme .import-card { background: #ffffff; border-color: #0284c7; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-.import-card.dragover { background: rgba(2, 132, 199, 0.15); border-color: #38bdf8; }
+/* Sidebar & Playlist Panel */
+.sidebar-panel { background: #1e293b; border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); height: fit-content; max-height: 80vh; }
+body.light-theme .sidebar-panel { background: #ffffff; box-shadow: 0 8px 25px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
 
-.import-btns { display: flex; gap: 12px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
-.file-btn { background: #0284c7; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
-.file-btn:hover { background: #0369a1; }
-.file-btn input { display: none; }
-
-.toast-msg { display: none; background: #22c55e; color: white; padding: 12px 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: fadeIn 0.4s ease; }
-.toast-msg.loading { background: #0284c7; }
-.toast-msg.error { background: #ef4444; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-.main-stage { background: #1e293b; border-radius: 16px; padding: 20px; text-align: center; min-height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 25px; position: relative; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-body.light-theme .main-stage { background: #ffffff; box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
-
-#videoElement, #imageElement { max-width: 100%; max-height: 340px; border-radius: 10px; object-fit: contain; display: none; }
-#visualizerCanvas { width: 100%; height: 140px; display: none; margin-top: 10px; }
-
-.playlist-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
-.search-box { padding: 8px 14px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; width: 250px; outline: none; }
+.search-box { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none; font-size: 13px; }
 body.light-theme .search-box { background: #f8fafc; color: #1e293b; border-color: #cbd5e1; }
-.filter-tabs { display: flex; gap: 6px; }
-.filter-tab { padding: 6px 12px; font-size: 12px; border-radius: 6px; border: none; background: #334155; color: white; cursor: pointer; }
-.filter-tab.active { background: #0284c7; }
 
-.playlist-box { background: #1e293b; border-radius: 16px; padding: 15px; max-height: 280px; overflow-y: auto; box-shadow: inset 0 2px 10px rgba(0,0,0,0.2); }
-body.light-theme .playlist-box { background: #ffffff; box-shadow: inset 0 2px 10px rgba(0,0,0,0.03); }
-.playlist-item { padding: 12px 16px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-radius: 8px; transition: 0.2s; margin-bottom: 4px; }
-body.light-theme .playlist-item { border-bottom-color: #f1f5f9; }
-.playlist-item:hover { background: rgba(2, 132, 199, 0.15); }
+.filter-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.filter-tab { padding: 6px 4px; font-size: 11px; border-radius: 6px; border: none; background: #334155; color: white; cursor: pointer; text-align: center; font-weight: 600; }
+body.light-theme .filter-tab { background: #e2e8f0; color: #475569; }
+.filter-tab.active { background: #0284c7; color: white; }
+
+.playlist-box { flex: 1; overflow-y: auto; max-height: 400px; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; }
+.playlist-item { padding: 10px 12px; background: rgba(255,255,255,0.03); border: 1px solid transparent; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-radius: 8px; transition: 0.2s; }
+body.light-theme .playlist-item { background: #f8fafc; border-color: #f1f5f9; }
+.playlist-item:hover { background: rgba(2, 132, 199, 0.1); border-color: #0284c7; }
 .playlist-item.active { background: #0284c7 !important; color: white !important; }
 
-.badge { font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: bold; margin-left: 8px; }
+.badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
 .badge-audio { background: #8b5cf6; color: white; }
 .badge-video { background: #ec4899; color: white; }
 .badge-image { background: #f59e0b; color: white; }
+.badge-pdf { background: #ef4444; color: white; }
 
-/* Bottom Control Bar */
-.audio-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #334155; color: white; padding: 12px 25px; display: flex; flex-direction: column; gap: 8px; z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.4); }
-body.light-theme .audio-bar { background: rgba(255, 255, 255, 0.95); border-top: 1px solid #e2e8f0; color: #1e293b; }
+/* Content Stage Panel */
+.content-panel { display: flex; flex-direction: column; gap: 20px; }
+
+.import-card { background: #1e293b; border: 2px dashed #0284c7; border-radius: 16px; padding: 20px; text-align: center; transition: 0.3s; }
+body.light-theme .import-card { background: #ffffff; border-color: #0284c7; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.import-card.dragover { background: rgba(2, 132, 199, 0.2); border-color: #38bdf8; }
+.import-btns { display: flex; gap: 10px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+.file-btn { background: #0284c7; color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
+.file-btn input { display: none; }
+
+.main-stage { background: #1e293b; border-radius: 16px; padding: 15px; text-align: center; min-height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+body.light-theme .main-stage { background: #ffffff; box-shadow: 0 8px 25px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
+
+#videoElement, #imageElement { max-width: 100%; max-height: 350px; border-radius: 10px; object-fit: contain; display: none; }
+#pdfViewerElement { width: 100%; height: 360px; border: none; border-radius: 10px; display: none; background: white; }
+#visualizerCanvas { width: 100%; height: 120px; display: none; margin-top: 10px; }
+
+.toast-msg { display: none; background: #22c55e; color: white; padding: 10px 16px; border-radius: 8px; text-align: center; font-weight: bold; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: fadeIn 0.3s ease; }
+.toast-msg.loading { background: #0284c7; }
+.toast-msg.error { background: #ef4444; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Bottom Sticky Control Bar */
+.audio-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(10px); border-top: 1px solid #334155; color: white; padding: 10px 20px; display: flex; flex-direction: column; gap: 6px; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.4); }
+body.light-theme .audio-bar { background: rgba(255, 255, 255, 0.96); border-top: 1px solid #e2e8f0; color: #1e293b; }
 
 .progress-container { width: 100%; display: flex; align-items: center; gap: 10px; font-size: 11px; opacity: 0.9; }
-.progress-bar { flex: 1; height: 5px; background: #334155; border-radius: 3px; cursor: pointer; position: relative; appearance: none; accent-color: #0284c7; }
-
+.progress-bar { flex: 1; height: 4px; background: #334155; border-radius: 2px; cursor: pointer; accent-color: #0284c7; }
 .bar-main-row { display: flex; justify-content: space-between; align-items: center; }
-.track-info { display: flex; flex-direction: column; max-width: 300px; }
-.controls-group { display: flex; align-items: center; gap: 12px; }
-.ctrl-btn { background: #0284c7; border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+.track-info { display: flex; flex-direction: column; max-width: 280px; }
+.controls-group { display: flex; align-items: center; gap: 10px; }
+.ctrl-btn { background: #0284c7; border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
 .ctrl-btn:hover { background: #0369a1; transform: scale(1.05); }
-.extra-controls { display: flex; align-items: center; gap: 15px; font-size: 13px; }
-select { background: #1e293b; color: white; border: 1px solid #334155; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+.extra-controls { display: flex; align-items: center; gap: 12px; font-size: 12px; }
+select { background: #1e293b; color: white; border: 1px solid #334155; padding: 4px 6px; border-radius: 6px; cursor: pointer; }
 body.light-theme select { background: #f1f5f9; color: #1e293b; border-color: #cbd5e1; }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo-area">
-    <span>⚡ KAUSHAL INSTITUTE MEDIA PORTAL PRO</span>
+  <div class="logo-title">
+    <span>⚡ KAUSHAL MEDIA & FILE PORTAL</span>
   </div>
-  <div><button id="themeToggleBtn" class="btn" style="padding: 6px 12px;">🌙 / ☀️</button></div>
+  <div><button id="themeToggleBtn" class="btn" style="padding: 6px 12px; font-size: 12px;">🌙 / ☀️</button></div>
 </header>
 
-<div class="container">
-  <div class="toast-msg" id="toastMsg"></div>
-
-  <div class="import-card" id="dropZone">
-    <h3>📂 मीडिया फाइलें या फ़ोल्डर यहाँ ड्रॉप करें</h3>
-    <p style="font-size: 13px; opacity: 0.8; margin-top: 5px;">हाई-परफॉरमेंस IndexedDB स्टोरेज के साथ ऑडियो, वीडियो और इमेजेस इंपोर्ट करें</p>
-    <div class="import-btns">
-      <label class="file-btn">📁 फ़ोल्डर चुनें<input type="file" id="folderInput" webkitdirectory directory multiple></label>
-      <label class="file-btn">📄 फाइलें चुनें<input type="file" id="fileInput" accept="audio/*,video/*,image/*" multiple></label>
-      <button class="btn" style="background:#ef4444;" id="clearDataBtn">🗑️ सभी डेटा साफ़ करें</button>
+<div class="app-container">
+  <!-- Sidebar Playlist & Explorer -->
+  <div class="sidebar-panel">
+    <div style="display:flex; justify-content: space-between; align-items: center;">
+      <h4 style="font-size: 15px;">📁 मीडिया लाइब्रेरी (<span id="playlistCount">0</span>)</h4>
+      <button class="btn" style="background:#ef4444; padding: 4px 8px; font-size: 11px;" id="clearDataBtn">🗑️ साफ़ करें</button>
+    </div>
+    <input type="text" id="searchInput" class="search-box" placeholder="🔍 फाइल खोजें...">
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="all">सभी</button>
+      <button class="filter-tab" data-filter="audio">ऑडियो</button>
+      <button class="filter-tab" data-filter="video">वीडियो</button>
+      <button class="filter-tab" data-filter="image">इमेज</button>
+      <button class="filter-tab" data-filter="pdf" style="grid-column: span 4;">PDF डॉक्युमेंट्स</button>
+    </div>
+    <div class="playlist-box" id="mediaPlaylistContainer">
+      <p style="font-size: 12px; text-align: center; opacity: 0.7; margin-top: 20px;">कोई फाइल्स उपलब्ध नहीं हैं।</p>
     </div>
   </div>
 
-  <div class="main-stage">
-    <video id="videoElement" controls></video>
-    <img id="imageElement" alt="Media Preview">
-    <canvas id="visualizerCanvas"></canvas>
-    <div id="emptyState" style="opacity: 0.6; font-size: 16px;">🎵 कोई भी मीडिया चयनित नहीं है</div>
-  </div>
+  <!-- Content & Stage Panel -->
+  <div class="content-panel">
+    <div class="toast-msg" id="toastMsg"></div>
 
-  <div class="playlist-toolbar">
-    <h4 style="font-size: 16px;">मीडिया प्लेलिस्ट (<span id="playlistCount">0</span>)</h4>
-    <div style="display:flex; gap: 10px; align-items:center;">
-      <input type="text" id="searchInput" class="search-box" placeholder="🔍 मीडिया खोजें...">
-      <div class="filter-tabs">
-        <button class="filter-tab active" data-filter="all">सभी</button>
-        <button class="filter-tab" data-filter="audio">ऑडियो</button>
-        <button class="filter-tab" data-filter="video">वीडियो</button>
-        <button class="filter-tab" data-filter="image">इमेज</button>
+    <div class="import-card" id="dropZone">
+      <h3 style="font-size: 16px;">📂 फाइलें या फ़ोल्डर यहाँ ड्रैग एंड ड्रॉप करें</h3>
+      <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">ऑडियो, वीडियो, इमेजेस और PDF डॉक्युमेंट्स सुरक्षित रूप से इम्पोर्ट करें</p>
+      <div class="import-btns">
+        <label class="file-btn">📁 फ़ोल्डर चुनें<input type="file" id="folderInput" webkitdirectory directory multiple></label>
+        <label class="file-btn">📄 फाइलें चुनें<input type="file" id="fileInput" accept="audio/*,video/*,image/*,.pdf" multiple></label>
       </div>
     </div>
-  </div>
 
-  <div class="playlist-box" id="mediaPlaylistContainer">
-    <p style="font-size: 13px; text-align: center; opacity: 0.7;">कोई फाइल्स उपलब्ध नहीं हैं।</p>
+    <div class="main-stage">
+      <video id="videoElement" controls></video>
+      <img id="imageElement" alt="Media Preview">
+      <iframe id="pdfViewerElement" title="PDF Document Viewer"></iframe>
+      <canvas id="visualizerCanvas"></canvas>
+      <div id="emptyState" style="opacity: 0.6; font-size: 15px;">🎵 कोई भी फाइल चयनित नहीं है</div>
+    </div>
   </div>
 </div>
 
@@ -129,8 +142,8 @@ body.light-theme select { background: #f1f5f9; color: #1e293b; border-color: #cb
   </div>
   <div class="bar-main-row">
     <div class="track-info">
-      <div id="barTrackTitle" style="font-weight: bold; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">ट्रैक चुनें</div>
-      <div id="barTrackSubtitle" style="font-size: 11px; opacity: 0.8;">Media Player Off</div>
+      <div id="barTrackTitle" style="font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">ट्रैक चुनें</div>
+      <div id="barTrackSubtitle" style="font-size: 10px; opacity: 0.8;">Player Ready</div>
     </div>
     <div class="controls-group">
       <button class="ctrl-btn" id="prevBtn" title="पिछला">⏮</button>
@@ -138,7 +151,7 @@ body.light-theme select { background: #f1f5f9; color: #1e293b; border-color: #cb
       <button class="ctrl-btn" id="nextBtn" title="अगला">⏭</button>
     </div>
     <div class="extra-controls">
-      <label style="font-size: 12px; display:flex; align-items:center; gap:4px;">स्पीड: 
+      <label style="font-size: 11px; display:flex; align-items:center; gap:3px;">स्पीड: 
         <select id="playbackSpeed">
           <option value="0.5">0.5x</option>
           <option value="1" selected>1.0x</option>
@@ -147,8 +160,8 @@ body.light-theme select { background: #f1f5f9; color: #1e293b; border-color: #cb
           <option value="2">2.0x</option>
         </select>
       </label>
-      <label style="font-size: 12px; display:flex; align-items:center; gap:4px;">वॉल्यूम: 
-        <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" style="width: 70px; accent-color: #0284c7;">
+      <label style="font-size: 11px; display:flex; align-items:center; gap:3px;">वॉल्यूम: 
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" style="width: 60px; accent-color: #0284c7;">
       </label>
     </div>
   </div>
@@ -182,14 +195,15 @@ let audioCtx = null, analyser = null, sourceNode = null;
 const audioElement = document.getElementById('mainAudioElement'),
       videoElement = document.getElementById('videoElement'),
       imageElement = document.getElementById('imageElement'),
+      pdfViewerElement = document.getElementById('pdfViewerElement'),
       visualizerCanvas = document.getElementById('visualizerCanvas'),
       emptyState = document.getElementById('emptyState'),
       canvasCtx = visualizerCanvas.getContext('2d');
 
-// IndexedDB Initialization for Large Files
+// IndexedDB Initialization for Large Files (Audio, Video, Images, PDFs)
 function initIndexedDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('KaushalMediaDB', 1);
+    const request = indexedDB.open('KaushalMediaManagerDB', 1);
     request.onerror = () => reject(request.error);
     request.onsuccess = () => { dbInstance = request.result; resolve(dbInstance); };
     request.onupgradeneeded = (e) => {
@@ -230,7 +244,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // Media playback events
   audioElement.addEventListener('ended', playNext);
   videoElement.addEventListener('ended', playNext);
   audioElement.addEventListener('timeupdate', updateProgress);
@@ -280,6 +293,7 @@ async function handleFiles(files) {
     if (file.type.startsWith('audio/')) type = 'audio';
     else if (file.type.startsWith('video/')) type = 'video';
     else if (file.type.startsWith('image/')) type = 'image';
+    else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) type = 'pdf';
 
     if (type !== 'unknown') {
       await new Promise((resolve) => {
@@ -326,8 +340,7 @@ function syncFirebaseData() {
 }
 
 function mergeAndRender(localFiles) {
-  const transactionLocal = dbInstance ? localFiles : [];
-  combinedMediaList = [...transactionLocal, ...firebaseTracks];
+  combinedMediaList = [...localFiles, ...firebaseTracks];
   applyFilters();
 }
 
@@ -346,7 +359,7 @@ function renderPlaylist() {
   document.getElementById('playlistCount').innerText = filteredMediaList.length;
 
   if (!filteredMediaList.length) {
-    container.innerHTML = '<p style="font-size:13px; text-align:center; opacity:0.7;">कोई फाइल्स उपलब्ध नहीं हैं।</p>';
+    container.innerHTML = '<p style="font-size: 12px; text-align: center; opacity: 0.7; margin-top: 20px;">कोई फाइल्स उपलब्ध नहीं हैं।</p>';
     return;
   }
 
@@ -355,8 +368,12 @@ function renderPlaylist() {
     const originalIndex = combinedMediaList.indexOf(item);
     div.className = `playlist-item ${originalIndex === currentMediaIndex ? 'active' : ''}`;
     
-    let badgeClass = item.type === 'video' ? 'badge-video' : (item.type === 'image' ? 'badge-image' : 'badge-audio');
-    div.innerHTML = `<div style="display:flex; align-items:center; overflow:hidden;"><strong style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:350px;">${item.title}</strong> <span class="badge ${badgeClass}">${item.type.toUpperCase()}</span></div><span style="font-size:11px; opacity:0.8; flex-shrink:0;">${item.source}</span>`;
+    let badgeClass = 'badge-audio';
+    if(item.type === 'video') badgeClass = 'badge-video';
+    else if(item.type === 'image') badgeClass = 'badge-image';
+    else if(item.type === 'pdf') badgeClass = 'badge-pdf';
+
+    div.innerHTML = `<div style="display:flex; align-items:center; gap:8px; overflow:hidden;"><strong style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:170px; font-size: 12px;">${item.title}</strong> <span class="badge ${badgeClass}">${item.type}</span></div><span style="font-size:10px; opacity:0.8; flex-shrink:0;">${item.source}</span>`;
     
     div.addEventListener('click', () => loadAndPlayMedia(originalIndex));
     container.appendChild(div);
@@ -369,9 +386,9 @@ function loadAndPlayMedia(index) {
   const media = combinedMediaList[currentMediaIndex];
 
   audioElement.pause(); videoElement.pause();
-  videoElement.style.display = 'none'; imageElement.style.display = 'none'; visualizerCanvas.style.display = 'none'; emptyState.style.display = 'none';
-  document.getElementById('audioBarContainer').style.display = 'flex';
-
+  videoElement.style.display = 'none'; imageElement.style.display = 'none'; pdfViewerElement.style.display = 'none'; visualizerCanvas.style.display = 'none'; emptyState.style.display = 'none';
+  
+  document.getElementById('audioBarContainer').style.display = (media.type === 'audio' || media.type === 'video') ? 'flex' : 'none';
   document.getElementById('barTrackTitle').innerText = media.title;
   document.getElementById('barTrackSubtitle').innerText = `${media.type.toUpperCase()} | ${media.source}`;
 
@@ -389,7 +406,9 @@ function loadAndPlayMedia(index) {
   } else if (media.type === 'image') {
     imageElement.src = media.url; 
     imageElement.style.display = 'block';
-    document.getElementById('playPauseBtn').innerText = '▶';
+  } else if (media.type === 'pdf') {
+    pdfViewerElement.src = media.url;
+    pdfViewerElement.style.display = 'block';
   }
   renderPlaylist();
 }
@@ -474,7 +493,7 @@ function formatTime(seconds) {
 }
 
 async function clearAllData() {
-  if(confirm('क्या आप वाकई सभी स्थानीय मीडिया डेटा को हटाना चाहते हैं?')) {
+  if(confirm('क्या आप वाकई सभी सेव की गई फाइल्स को हटाना चाहते हैं?')) {
     const tx = dbInstance.transaction(['files'], 'readwrite');
     tx.objectStore('files').clear();
     tx.oncomplete = () => {
