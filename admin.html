@@ -27,6 +27,8 @@
     .btn:hover { background: #1d4ed8; }
     .btn-green { background: #16a34a; }
     .btn-green:hover { background: #15803d; }
+    .btn-purple { background: #8b5cf6; }
+    .btn-purple:hover { background: #7c3aed; }
     .btn-sm { padding: 6px 12px; font-size: 12px; width: auto; border-radius: 4px; display: inline-block; }
     .btn-danger { background: #ef4444; }
     .btn-danger:hover { background: #dc2626; }
@@ -92,18 +94,29 @@
       </div>
     </div>
 
+    <!-- Add New Course Section (Naya Course Add Karne Ke Liye) -->
+    <div class="card">
+      <h2>2. Add New Course</h2>
+      <form id="addCourseForm">
+        <div class="form-group">
+          <label>Course Name</label>
+          <input type="text" id="newCourseNameInput" placeholder="e.g. DCA, Python, Web Development" required>
+        </div>
+        <div class="form-group">
+          <label>Initial Course Fee (₹)</label>
+          <input type="number" id="newCourseFeeInput" placeholder="e.g. 5000" required>
+        </div>
+        <button type="submit" class="btn btn-purple">Add Course</button>
+      </form>
+    </div>
+
     <!-- Course Fees Section -->
     <div class="card">
-      <h2>2. Modify Course Fees</h2>
+      <h2>3. Modify Course Fees</h2>
       <form id="feeUpdateForm">
         <div class="form-group">
           <label>Select Course</label>
-          <select id="feeCourseSelect" onchange="loadCurrentFee()">
-            <option value="ADCA">ADCA</option>
-            <option value="CCC">CCC</option>
-            <option value="Tally">Tally Prime</option>
-            <option value="OLevel">O Level</option>
-          </select>
+          <select id="feeCourseSelect" onchange="loadCurrentFee()"></select>
         </div>
         <div class="form-group">
           <label>New Fee Amount (₹)</label>
@@ -115,16 +128,11 @@
 
     <!-- Video Upload Section (Realtime DB Base64) -->
     <div class="card">
-      <h2>3. Upload Video File (Max 10MB)</h2>
+      <h2>4. Upload Video File (Max 10MB)</h2>
       <form id="videoUploadForm">
         <div class="form-group">
           <label>Course</label>
-          <select id="vidCourseSelect">
-            <option value="ADCA">ADCA</option>
-            <option value="CCC">CCC</option>
-            <option value="Tally">Tally Prime</option>
-            <option value="OLevel">O Level</option>
-          </select>
+          <select id="vidCourseSelect"></select>
         </div>
         <div class="form-group">
           <label>Video Title</label>
@@ -142,16 +150,11 @@
 
     <!-- PDF Upload Section (Realtime DB Base64) -->
     <div class="card">
-      <h2>4. Upload PDF Study Material File</h2>
+      <h2>5. Upload PDF Study Material File</h2>
       <form id="pdfUploadForm">
         <div class="form-group">
           <label>Course</label>
-          <select id="pdfCourseSelect">
-            <option value="ADCA">ADCA</option>
-            <option value="CCC">CCC</option>
-            <option value="Tally">Tally Prime</option>
-            <option value="OLevel">O Level</option>
-          </select>
+          <select id="pdfCourseSelect"></select>
         </div>
         <div class="form-group">
           <label>PDF Title</label>
@@ -203,10 +206,48 @@
       return savedFees ? JSON.parse(savedFees) : DEFAULT_FEES;
     }
 
+    // Dynamic Options Update Karne Ke Liye Function
+    function populateCourseDropdowns() {
+      const fees = getFees();
+      const feeSelect = document.getElementById('feeCourseSelect');
+      const vidSelect = document.getElementById('vidCourseSelect');
+      const pdfSelect = document.getElementById('pdfCourseSelect');
+
+      const optionsHtml = Object.keys(fees)
+        .map(course => `<option value="${course}">${course}</option>`)
+        .join('');
+
+      feeSelect.innerHTML = optionsHtml;
+      vidSelect.innerHTML = optionsHtml;
+      pdfSelect.innerHTML = optionsHtml;
+
+      loadCurrentFee();
+    }
+
+    // Naya Course Add Karne Ka Event Handler
+    document.getElementById('addCourseForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const courseName = document.getElementById('newCourseNameInput').value.trim();
+      const courseFee = document.getElementById('newCourseFeeInput').value.trim();
+
+      if (!courseName || !courseFee) return;
+
+      const fees = getFees();
+      fees[courseName] = courseFee;
+
+      localStorage.setItem('course_fees', JSON.stringify(fees));
+      populateCourseDropdowns();
+
+      alert(`New Course "${courseName}" added successfully with Fee ₹${courseFee}!`);
+      this.reset();
+    });
+
     window.loadCurrentFee = function() {
       const course = document.getElementById('feeCourseSelect').value;
       const fees = getFees();
-      document.getElementById('newFeeInput').value = fees[course] || '';
+      if(course) {
+        document.getElementById('newFeeInput').value = fees[course] || '';
+      }
     };
 
     document.getElementById('feeUpdateForm').addEventListener('submit', function(e) {
@@ -446,8 +487,8 @@
     };
 
     function initAdminData() {
+      populateCourseDropdowns();
       loadStudentPermissions();
-      loadCurrentFee();
       renderVideos();
       renderPdfs();
     }
