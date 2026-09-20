@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
@@ -162,7 +162,7 @@
         <ul>
           <li><a href="#" id="homeLink">🏠 Home (Main Page)</a></li>
           <li><a href="#" id="dashLink">📊 Student Dashboard</a></li>
-          <li><a href="#" id="mediaLink">🎥 Media Gallery</a></li>
+          <li><a href="media.html" id="mediaLink">🎥 Media Gallery</a></li>
           <li><a href="resources.html" style="font-weight: bold; color: var(--primary-color);">📚 Course Resources (All Files)</a></li>
           <li><a href="courses.html">Course Information</a></li>
           <li><a href="courses.html">Student Details</a></li>
@@ -261,9 +261,6 @@
       <div class="resource-grid" id="pdfGrid"></div>
     </div>
   </div>
-
-  <!-- Media Container for media.html content -->
-  <div id="mediaContainer" class="dashboard-container hidden"></div>
 
   <!-- Audio Player Modal View -->
   <div class="modal-overlay" id="audioModal">
@@ -366,7 +363,6 @@
       document.getElementById('homeLink').addEventListener('click', (e) => { e.preventDefault(); showMainPage(); }); 
       document.getElementById('logoHomeBtn').addEventListener('click', () => showMainPage()); 
       document.getElementById('dashLink').addEventListener('click', (e) => { e.preventDefault(); showDashboard(); }); 
-      document.getElementById('mediaLink').addEventListener('click', (e) => { e.preventDefault(); loadMediaPage(); }); 
       document.getElementById('logoutBtn').addEventListener('click', logout); 
       document.getElementById('registerForm').addEventListener('submit', handleRegister); 
       document.getElementById('loginForm').addEventListener('submit', handleLogin); 
@@ -382,40 +378,6 @@
       audioElement.addEventListener('play', () => { document.getElementById('playPauseAudioBtn').innerText = '⏸'; document.getElementById('barQuickPlayBtn').innerText = '⏸'; }); 
       audioElement.addEventListener('pause', () => { document.getElementById('playPauseAudioBtn').innerText = '▶'; document.getElementById('barQuickPlayBtn').innerText = '▶'; }); 
     });
-
-    async function loadMediaPage() {
-      document.getElementById('dropdownMenu').classList.remove('active');
-      document.getElementById('homePageContent').classList.add('hidden');
-      document.getElementById('dashboardContent').classList.add('hidden');
-      const mediaContainer = document.getElementById('mediaContainer');
-      mediaContainer.classList.remove('hidden');
-      mediaContainer.innerHTML = '<p style="text-align:center; padding:20px; font-size:14px; opacity:0.7;">Loading media content...</p>';
-      
-      try {
-        const response = await fetch('media.html');
-        if (response.ok) {
-          const htmlText = await response.text();
-          mediaContainer.innerHTML = htmlText;
-
-          const scripts = mediaContainer.querySelectorAll('script');
-          scripts.forEach(oldScript => {
-            const newScript = document.createElement('script');
-            Array.from(oldScript.attributes).forEach(attr => {
-              newScript.setAttribute(attr.name, attr.value);
-            });
-            if (oldScript.innerHTML) {
-              newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-            }
-            oldScript.parentNode.replaceChild(newScript, oldScript);
-          });
-
-        } else {
-          mediaContainer.innerHTML = '<div class="notice-card" style="text-align:center; color:#ef4444;">⚠️ media.html file nahi mili. Kripya check karein ki file root directory mein hai ya nahi.</div>';
-        }
-      } catch (err) {
-        mediaContainer.innerHTML = '<div class="notice-card" style="text-align:center; color:#ef4444;">⚠️ Media content load karne mein error aayi: ' + err.message + '</div>';
-      }
-    }
 
     function isMp3File(url) { return (url && typeof url === 'string') ? url.trim().toLowerCase().split('?')[0].endsWith('.mp3') : false; }
     function initAudioPlayer() { let localAudios = JSON.parse(localStorage.getItem('course_audios') || '[]').filter(item => isMp3File(item.url)); if (localAudios.length === 0) { localAudios = [{ title: "Kaushal Institute Welcome Audio", course: "General Info", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" }]; } audioList = [...localAudios]; renderAudioPlaylist(); onValue(ref(db, 'course_audios'), (snapshot) => { if (snapshot.exists()) { const fbAudioData = snapshot.val(), fbList = []; for (let key in fbAudioData) { if (isMp3File(fbAudioData[key]?.url)) fbList.push(fbAudioData[key]); } if (fbList.length > 0) audioList = [...fbList, ...localAudios]; } renderAudioPlaylist(); }); updateAudioUserDisplay(); }
@@ -441,12 +403,12 @@
     async function handleRegister(e) { e.preventDefault(); const submitBtn = document.getElementById('regSubmitBtn'), errorDiv = document.getElementById('regError'), name = document.getElementById('regName').value.trim(), mobile = document.getElementById('regMobile').value.trim(), email = document.getElementById('regEmail').value.trim(), password = document.getElementById('regPassword').value, captchaInput = document.getElementById('regCaptchaInput').value, picInput = document.getElementById('regPic').files[0]; if (captchaInput !== regCaptcha) { errorDiv.innerText = "Captcha Code galat hai!"; generateCaptcha('reg'); return; } submitBtn.disabled = true; submitBtn.innerText = "Registering..."; try { let localUsers = JSON.parse(localStorage.getItem('users') || '[]'); if (localUsers.some(u => u.email === email || u.mobile === mobile || u.name.toLowerCase() === name.toLowerCase())) { errorDiv.innerText = "Invalid: Name, Email ya Mobile pahile se exist karta hai!"; submitBtn.disabled = false; submitBtn.innerText = "Register"; return; } const reader = new FileReader(); reader.onload = async function() { const newUser = { name, mobile, email, password, pic: reader.result, createdAt: new Date().toISOString() }; localUsers.push(newUser); localStorage.setItem('users', JSON.stringify(localUsers)); await set(push(ref(db, 'users')), newUser); alert("Registration Successful!"); document.getElementById('registerForm').reset(); submitBtn.disabled = false; submitBtn.innerText = "Register"; switchTab('login'); }; reader.readAsDataURL(picInput); } catch (err) { errorDiv.innerText = "Server Error: " + err.message; submitBtn.disabled = false; submitBtn.innerText = "Register"; } }
     async function handleLogin(e) { e.preventDefault(); const submitBtn = document.getElementById('loginSubmitBtn'), errorDiv = document.getElementById('loginError'), identifier = document.getElementById('loginIdentifier').value.trim(), password = document.getElementById('loginPassword').value, captchaInput = document.getElementById('loginCaptchaInput').value; if (captchaInput !== loginCaptcha) { errorDiv.innerText = "Captcha Code galat hai!"; generateCaptcha('login'); return; } submitBtn.disabled = true; submitBtn.innerText = "Logging in..."; let localUsers = JSON.parse(localStorage.getItem('users') || '[]'), loggedInUser = localUsers.find(u => (u.email === identifier || u.mobile === identifier || u.name.toLowerCase() === identifier.toLowerCase()) && u.password === password); if (!loggedInUser) { try { const snapshot = await get(child(ref(db), 'users')); if (snapshot.exists()) { const fbUsers = snapshot.val(); for (let k in fbUsers) { if ((fbUsers[k].email === identifier || fbUsers[k].mobile === identifier || fbUsers[k].name.toLowerCase() === identifier.toLowerCase()) && fbUsers[k].password === password) { loggedInUser = fbUsers[k]; break; } } } } catch (err) { console.error(err); } } submitBtn.disabled = false; submitBtn.innerText = "Login"; if (loggedInUser) { localStorage.setItem('currentUser', JSON.stringify(loggedInUser)); initPortalUser(loggedInUser); updateAudioUserDisplay(); showMainPage(); } else { errorDiv.innerText = "Invalid Credentials!"; generateCaptcha('login'); } }
     function initPortalUser(user) { document.getElementById('authContainer').classList.add('hidden'); document.getElementById('mainHeader').classList.remove('hidden'); document.getElementById('headerUserPic').src = user.pic; document.getElementById('cardUserPic').src = user.pic; document.getElementById('cardUserName').innerText = user.name; document.getElementById('cardUserMobile').innerText = user.mobile; document.getElementById('cardUserEmail').innerText = user.email; }
-    function showMainPage() { document.getElementById('dropdownMenu').classList.remove('active'); document.getElementById('dashboardContent').classList.add('hidden'); document.getElementById('mediaContainer').classList.add('hidden'); document.getElementById('homePageContent').classList.remove('hidden'); }
-    async function showDashboard() { document.getElementById('dropdownMenu').classList.remove('active'); document.getElementById('homePageContent').classList.add('hidden'); document.getElementById('mediaContainer').classList.add('hidden'); document.getElementById('dashboardContent').classList.remove('hidden'); const user = JSON.parse(localStorage.getItem('currentUser')); if (user) loadDashboardData(user); }
+    function showMainPage() { document.getElementById('dropdownMenu').classList.remove('active'); document.getElementById('dashboardContent').classList.add('hidden'); document.getElementById('homePageContent').classList.remove('hidden'); }
+    async function showDashboard() { document.getElementById('dropdownMenu').classList.remove('active'); document.getElementById('homePageContent').classList.add('hidden'); document.getElementById('dashboardContent').classList.remove('hidden'); const user = JSON.parse(localStorage.getItem('currentUser')); if (user) loadDashboardData(user); }
     async function loadDashboardData(user) { let enrollments = JSON.parse(localStorage.getItem('course_enrollments') || '[]'), userEnrollment = enrollments.find(e => e.email === user.email || e.mobile === user.mobile), isGranted = userEnrollment ? (userEnrollment.accessGranted || false) : false; if (!isGranted) { try { const snapshot = await get(child(ref(db), 'course_enrollments')); if (snapshot.exists()) { const fbData = snapshot.val(); for (let key in fbData) { if ((fbData[key].email === user.email || fbData[key].mobile === user.mobile) && fbData[key].accessGranted) { isGranted = true; break; } } } } catch (e) {} } const notice = document.getElementById('accessNotice'); if (!isGranted) notice.classList.remove('hidden'); else notice.classList.add('hidden'); loadDashboardResources(isGranted); }
-    function loadDashboardResources(isGranted) { const videoGrid = document.getElementById('videoGrid'), pdfGrid = document.getElementById('pdfGrid'); onValue(ref(db, 'course_videos'), (snapshot) => { videoGrid.innerHTML = ''; let videos = snapshot.exists() ? Object.values(snapshot.val()) : JSON.parse(localStorage.getItem('course_videos') || '[]'); if (videos.length === 0) { videoGrid.innerHTML = '<p style="font-size:14px; opacity:0.7;">No video lectures uploaded yet.</p>'; } else { videos.forEach(v => { const card = document.createElement('div'); card.className = 'resource-card'; card.innerHTML = `<span class="badge-course">${v.course || 'General'}</span><h4>${v.title}</h4>${isGranted ? `<a href="${v.url}" target="_blank">Watch Video ▶</a>` : `<button style="padding:6px 10px; background:#94a3b8; color:white; border:none; border-radius:4px; cursor:not-allowed;" disabled>🔒 Access Locked</button>`}`; videoGrid.appendChild(card); }); } }); onValue(ref(db, 'course_pdfs'), (snapshot) => { pdfGrid.innerHTML = ''; let pdfs = snapshot.exists() ? Object.values(snapshot.val()) : JSON.parse(localStorage.getItem('course_pdfs') || '[]'); if (pdfs.length === 0) { pdfGrid.innerHTML = '<p style="font-size:14px; opacity:0.7;">No PDF study materials uploaded yet.</p>'; } else { pdfs.forEach(p => { const card = document.createElement('div'); card.className = 'resource-card'; card.innerHTML = `<span class="badge-course">${p.course || 'General'}</span><h4>${p.title}</h4>${isGranted ? `<a href="${p.url}" target="_blank" style="background:#16a34a;">Download PDF 📥</a>` : `<button style="padding:6px 10px; background:#94a3b8; color:white; border:none; border-radius:4px; cursor:not-allowed;" disabled>🔒 Access Locked</button>`}`; pdfGrid.appendChild(card); }); } }); }
+    function loadDashboardResources(isGranted) { const videoGrid = document.getElementById('videoGrid'), pdfGrid = document.getElementById('pdfGrid'); onValue(ref(db, 'course_videos'), (snapshot) => { videoGrid.innerHTML = ''; let videos = snapshot.exists() ? Object.values(snapshot.val()) : JSON.parse(localStorage.getItem('course_videos') || '[]'); if (videos.length === 0) { videoGrid.innerHTML = '<p style="font-size:14px; opacity:0.7;">No video lectures uploaded yet.</p>'; } else { videos.forEach(v => { const card = document.createElement('div'); card.className = 'resource-card'; card.html = `<span class="badge-course">${v.course || 'General'}</span><h4>${v.title}</h4>${isGranted ? `<a href="${v.url}" target="_blank">Watch Video ▶</a>` : `<button style="padding:6px 10px; background:#94a3b8; color:white; border:none; border-radius:4px; cursor:not-allowed;" disabled>🔒 Access Locked</button>`}`; card.innerHTML = `<span class="badge-course">${v.course || 'General'}</span><h4>${v.title}</h4>${isGranted ? `<a href="${v.url}" target="_blank">Watch Video ▶</a>` : `<button style="padding:6px 10px; background:#94a3b8; color:white; border:none; border-radius:4px; cursor:not-allowed;" disabled>🔒 Access Locked</button>`}`; videoGrid.appendChild(card); }); } }); onValue(ref(db, 'course_pdfs'), (snapshot) => { pdfGrid.innerHTML = ''; let pdfs = snapshot.exists() ? Object.values(snapshot.val()) : JSON.parse(localStorage.getItem('course_pdfs') || '[]'); if (pdfs.length === 0) { pdfGrid.innerHTML = '<p style="font-size:14px; opacity:0.7;">No PDF study materials uploaded yet.</p>'; } else { pdfs.forEach(p => { const card = document.createElement('div'); card.className = 'resource-card'; card.innerHTML = `<span class="badge-course">${p.course || 'General'}</span><h4>${p.title}</h4>${isGranted ? `<a href="${p.url}" target="_blank" style="background:#16a34a;">Download PDF 📥</a>` : `<button style="padding:6px 10px; background:#94a3b8; color:white; border:none; border-radius:4px; cursor:not-allowed;" disabled>🔒 Access Locked</button>`}`; pdfGrid.appendChild(card); }); } }); }
     function checkLoginStatus() { const currentUser = JSON.parse(localStorage.getItem('currentUser')); if (currentUser) { initPortalUser(currentUser); showMainPage(); } }
-    function logout() { localStorage.removeItem('currentUser'); document.getElementById('mainHeader').classList.add('hidden'); document.getElementById('dashboardContent').classList.add('hidden'); document.getElementById('homePageContent').classList.add('hidden'); document.getElementById('mediaContainer').classList.add('hidden'); document.getElementById('profileCard').classList.remove('active'); document.getElementById('authContainer').classList.remove('hidden'); document.getElementById('loginForm').reset(); generateCaptcha('login'); updateAudioUserDisplay(); }
+    function logout() { localStorage.removeItem('currentUser'); document.getElementById('mainHeader').classList.add('hidden'); document.getElementById('dashboardContent').classList.add('hidden'); document.getElementById('homePageContent').classList.add('hidden'); document.getElementById('profileCard').classList.remove('active'); document.getElementById('authContainer').classList.remove('hidden'); document.getElementById('loginForm').reset(); generateCaptcha('login'); updateAudioUserDisplay(); }
   </script>
 </body>
 </html>
