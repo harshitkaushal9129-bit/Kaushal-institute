@@ -8,12 +8,12 @@
   "description": "Kaushal Institute Student Portal and Learning Dashboard",
   "icons": [
     {
-      "src": "https://via.placeholder.com/192",
+      "src": "Kaushalji.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://via.placeholder.com/512",
+      "src": "Kaushalji.png",
       "sizes": "512x512",
       "type": "image/png"
     }
