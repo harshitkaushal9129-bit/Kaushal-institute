@@ -84,34 +84,11 @@
   <div class="container">
     <div id="coursesSection">
       <h2 class="section-title">Select a Course to Enroll</h2>
-      <div class="course-grid">
-        <div class="course-card active" id="card-ADCA" onclick="selectCourse('ADCA', '12 Months')">
-          <h3>ADCA</h3>
-          <p>Advance Diploma in Computer Applications</p>
-          <div class="fee-text" id="fee-ADCA">₹12,000</div>
-          <span class="badge">Duration: 12 Months</span>
-        </div>
-        <div class="course-card" id="card-CCC" onclick="selectCourse('CCC', '3 Months')">
-          <h3>CCC</h3>
-          <p>Course on Computer Concepts (NIELIT)</p>
-          <div class="fee-text" id="fee-CCC">₹3,500</div>
-          <span class="badge">Duration: 3 Months</span>
-        </div>
-        <div class="course-card" id="card-Tally" onclick="selectCourse('Tally', '3 Months')">
-          <h3>Tally Prime</h3>
-          <p>GST, Accounting & Tally Prime Certification</p>
-          <div class="fee-text" id="fee-Tally">₹4,500</div>
-          <span class="badge">Duration: 3 Months</span>
-        </div>
-        <div class="course-card" id="card-OLevel" onclick="selectCourse('OLevel', '12 Months')">
-          <h3>O Level</h3>
-          <p>NIELIT Diploma in IT & Software</p>
-          <div class="fee-text" id="fee-OLevel">₹15,000</div>
-          <span class="badge">Duration: 12 Months</span>
-        </div>
+      <div class="course-grid" id="dynamicCourseGrid">
+        <!-- Dynamic Courses Loaded from Firebase -->
       </div>
       <div class="form-container">
-        <h3 id="formTitle" style="margin-bottom: 15px; color: var(--primary-color);">ADCA Course Admission Form</h3>
+        <h3 id="formTitle" style="margin-bottom: 15px; color: var(--primary-color);">Course Admission Form</h3>
         <form id="courseAdmissionForm">
           <input type="hidden" id="selectedCourseName" value="ADCA">
           <input type="hidden" id="selectedCourseFee" value="12000">
@@ -165,11 +142,6 @@
         <input type="text" id="searchInput" class="search-input" placeholder="Search by name, email, mobile or UTR..." onkeyup="filterStudents()">
         <select id="courseFilter" class="filter-select" onchange="filterStudents()">
           <option value="ALL">All Courses</option>
-          <option value="ADCA">ADCA</option>
-          <option value="CCC">CCC</option>
-          <option value="Tally">Tally Prime</option>
-          <option value="OLevel">O Level</option>
-          <option value="General Registration">General Registration Only</option>
         </select>
         <button id="lockToggleBtn" class="lock-btn" onclick="openAdminModal()">🔒 Admin View</button>
       </div>
@@ -233,38 +205,58 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const DEFAULT_FEES = {
-      'ADCA': '12000',
-      'CCC': '3500',
-      'Tally': '4500',
-      'OLevel': '15000'
-    };
-
+    let cachedFees = { 'ADCA': '12000', 'CCC': '3500', 'Tally': '4500', 'OLevel': '15000' };
     let allStudentsData = [];
     let isUnlockedAll = false;
 
-    function getFees() {
-      const savedFees = localStorage.getItem('course_fees');
-      return savedFees ? JSON.parse(savedFees) : DEFAULT_FEES;
+    async function fetchFeesAndInit() {
+      try {
+        const snapshot = await get(child(ref(db), 'course_fees'));
+        if (snapshot.exists()) {
+          cachedFees = snapshot.val();
+        }
+      } catch (e) {
+        console.log("Could not load fees from Firebase, using defaults.");
+      }
+      renderCourseGrid();
+      updateCourseFilterDropdown();
     }
 
-    function syncFeesUI() {
-      const fees = getFees();
-      for (let course in fees) {
-        const feeElem = document.getElementById(`fee-${course}`);
-        if (feeElem) {
-          feeElem.innerText = `₹${Number(fees[course]).toLocaleString('en-IN')}`;
-        }
+    function renderCourseGrid() {
+      const grid = document.getElementById('dynamicCourseGrid');
+      grid.innerHTML = '';
+      
+      const firstCourse = Object.keys(cachedFees)[0] || 'ADCA';
+      
+      for (let course in cachedFees) {
+        const fee = cachedFees[course];
+        const card = document.createElement('div');
+        card.className = `course-card ${course === firstCourse ? 'active' : ''}`;
+        card.id = `card-${course}`;
+        card.onclick = () => selectCourse(course);
+        card.innerHTML = `
+          <h3>${course}</h3>
+          <p>Professional Certification Course</p>
+          <div class="fee-text" id="fee-${course}">₹${Number(fee).toLocaleString('en-IN')}</div>
+          <span class="badge">Active Batch</span>
+        `;
+        grid.appendChild(card);
       }
-      const activeCourse = document.getElementById('selectedCourseName').value;
-      if (fees[activeCourse]) {
-        document.getElementById('selectedCourseFee').value = fees[activeCourse];
-        document.getElementById('displayFee').value = `₹${Number(fees[activeCourse]).toLocaleString('en-IN')}`;
+
+      selectCourse(firstCourse);
+    }
+
+    function updateCourseFilterDropdown() {
+      const filterSelect = document.getElementById('courseFilter');
+      let html = '<option value="ALL">All Courses</option>';
+      for (let course in cachedFees) {
+        html += `<option value="${course}">${course}</option>`;
       }
+      filterSelect.innerHTML = html;
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      syncFeesUI();
+      fetchFeesAndInit();
       loadStudentData();
       document.getElementById('courseAdmissionForm').addEventListener('submit', handleEnrollment);
       if (localStorage.getItem('theme') === 'dark') {
@@ -286,19 +278,20 @@
         coursesSec.classList.add('hidden');
         studentsSec.classList.remove('hidden');
         tabStudentsBtn.classList.add('active');
-        tabStudentsBtn.classList.remove('active');
+        tabCoursesBtn.classList.remove('active');
         loadStudentData();
       }
     };
 
-    window.selectCourse = function(courseName, duration) {
+    window.selectCourse = function(courseName) {
       document.querySelectorAll('.course-card').forEach(c => c.classList.remove('active'));
-      document.getElementById(`card-${courseName}`).classList.add('active');
+      const activeCard = document.getElementById(`card-${courseName}`);
+      if(activeCard) activeCard.classList.add('active');
+      
       document.getElementById('formTitle').innerText = `${courseName} Course Admission Form`;
       document.getElementById('selectedCourseName').value = courseName;
       
-      const fees = getFees();
-      const currentFee = fees[courseName] || '0';
+      const currentFee = cachedFees[courseName] || '0';
       document.getElementById('selectedCourseFee').value = currentFee;
       document.getElementById('displayFee').value = `₹${Number(currentFee).toLocaleString('en-IN')}`;
     };
@@ -360,87 +353,31 @@
       };
 
       try {
-        // 1. LocalStorage Update (Duplicate mobile/email control)
-        let localEnrollments = JSON.parse(localStorage.getItem('course_enrollments') || '[]');
-        let existingIndex = localEnrollments.findIndex(
-          item => item.email === stdEmail || item.mobile === stdMobile
-        );
-
-        if (existingIndex !== -1) {
-          // Existing user detected: Update enrollment instead of duplicate addition
-          localEnrollments[existingIndex] = {
-            ...localEnrollments[existingIndex],
-            ...enrollmentData
-          };
-        } else {
-          localEnrollments.push(enrollmentData);
-        }
-        localStorage.setItem('course_enrollments', JSON.stringify(localEnrollments));
-
-        // 2. Firebase Database Sync (Mobile as unique identifier node)
         const userDbKey = stdMobile || stdEmail.replace(/[^a-zA-Z0-9]/g, "_");
         const userRef = ref(db, 'course_enrollments/' + userDbKey);
 
         await set(userRef, enrollmentData);
-
-        alert(`Admission details updated successfully for ${stdName}! UTR: ${stdUtr}`);
+        alert(`Admission details submitted successfully for ${stdName}! UTR: ${stdUtr}`);
         document.getElementById('courseAdmissionForm').reset();
-        selectCourse('ADCA', '12 Months');
-
       } catch (err) {
         console.error("Firebase Error: ", err);
-        alert("Saved in LocalStorage! (Firebase sync failed)");
+        alert("Failed to submit admission to server.");
       }
 
       submitBtn.disabled = false;
-      submitBtn.innerText = "Submit Admission";
+      submitBtn.innerText = "2. Submit Admission";
+      loadStudentData();
     }
 
     async function loadStudentData() {
       allStudentsData = [];
-      let regUsers = JSON.parse(localStorage.getItem('users') || '[]');
-      regUsers.forEach(u => {
-        allStudentsData.push({
-          name: u.name,
-          mobile: u.mobile,
-          email: u.email,
-          course: 'General Registration',
-          batch: 'N/A',
-          fee: 'N/A',
-          utr: 'N/A',
-          pic: u.pic || "https://via.placeholder.com/150/2563eb/ffffff?text=User",
-          status: 'registered'
-        });
-      });
-
-      // Merge local and remote enrolled users safely
-      let enrollmentsMap = new Map();
-
-      let localEnrollments = JSON.parse(localStorage.getItem('course_enrollments') || '[]');
-      localEnrollments.forEach(e => {
-        let key = e.mobile || e.email;
-        enrollmentsMap.set(key, {
-          name: e.name,
-          mobile: e.mobile,
-          email: e.email,
-          course: e.course,
-          batch: e.batch,
-          fee: e.fee,
-          utr: e.utr || 'N/A',
-          pic: e.pic || "https://via.placeholder.com/150/2563eb/ffffff?text=User",
-          status: 'enrolled'
-        });
-      });
-
       try {
-        const dbRef = ref(db);
-        const snapshot = await get(child(dbRef, 'course_enrollments'));
+        const snapshot = await get(child(ref(db), 'course_enrollments'));
         if (snapshot.exists()) {
           const fbEnrollments = snapshot.val();
           for (let key in fbEnrollments) {
             let item = fbEnrollments[key];
-            let userKey = item.mobile || item.email;
-            enrollmentsMap.set(userKey, {
+            allStudentsData.push({
               name: item.name,
               mobile: item.mobile,
               email: item.email,
@@ -454,18 +391,8 @@
           }
         }
       } catch (err) {
-        console.log("Firebase Offline - showing cached data.");
+        console.log("Firebase Offline - cannot fetch students.");
       }
-
-      enrollmentsMap.forEach(student => {
-        // Remove duplicate entry if registered user has completed enrollment
-        let existingRegIndex = allStudentsData.findIndex(u => u.mobile === student.mobile || u.email === student.email);
-        if (existingRegIndex !== -1) {
-          allStudentsData.splice(existingRegIndex, 1);
-        }
-        allStudentsData.push(student);
-      });
-
       filterStudents();
     }
 
@@ -516,7 +443,7 @@
           <td>${std.mobile}</td>
           <td>${std.email}</td>
           <td>
-            <span class="status-badge ${std.status === 'enrolled' ? 'status-enrolled' : 'status-registered'}">
+            <span class="status-badge status-enrolled">
               ${std.course}
             </span>
           </td>
@@ -531,19 +458,14 @@
     window.filterStudents = function() {
       const query = document.getElementById('searchInput').value.toLowerCase();
       const courseFilter = document.getElementById('courseFilter').value;
-      const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+      
       const filtered = allStudentsData.filter(std => {
-        const matchesUser = isUnlockedAll || (currentUser && (
-          std.email === currentUser.email || 
-          std.mobile === currentUser.mobile || 
-          std.name.toLowerCase() === (currentUser.name || '').toLowerCase()
-        ));
         const matchesQuery = std.name.toLowerCase().includes(query) || 
                              std.email.toLowerCase().includes(query) || 
                              std.mobile.includes(query) ||
                              (std.utr && std.utr.toLowerCase().includes(query));
         const matchesCourse = courseFilter === 'ALL' || std.course === courseFilter;
-        return matchesUser && matchesQuery && matchesCourse;
+        return matchesQuery && matchesCourse;
       });
       renderStudentTable(filtered);
     };
