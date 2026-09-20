@@ -12,6 +12,7 @@ body.light-theme { background: #f8fafc; color: #1e293b; }
 /* Header */
 header { background: linear-gradient(135deg, #0284c7, #0369a1); color: white; padding: 14px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 100; }
 .logo-title { font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 10px; letter-spacing: 0.5px; }
+.header-btns { display: flex; gap: 10px; align-items: center; }
 .btn { padding: 8px 16px; border: none; background: #0284c7; color: white; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 .btn:hover { background: #0369a1; transform: translateY(-1px); }
 
@@ -57,13 +58,30 @@ body.light-theme .import-card { background: #ffffff; border-color: #0284c7; box-
 body.light-theme .main-stage { background: #ffffff; box-shadow: 0 8px 25px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
 
 #videoElement, #imageElement { max-width: 100%; max-height: 350px; border-radius: 10px; object-fit: contain; display: none; }
-#pdfViewerElement { width: 100%; height: 360px; border: none; border-radius: 10px; display: none; background: white; }
+#pdfViewerContainer { width: 100%; height: 380px; display: none; flex-direction: column; gap: 10px; align-items: center; }
+#pdfViewerElement { width: 100%; height: 320px; border: 1px solid #334155; border-radius: 10px; background: white; }
 #visualizerCanvas { width: 100%; height: 120px; display: none; margin-top: 10px; }
 
 .toast-msg { display: none; background: #22c55e; color: white; padding: 10px 16px; border-radius: 8px; text-align: center; font-weight: bold; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: fadeIn 0.3s ease; }
 .toast-msg.loading { background: #0284c7; }
 .toast-msg.error { background: #ef4444; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Samsung Music Style Full-Screen Modal Player */
+.fullscreen-player-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at center, #1e293b 0%, #0b0f19 100%); z-index: 9999; display: none; flex-direction: column; justify-content: space-between; padding: 30px; color: white; backdrop-filter: blur(20px); }
+.fs-header { display: flex; justify-content: space-between; align-items: center; }
+.fs-body { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center; flex: 1; }
+.fs-album-art { width: 220px; height: 220px; border-radius: 20px; background: linear-gradient(135deg, #0284c7, #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 70px; box-shadow: 0 15px 35px rgba(2, 132, 199, 0.4); animation: pulseGlow 3s infinite alternate; }
+@keyframes pulseGlow { 0% { transform: scale(1); box-shadow: 0 15px 35px rgba(2, 132, 199, 0.4); } 100% { transform: scale(1.03); box-shadow: 0 20px 45px rgba(139, 92, 246, 0.6); } }
+
+.fs-controls-container { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 600px; margin: auto; }
+.fs-progress-row { display: flex; align-items: center; gap: 12px; font-size: 12px; opacity: 0.9; }
+.fs-slider { flex: 1; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; cursor: pointer; accent-color: #38bdf8; }
+.fs-main-controls { display: flex; justify-content: center; align-items: center; gap: 20px; }
+.fs-btn { background: rgba(255,255,255,0.1); border: none; color: white; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: 0.2s; backdrop-filter: blur(5px); }
+.fs-btn:hover { background: #0284c7; transform: scale(1.1); }
+.fs-btn-primary { width: 65px; height: 65px; background: #0284c7; font-size: 24px; }
+.fs-extra-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 12px; }
 
 /* Bottom Sticky Control Bar */
 .audio-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(10px); border-top: 1px solid #334155; color: white; padding: 10px 20px; display: flex; flex-direction: column; gap: 6px; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.4); }
@@ -72,11 +90,11 @@ body.light-theme .audio-bar { background: rgba(255, 255, 255, 0.96); border-top:
 .progress-container { width: 100%; display: flex; align-items: center; gap: 10px; font-size: 11px; opacity: 0.9; }
 .progress-bar { flex: 1; height: 4px; background: #334155; border-radius: 2px; cursor: pointer; accent-color: #0284c7; }
 .bar-main-row { display: flex; justify-content: space-between; align-items: center; }
-.track-info { display: flex; flex-direction: column; max-width: 280px; }
-.controls-group { display: flex; align-items: center; gap: 10px; }
-.ctrl-btn { background: #0284c7; border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+.track-info { display: flex; flex-direction: column; max-width: 250px; }
+.controls-group { display: flex; align-items: center; gap: 8px; }
+.ctrl-btn { background: #0284c7; border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
 .ctrl-btn:hover { background: #0369a1; transform: scale(1.05); }
-.extra-controls { display: flex; align-items: center; gap: 12px; font-size: 12px; }
+.extra-controls { display: flex; align-items: center; gap: 10px; font-size: 12px; }
 select { background: #1e293b; color: white; border: 1px solid #334155; padding: 4px 6px; border-radius: 6px; cursor: pointer; }
 body.light-theme select { background: #f1f5f9; color: #1e293b; border-color: #cbd5e1; }
 </style>
@@ -87,7 +105,10 @@ body.light-theme select { background: #f1f5f9; color: #1e293b; border-color: #cb
   <div class="logo-title">
     <span>⚡ KAUSHAL MEDIA & FILE PORTAL</span>
   </div>
-  <div><button id="themeToggleBtn" class="btn" style="padding: 6px 12px; font-size: 12px;">🌙 / ☀️</button></div>
+  <div class="header-btns">
+    <button id="openFullPlayerBtn" class="btn" style="background: #8b5cf6; font-size: 12px;" title="बड़ा प्लेयर खोलें">🎵 फुल प्लेयर</button>
+    <button id="themeToggleBtn" class="btn" style="padding: 6px 12px; font-size: 12px;">🌙 / ☀️</button>
+  </div>
 </header>
 
 <div class="app-container">
@@ -126,11 +147,68 @@ body.light-theme select { background: #f1f5f9; color: #1e293b; border-color: #cb
     <div class="main-stage">
       <video id="videoElement" controls></video>
       <img id="imageElement" alt="Media Preview">
-      <iframe id="pdfViewerElement" title="PDF Document Viewer"></iframe>
+      
+      <!-- PDF Viewer Container fixed -->
+      <div id="pdfViewerContainer">
+        <div style="display:flex; justify-content: space-between; width:100%; align-items:center;">
+          <span id="pdfFileName" style="font-weight: bold; font-size: 13px;">PDF Document</span>
+          <a id="pdfDownloadBtn" class="btn" style="padding: 4px 10px; font-size: 11px;" target="_blank">📥 डाउनलोड / फुल व्यू</a>
+        </div>
+        <iframe id="pdfViewerElement" title="PDF Document Viewer"></iframe>
+      </div>
+
       <canvas id="visualizerCanvas"></canvas>
       <div id="emptyState" style="opacity: 0.6; font-size: 15px;">🎵 कोई भी फाइल चयनित नहीं है</div>
     </div>
   </div>
+</div>
+
+<!-- Samsung Music Style Full-Screen Player Modal -->
+<div class="fullscreen-player-modal" id="fullPlayerModal">
+  <div class="fs-header">
+    <span style="font-weight: bold; letter-spacing: 1px; font-size: 14px;">🎧 KAUSHAL PRO PLAYER</span>
+    <button class="btn" id="closeFullPlayerBtn" style="background: rgba(255,255,255,0.1); border-radius: 50%; width: 35px; height: 35px; display:flex; align-items:center; justify-content:center;">✕</button>
+  </div>
+  
+  <div class="fs-body">
+    <div class="fs-album-art">🎶</div>
+    <div>
+      <h2 id="fsTrackTitle" style="font-size: 20px; margin-bottom: 5px; max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">ट्रैक का नाम</h2>
+      <p id="fsTrackSubtitle" style="font-size: 12px; opacity: 0.7;">Kaushal Music Player</p>
+    </div>
+
+    <div class="fs-controls-container">
+      <div class="fs-progress-row">
+        <span id="fsCurrentTime">00:00</span>
+        <input type="range" id="fsProgressBar" class="fs-slider" value="0" min="0" max="100" step="0.1">
+        <span id="fsDurationTime">00:00</span>
+      </div>
+
+      <div class="fs-main-controls">
+        <button class="fs-btn" id="fsPrevBtn" title="पिछला ट्रैक">⏮</button>
+        <button class="fs-btn" id="fsRewindBtn" title="10 सेकंड पीछे">⏪ -10s</button>
+        <button class="fs-btn fs-btn-primary" id="fsPlayPauseBtn" title="प्ले/पॉज़">▶</button>
+        <button class="fs-btn" id="fsForwardBtn" title="10 सेकंड आगे">+10s ⏩</button>
+        <button class="fs-btn" id="fsNextBtn" title="अगला ट्रैक">⏭</button>
+      </div>
+
+      <div class="fs-extra-row">
+        <label style="display:flex; align-items:center; gap:6px;">स्पीड: 
+          <select id="fsPlaybackSpeed" style="background:#0f172a; color:white; border:1px solid #334155; padding:4px 8px; border-radius:6px;">
+            <option value="0.5">0.5x</option>
+            <option value="1" selected>1.0x</option>
+            <option value="1.25">1.25x</option>
+            <option value="1.5">1.5x</option>
+            <option value="2">2.0x</option>
+          </select>
+        </label>
+        <label style="display:flex; align-items:center; gap:6px;">वॉल्यूम: 
+          <input type="range" id="fsVolumeSlider" min="0" max="1" step="0.05" value="1" style="width: 80px; accent-color: #38bdf8;">
+        </label>
+      </div>
+    </div>
+  </div>
+  <div></div>
 </div>
 
 <!-- Bottom Control Bar -->
@@ -142,13 +220,15 @@ body.light-theme select { background: #f1f5f9; color: #1e293b; border-color: #cb
   </div>
   <div class="bar-main-row">
     <div class="track-info">
-      <div id="barTrackTitle" style="font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">ट्रैक चुनें</div>
+      <div id="barTrackTitle" style="font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px;">ट्रैक चुनें</div>
       <div id="barTrackSubtitle" style="font-size: 10px; opacity: 0.8;">Player Ready</div>
     </div>
     <div class="controls-group">
+      <button class="ctrl-btn" id="rewindBtn" title="10s पीछे">⏪</button>
       <button class="ctrl-btn" id="prevBtn" title="पिछला">⏮</button>
-      <button class="ctrl-btn" id="playPauseBtn" title="प्ले/पॉज़">▶</button>
+      <button class="ctrl-btn" id="playPauseBtn" title="प्ले/पॉज़" style="width: 40px; height: 40px; font-size: 16px;">▶</button>
       <button class="ctrl-btn" id="nextBtn" title="अगला">⏭</button>
+      <button class="ctrl-btn" id="forwardBtn" title="10s आगे">⏩</button>
     </div>
     <div class="extra-controls">
       <label style="font-size: 11px; display:flex; align-items:center; gap:3px;">स्पीड: 
@@ -159,9 +239,6 @@ body.light-theme select { background: #f1f5f9; color: #1e293b; border-color: #cb
           <option value="1.5">1.5x</option>
           <option value="2">2.0x</option>
         </select>
-      </label>
-      <label style="font-size: 11px; display:flex; align-items:center; gap:3px;">वॉल्यूम: 
-        <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" style="width: 60px; accent-color: #0284c7;">
       </label>
     </div>
   </div>
@@ -195,12 +272,12 @@ let audioCtx = null, analyser = null, sourceNode = null;
 const audioElement = document.getElementById('mainAudioElement'),
       videoElement = document.getElementById('videoElement'),
       imageElement = document.getElementById('imageElement'),
+      pdfViewerContainer = document.getElementById('pdfViewerContainer'),
       pdfViewerElement = document.getElementById('pdfViewerElement'),
       visualizerCanvas = document.getElementById('visualizerCanvas'),
       emptyState = document.getElementById('emptyState'),
       canvasCtx = visualizerCanvas.getContext('2d');
 
-// IndexedDB Initialization for Large Files (Audio, Video, Images, PDFs)
 function initIndexedDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('KaushalMediaManagerDB', 1);
@@ -230,9 +307,27 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('folderInput').addEventListener('change', handleFileInput);
   document.getElementById('fileInput').addEventListener('change', handleFileInput);
   document.getElementById('clearDataBtn').addEventListener('click', clearAllData);
-  document.getElementById('playPauseBtn').addEventListener('click', togglePlay);
-  document.getElementById('prevBtn').addEventListener('click', playPrev);
-  document.getElementById('nextBtn').addEventListener('click', playNext);
+  
+  // Controls Bindings
+  const togglePlayAll = () => togglePlay();
+  const skipPrev = () => playPrev();
+  const skipNext = () => playNext();
+  const skipRewind = () => seekTime(-10);
+  const skipForward = () => seekTime(10);
+
+  ['playPauseBtn', 'fsPlayPauseBtn'].forEach(id => document.getElementById(id).addEventListener('click', togglePlayAll));
+  ['prevBtn', 'fsPrevBtn'].forEach(id => document.getElementById(id).addEventListener('click', skipPrev));
+  ['nextBtn', 'fsNextBtn'].forEach(id => document.getElementById(id).addEventListener('click', skipNext));
+  ['rewindBtn', 'fsRewindBtn'].forEach(id => document.getElementById(id).addEventListener('click', skipRewind));
+  ['forwardBtn', 'fsForwardBtn'].forEach(id => document.getElementById(id).addEventListener('click', skipForward));
+
+  // Full Player Modal Toggle
+  document.getElementById('openFullPlayerBtn').addEventListener('click', () => {
+    document.getElementById('fullPlayerModal').style.display = 'flex';
+  });
+  document.getElementById('closeFullPlayerBtn').addEventListener('click', () => {
+    document.getElementById('fullPlayerModal').style.display = 'none';
+  });
   
   document.getElementById('searchInput').addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase(); applyFilters(); });
   document.querySelectorAll('.filter-tab').forEach(tab => {
@@ -249,32 +344,37 @@ window.addEventListener('DOMContentLoaded', async () => {
   audioElement.addEventListener('timeupdate', updateProgress);
   videoElement.addEventListener('timeupdate', updateProgress);
 
-  document.getElementById('progressBar').addEventListener('input', (e) => {
-    const activeEl = getCurrentMediaElement();
-    if(activeEl && activeEl.duration) {
-      activeEl.currentTime = (e.target.value / 100) * activeEl.duration;
-    }
+  // Progress Bar scrubbing
+  ['progressBar', 'fsProgressBar'].forEach(id => {
+    document.getElementById(id).addEventListener('input', (e) => {
+      const activeEl = getCurrentMediaElement();
+      if(activeEl && activeEl.duration) {
+        activeEl.currentTime = (e.target.value / 100) * activeEl.duration;
+      }
+    });
   });
 
-  document.getElementById('volumeSlider').addEventListener('input', (e) => {
+  // Volume & Speed sync
+  document.getElementById('fsVolumeSlider').addEventListener('input', (e) => {
     audioElement.volume = e.target.value;
     videoElement.volume = e.target.value;
   });
 
-  document.getElementById('playbackSpeed').addEventListener('change', (e) => {
-    const speed = parseFloat(e.target.value);
-    audioElement.playbackRate = speed;
-    videoElement.playbackRate = speed;
+  ['playbackSpeed', 'fsPlaybackSpeed'].forEach(id => {
+    document.getElementById(id).addEventListener('change', (e) => {
+      const speed = parseFloat(e.target.value);
+      audioElement.playbackRate = speed;
+      videoElement.playbackRate = speed;
+      document.getElementById('playbackSpeed').value = speed;
+      document.getElementById('fsPlaybackSpeed').value = speed;
+    });
   });
 
-  // Drag and Drop Zone
   const dropZone = document.getElementById('dropZone');
   ['dragenter', 'dragover'].forEach(name => dropZone.addEventListener(name, (e) => { e.preventDefault(); dropZone.classList.add('dragover'); }));
   ['dragleave', 'drop'].forEach(name => dropZone.addEventListener(name, (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); }));
   dropZone.addEventListener('drop', (e) => {
-    if(e.dataTransfer.files.length) {
-      handleFiles(Array.from(e.dataTransfer.files));
-    }
+    if(e.dataTransfer.files.length) handleFiles(Array.from(e.dataTransfer.files));
   });
 });
 
@@ -363,7 +463,7 @@ function renderPlaylist() {
     return;
   }
 
-  filteredMediaList.forEach((item, idx) => {
+  filteredMediaList.forEach((item) => {
     const div = document.createElement('div');
     const originalIndex = combinedMediaList.indexOf(item);
     div.className = `playlist-item ${originalIndex === currentMediaIndex ? 'active' : ''}`;
@@ -386,29 +486,33 @@ function loadAndPlayMedia(index) {
   const media = combinedMediaList[currentMediaIndex];
 
   audioElement.pause(); videoElement.pause();
-  videoElement.style.display = 'none'; imageElement.style.display = 'none'; pdfViewerElement.style.display = 'none'; visualizerCanvas.style.display = 'none'; emptyState.style.display = 'none';
+  videoElement.style.display = 'none'; imageElement.style.display = 'none'; pdfViewerContainer.style.display = 'none'; visualizerCanvas.style.display = 'none'; emptyState.style.display = 'none';
   
   document.getElementById('audioBarContainer').style.display = (media.type === 'audio' || media.type === 'video') ? 'flex' : 'none';
   document.getElementById('barTrackTitle').innerText = media.title;
   document.getElementById('barTrackSubtitle').innerText = `${media.type.toUpperCase()} | ${media.source}`;
+  document.getElementById('fsTrackTitle').innerText = media.title;
+  document.getElementById('fsTrackSubtitle').innerText = `${media.type.toUpperCase()} | ${media.source}`;
 
   if (media.type === 'audio') {
     audioElement.src = media.url; 
     audioElement.play().catch(e => console.log(e));
     visualizerCanvas.style.display = 'block';
     setupAudioVisualizer();
-    document.getElementById('playPauseBtn').innerText = '⏸';
+    updatePlayPauseIcons('⏸');
   } else if (media.type === 'video') {
     videoElement.src = media.url; 
     videoElement.style.display = 'block'; 
     videoElement.play().catch(e => console.log(e));
-    document.getElementById('playPauseBtn').innerText = '⏸';
+    updatePlayPauseIcons('⏸');
   } else if (media.type === 'image') {
     imageElement.src = media.url; 
     imageElement.style.display = 'block';
   } else if (media.type === 'pdf') {
+    pdfViewerContainer.style.display = 'flex';
     pdfViewerElement.src = media.url;
-    pdfViewerElement.style.display = 'block';
+    document.getElementById('pdfFileName').innerText = media.title;
+    document.getElementById('pdfDownloadBtn').href = media.url;
   }
   renderPlaylist();
 }
@@ -464,10 +568,22 @@ function togglePlay() {
 
   if (activeEl.paused) {
     activeEl.play();
-    document.getElementById('playPauseBtn').innerText = '⏸';
+    updatePlayPauseIcons('⏸');
   } else {
     activeEl.pause();
-    document.getElementById('playPauseBtn').innerText = '▶';
+    updatePlayPauseIcons('▶');
+  }
+}
+
+function updatePlayPauseIcons(icon) {
+  document.getElementById('playPauseBtn').innerText = icon;
+  document.getElementById('fsPlayPauseBtn').innerText = icon;
+}
+
+function seekTime(seconds) {
+  const activeEl = getCurrentMediaElement();
+  if (activeEl && !isNaN(activeEl.duration)) {
+    activeEl.currentTime = Math.min(Math.max(activeEl.currentTime + seconds, 0), activeEl.duration);
   }
 }
 
@@ -480,10 +596,18 @@ function updateProgress() {
 
   const current = activeEl.currentTime;
   const duration = activeEl.duration;
+  const percent = (current / duration) * 100;
   
-  document.getElementById('progressBar').value = (current / duration) * 100;
-  document.getElementById('currentTime').innerText = formatTime(current);
-  document.getElementById('durationTime').innerText = formatTime(duration);
+  document.getElementById('progressBar').value = percent;
+  document.getElementById('fsProgressBar').value = percent;
+  
+  const formattedCur = formatTime(current);
+  const formattedDur = formatTime(duration);
+
+  document.getElementById('currentTime').innerText = formattedCur;
+  document.getElementById('durationTime').innerText = formattedDur;
+  document.getElementById('fsCurrentTime').innerText = formattedCur;
+  document.getElementById('fsDurationTime').innerText = formattedDur;
 }
 
 function formatTime(seconds) {
