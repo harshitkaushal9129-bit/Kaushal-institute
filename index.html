@@ -10,12 +10,102 @@
   <meta name="theme-color" content="#1e293b">
 
   <style>
-    :root { --bg-color: #f0f2f5; --header-bg: #1e293b; --card-bg: #ffffff; --text-color: #334155; --card-text: #333333; --input-border: #cbd5e1; --title-color: #38bdf8; --primary-color: #2563eb; }
-    body.dark-theme { --bg-color: #0f172a; --header-bg: #1e293b; --card-bg: #1e293b; --text-color: #f8fafc; --card-text: #f1f5f9; --input-border: #475569; --title-color: #38bdf8; }
+    :root { 
+      --bg-color: #f0f2f5; 
+      --header-bg: #1e293b; 
+      --card-bg: #ffffff; 
+      --text-color: #334155; 
+      --card-text: #333333; 
+      --input-border: #cbd5e1; 
+      --title-color: #38bdf8; 
+      --primary-color: #2563eb; 
+    }
+    body.dark-theme { 
+      --bg-color: #0f172a; 
+      --header-bg: #1e293b; 
+      --card-bg: #1e293b; 
+      --text-color: #f8fafc; 
+      --card-text: #f1f5f9; 
+      --input-border: #475569; 
+      --title-color: #38bdf8; 
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; -webkit-user-select: none; }
     body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s; padding-bottom: 50px; }
+    
+    /* Universal Sticky Header Bar */
+    .top-header-bar {
+      background-color: var(--header-bg);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      position: relative;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      z-index: 1000;
+    }
+
+    /* Top Audio Player Trigger Bar Style */
+    .header-audio-trigger {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      max-width: 250px;
+    }
+    .header-audio-trigger:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+    .audio-icon-pulse {
+      font-size: 16px;
+      color: var(--title-color);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.8; }
+    }
+    .audio-trigger-info {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .audio-trigger-info span.title {
+      font-size: 12px;
+      font-weight: bold;
+      color: white;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .audio-trigger-info span.subtitle {
+      font-size: 10px;
+      color: #94a3b8;
+    }
+    .quick-play-btn {
+      background: var(--primary-color);
+      border: none;
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 10px;
+      margin-left: auto;
+    }
+
     header { background-color: var(--header-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
-    .header-left { position: relative; }
+    .header-left { position: relative; display: flex; align-items: center; gap: 10px; }
     .menu-btn { font-size: 24px; cursor: pointer; background: none; border: none; color: white; padding: 5px 10px; }
     .dropdown-menu { display: none; position: absolute; top: 45px; left: 0; background-color: var(--card-bg); color: var(--card-text); width: 220px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-radius: 6px; overflow: hidden; z-index: 1000; }
     .dropdown-menu.active { display: block; }
@@ -25,7 +115,6 @@
     .header-center { position: absolute; left: 50%; transform: translateX(-50%); font-size: 22px; font-weight: bold; letter-spacing: 1px; text-align: center; color: var(--title-color); cursor: pointer; }
     .header-right { display: flex; align-items: center; gap: 12px; position: relative; }
     
-    /* Share Icon Button Style in Header */
     .share-btn-header { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; font-size: 18px; padding: 6px 10px; border-radius: 50%; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
     .share-btn-header:hover { background: var(--primary-color); transform: scale(1.05); }
 
@@ -83,7 +172,7 @@
     .view-all-box p { font-size: 13px; margin-bottom: 12px; opacity: 0.8; }
     .btn-resource-page { display: inline-block; background: var(--primary-color); color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; }
 
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; }
     .modal-overlay.active { display: flex; }
     .modal-box { background: var(--card-bg); color: var(--card-text); padding: 25px; border-radius: 10px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: relative; }
     .modal-box h3 { margin-bottom: 15px; }
@@ -93,15 +182,141 @@
     .contact-share-btn { margin-top: 15px; width: 100%; padding: 10px; background: #16a34a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
     .contact-share-btn:hover { background: #15803d; }
 
+    /* Audio Player Modal Specific Styling */
+    .audio-player-card {
+      background: var(--card-bg);
+      color: var(--card-text);
+      border-radius: 16px;
+      padding: 24px;
+      width: 90%;
+      max-width: 420px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+      text-align: center;
+    }
+    .audio-user-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--input-border);
+      padding-bottom: 10px;
+    }
+    .audio-user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .audio-user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--title-color);
+    }
+    .audio-user-details h5 {
+      font-size: 14px;
+      text-align: left;
+    }
+    .audio-user-details p {
+      font-size: 11px;
+      opacity: 0.7;
+      text-align: left;
+    }
+    .audio-artwork {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      margin: 10px auto 15px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: white;
+      box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+    }
+    .audio-details h4 {
+      font-size: 18px;
+      color: var(--primary-color);
+      margin-bottom: 4px;
+    }
+    .audio-details p {
+      font-size: 13px;
+      opacity: 0.8;
+      margin-bottom: 15px;
+    }
+    .audio-controls-custom {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .audio-btn-ctrl {
+      background: var(--header-bg);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: background 0.2s;
+    }
+    .audio-btn-ctrl:hover {
+      background: var(--primary-color);
+    }
+    .audio-playlist {
+      max-height: 140px;
+      overflow-y: auto;
+      margin-top: 15px;
+      text-align: left;
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      padding: 5px;
+    }
+    .playlist-item {
+      padding: 8px 12px;
+      font-size: 12px;
+      border-bottom: 1px solid var(--input-border);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 4px;
+    }
+    .playlist-item:last-child { border-bottom: none; }
+    .playlist-item.active {
+      background: rgba(37, 99, 235, 0.15);
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
     .close-modal { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; border: none; background: none; color: inherit; }
   </style>
 </head>
 <body>
-  <div class="ticker-bar">
-    <span class="ticker-tag">📢 ANNOUNCEMENT</span>
-    <marquee behavior="scroll" direction="left" scrollamount="6" onmouseover="this.stop();" onmouseout="this.start();">
-      Welcome to Kaushal Institute Portal! Check notifications below for recent updates.
-    </marquee>
+
+  <!-- Persistent Universal Header with Audio Player Bar -->
+  <div class="top-header-bar">
+    <!-- Header Left Audio Trigger Chip -->
+    <div class="header-audio-trigger" id="audioTriggerBar" title="Click to open Audio Player">
+      <span class="audio-icon-pulse">🎵</span>
+      <div class="audio-trigger-info">
+        <span class="title" id="barTrackTitle">Kaushal Portal Audio</span>
+        <span class="subtitle" id="barTrackSubtitle">Tap to Listen</span>
+      </div>
+      <button class="quick-play-btn" id="barQuickPlayBtn">▶</button>
+    </div>
+
+    <!-- Right Quick Controls -->
+    <div style="font-size: 13px; font-weight: bold; color: var(--title-color);">
+      Kaushal Institute
+    </div>
   </div>
 
   <header id="mainHeader" class="hidden">
@@ -123,7 +338,6 @@
     </div>
     <div class="header-center" id="logoHomeBtn" title="Click to go Home">Kaushal Institute</div>
     <div class="header-right">
-      <!-- Added Header Share Button -->
       <button class="share-btn-header" id="headerShareBtn" title="Share App">🔗</button>
       
       <div class="user-profile" id="userProfileBtn" title="Click to view profile">
@@ -138,6 +352,13 @@
       </div>
     </div>
   </header>
+
+  <div class="ticker-bar">
+    <span class="ticker-tag">📢 ANNOUNCEMENT</span>
+    <marquee behavior="scroll" direction="left" scrollamount="6" onmouseover="this.stop();" onmouseout="this.start();">
+      Welcome to Kaushal Institute Portal! Check notifications below for recent updates.
+    </marquee>
+  </div>
 
   <div class="container" id="authContainer">
     <div class="form-toggle">
@@ -192,7 +413,6 @@
       <p style="opacity:0.8;">Access your course Video Lectures and PDF Resources here.</p>
     </div>
 
-    <!-- Direct Navigation Box to Resources Page -->
     <div class="view-all-box">
       <h3>📂 Course Wise Files & Study Material</h3>
       <p>Course ke hisaab se sabhi Videos, PDFs aur Images filter karke dekhne aur download karne ke liye neeche button par click karein.</p>
@@ -213,7 +433,47 @@
     </div>
   </div>
 
-  <!-- Contact Us Modal with Share Option -->
+  <!-- Audio Player Modal View -->
+  <div class="modal-overlay" id="audioModal">
+    <div class="audio-player-card">
+      <button class="close-modal" id="closeAudioModalBtn">&times;</button>
+      
+      <!-- User Profile Header inside Audio Player -->
+      <div class="audio-user-header">
+        <div class="audio-user-info">
+          <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="User Avatar" id="audioPlayerAvatar" class="audio-user-avatar">
+          <div class="audio-user-details">
+            <h5 id="audioPlayerUserName">Guest User</h5>
+            <p id="audioPlayerUserRole">Portal Listener</p>
+          </div>
+        </div>
+        <span style="font-size:11px; background:var(--primary-color); color:white; padding:2px 8px; border-radius:10px;">Audio Player</span>
+      </div>
+
+      <div class="audio-artwork">🎧</div>
+
+      <div class="audio-details">
+        <h4 id="audioTrackTitle">Select Audio Track</h4>
+        <p id="audioTrackCourse">Source: Firebase / Local</p>
+      </div>
+
+      <!-- HTML5 Audio Element -->
+      <audio id="mainAudioElement" style="width: 100%; margin-bottom: 10px;" controls></audio>
+
+      <div class="audio-controls-custom">
+        <button class="audio-btn-ctrl" id="prevAudioBtn" title="Previous Track">⏮</button>
+        <button class="audio-btn-ctrl" id="playPauseAudioBtn" title="Play/Pause">▶</button>
+        <button class="audio-btn-ctrl" id="nextAudioBtn" title="Next Track">⏭</button>
+      </div>
+
+      <!-- Audio Track Selection List -->
+      <div class="audio-playlist" id="audioPlaylistContainer">
+        <p style="font-size:11px; opacity:0.6; text-align:center; padding:10px;">Loading Playlist...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Us Modal -->
   <div class="modal-overlay" id="contactModal">
     <div class="modal-box">
       <button class="close-modal" id="closeContactModalBtn">&times;</button>
@@ -222,19 +482,16 @@
       <p><strong>Developer:</strong> Harshit Kaushal</p>
       <p><strong>Email:</strong> harshitkaushal9129@gmail.com</p>
       <p><strong>Contact:</strong> +91 9129191898</p>
-      <!-- Added Share Button inside Contact Us -->
       <button class="contact-share-btn" id="modalShareBtn">
         📲 Share Web App
       </button>
     </div>
   </div>
 
-  <!-- Security, Anti-Hacking & External Service Worker Script Registration -->
+  <!-- Security & Anti-Hacking Scripts -->
   <script>
-    // 1. Disable Right Click Context Menu
     document.addEventListener('contextmenu', (e) => e.preventDefault());
 
-    // 2. Block Inspect Keyboard Shortcuts
     document.addEventListener('keydown', (e) => {
       if (e.keyCode === 123) { e.preventDefault(); return false; }
       if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) { e.preventDefault(); return false; }
@@ -242,7 +499,6 @@
       if (e.ctrlKey && e.keyCode === 83) { e.preventDefault(); return false; }
     });
 
-    // 3. Anti-DevTools Trapping
     setInterval(() => {
       const before = new Date().getTime();
       debugger;
@@ -252,7 +508,6 @@
       }
     }, 1000);
 
-    // 4. Service Worker Registration (External sw.js file)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
@@ -262,7 +517,7 @@
     }
   </script>
 
-  <!-- Application Firebase Logic -->
+  <!-- Application Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, push, set, get, child, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
@@ -283,11 +538,18 @@
     let regCaptcha = "";
     let loginCaptcha = "";
 
+    // Audio Player State Variables
+    let audioList = [];
+    let currentAudioIndex = 0;
+    const audioElement = document.getElementById('mainAudioElement');
+
     window.addEventListener('DOMContentLoaded', () => {
       generateCaptcha('reg');
       generateCaptcha('login');
       checkLoginStatus();
       loadLiveNotifications();
+      initAudioPlayer();
+
       if (localStorage.getItem('theme') === 'dark') { document.body.classList.add('dark-theme'); }
       document.getElementById('registerTabBtn').addEventListener('click', () => switchTab('register'));
       document.getElementById('loginTabBtn').addEventListener('click', () => switchTab('login'));
@@ -305,16 +567,169 @@
       document.getElementById('registerForm').addEventListener('submit', handleRegister);
       document.getElementById('loginForm').addEventListener('submit', handleLogin);
 
-      // Event Listeners for Share functionality
       document.getElementById('headerShareBtn').addEventListener('click', shareApp);
       document.getElementById('modalShareBtn').addEventListener('click', shareApp);
+
+      // Audio Event Listeners
+      document.getElementById('audioTriggerBar').addEventListener('click', openAudioModal);
+      document.getElementById('closeAudioModalBtn').addEventListener('click', closeAudioModal);
+      document.getElementById('playPauseAudioBtn').addEventListener('click', toggleAudioPlay);
+      document.getElementById('barQuickPlayBtn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleAudioPlay();
+      });
+      document.getElementById('prevAudioBtn').addEventListener('click', playPrevAudio);
+      document.getElementById('nextAudioBtn').addEventListener('click', playNextAudio);
+
+      audioElement.addEventListener('ended', playNextAudio);
+      audioElement.addEventListener('play', () => {
+        document.getElementById('playPauseAudioBtn').innerText = '⏸';
+        document.getElementById('barQuickPlayBtn').innerText = '⏸';
+      });
+      audioElement.addEventListener('pause', () => {
+        document.getElementById('playPauseAudioBtn').innerText = '▶';
+        document.getElementById('barQuickPlayBtn').innerText = '▶';
+      });
     });
 
-    // Share Portal Function
+    /* Audio Player Implementation Functions */
+    function initAudioPlayer() {
+      // 1. Fetch Local Audio Tracks
+      let localAudios = JSON.parse(localStorage.getItem('course_audios') || '[]');
+
+      // Default demo track if completely empty
+      if (localAudios.length === 0) {
+        localAudios = [{
+          title: "Kaushal Institute Welcome Audio",
+          course: "General Info",
+          url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+        }];
+      }
+
+      audioList = [...localAudios];
+      renderAudioPlaylist();
+
+      // 2. Sync Firebase Live Audio Tracks
+      onValue(ref(db, 'course_audios'), (snapshot) => {
+        if (snapshot.exists()) {
+          const fbAudioData = snapshot.val();
+          const fbList = [];
+          for (let key in fbAudioData) {
+            fbList.push(fbAudioData[key]);
+          }
+          if (fbList.length > 0) {
+            audioList = [...fbList, ...localAudios];
+          }
+        }
+        renderAudioPlaylist();
+      });
+
+      updateAudioUserDisplay();
+    }
+
+    function renderAudioPlaylist() {
+      const container = document.getElementById('audioPlaylistContainer');
+      container.innerHTML = '';
+
+      if (audioList.length === 0) {
+        container.innerHTML = '<p style="font-size:12px; text-align:center; padding:8px;">No Audio files available.</p>';
+        return;
+      }
+
+      audioList.forEach((track, index) => {
+        const item = document.createElement('div');
+        item.className = `playlist-item ${index === currentAudioIndex ? 'active' : ''}`;
+        item.innerHTML = `
+          <div>
+            <div><strong>${track.title || 'Audio Track'}</strong></div>
+            <div style="font-size:10px; opacity:0.7;">${track.course || 'General'}</div>
+          </div>
+          <span>${index === currentAudioIndex ? '▶ Play' : ''}</span>
+        `;
+        item.addEventListener('click', () => loadAndPlayTrack(index));
+        container.appendChild(item);
+      });
+
+      if (audioList[currentAudioIndex]) {
+        updateTrackHeaderInfo(audioList[currentAudioIndex]);
+      }
+    }
+
+    function updateTrackHeaderInfo(track) {
+      document.getElementById('barTrackTitle').innerText = track.title || "Portal Audio";
+      document.getElementById('barTrackSubtitle').innerText = track.course || "Tap to open";
+      document.getElementById('audioTrackTitle').innerText = track.title || "Audio Track";
+      document.getElementById('audioTrackCourse').innerText = "Course: " + (track.course || "General");
+    }
+
+    function loadAndPlayTrack(index) {
+      if (index < 0 || index >= audioList.length) return;
+      currentAudioIndex = index;
+      const track = audioList[currentAudioIndex];
+
+      audioElement.src = track.url;
+      updateTrackHeaderInfo(track);
+      renderAudioPlaylist();
+
+      audioElement.play().then(() => {
+        document.getElementById('playPauseAudioBtn').innerText = '⏸';
+        document.getElementById('barQuickPlayBtn').innerText = '⏸';
+      }).catch(err => console.log("Audio Play Interrupted/Blocked: ", err));
+    }
+
+    function toggleAudioPlay() {
+      if (!audioElement.src && audioList.length > 0) {
+        loadAndPlayTrack(0);
+        return;
+      }
+
+      if (audioElement.paused) {
+        audioElement.play();
+      } else {
+        audioElement.pause();
+      }
+    }
+
+    function playNextAudio() {
+      let nextIndex = (currentAudioIndex + 1) % audioList.length;
+      loadAndPlayTrack(nextIndex);
+    }
+
+    function playPrevAudio() {
+      let prevIndex = (currentAudioIndex - 1 + audioList.length) % audioList.length;
+      loadAndPlayTrack(prevIndex);
+    }
+
+    function openAudioModal() {
+      updateAudioUserDisplay();
+      document.getElementById('audioModal').classList.add('active');
+    }
+
+    function closeAudioModal() {
+      document.getElementById('audioModal').classList.remove('active');
+    }
+
+    function updateAudioUserDisplay() {
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+      const avatarImg = document.getElementById('audioPlayerAvatar');
+      const nameTxt = document.getElementById('audioPlayerUserName');
+      const roleTxt = document.getElementById('audioPlayerUserRole');
+
+      if (user) {
+        avatarImg.src = user.pic || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+        nameTxt.innerText = user.name || "Logged In User";
+        roleTxt.innerText = "Student Portal Member";
+      } else {
+        avatarImg.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+        nameTxt.innerText = "Guest Student";
+        roleTxt.innerText = "Please Login for full features";
+      }
+    }
+
     async function shareApp() {
       const shareData = {
         title: 'Kaushal Institute Portal',
-        text: 'Join Kaushal Institute Portal to access course study materials, video lectures, and exams!',
+        text: 'Join Kaushal Institute Portal to access course study materials, video lectures, and audio materials!',
         url: window.location.href
       };
 
@@ -461,6 +876,7 @@
       if (loggedInUser) {
         localStorage.setItem('currentUser', JSON.stringify(loggedInUser));
         initPortalUser(loggedInUser);
+        updateAudioUserDisplay();
         showMainPage();
       } else { errorDiv.innerText = "Invalid Credentials!"; generateCaptcha('login'); }
     }
@@ -518,7 +934,6 @@
       const videoGrid = document.getElementById('videoGrid');
       const pdfGrid = document.getElementById('pdfGrid');
 
-      // Fetch Videos Live from Firebase
       onValue(ref(db, 'course_videos'), (snapshot) => {
         videoGrid.innerHTML = '';
         let videos = [];
@@ -541,7 +956,6 @@
         }
       });
 
-      // Fetch PDFs Live from Firebase
       onValue(ref(db, 'course_pdfs'), (snapshot) => {
         pdfGrid.innerHTML = '';
         let pdfs = [];
@@ -576,6 +990,7 @@
       document.getElementById('authContainer').classList.remove('hidden');
       document.getElementById('loginForm').reset();
       generateCaptcha('login');
+      updateAudioUserDisplay();
     }
   </script>
 </body>
