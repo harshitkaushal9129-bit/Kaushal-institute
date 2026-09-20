@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaushal Institute Portal</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+body { background: #f4f6f9; color: #333; transition: 0.3s; }
+body.dark-theme { background: #1e1e2d; color: #fff; }
+header { background: #0284c7; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+.btn { padding: 6px 12px; border: none; background: #0369a1; color: white; border-radius: 4px; cursor: pointer; }
+.container { padding: 20px; max-width: 800px; margin: auto; }
+.audio-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; z-index: 100; }
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 200; }
+.modal-content { background: white; color: #333; padding: 20px; border-radius: 8px; width: 90%; max-width: 450px; }
+body.dark-theme .modal-content { background: #2a2a3c; color: white; }
+.playlist-item { padding: 10px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.playlist-item.active { background: #e0f2fe; color: #0284c7; font-weight: bold; }
+body.dark-theme .playlist-item.active { background: #0369a1; color: white; }
+.controls { display: flex; gap: 10px; align-items: center; justify-content: center; margin: 15px 0; }
+.controls button { font-size: 18px; width: 40px; height: 40px; border-radius: 50%; border: none; background: #0284c7; color: white; cursor: pointer; }
+</style>
+</head>
+<body>
+<header>
+  <div id="logoHomeBtn" style="cursor:pointer; font-weight:bold;">KAUSHAL INSTITUTE</div>
+  <div>
+    <button id="themeToggleBtn" class="btn">🌙/☀️</button>
+    <button id="menuBtn" class="btn">☰ Menu</button>
+  </div>
+</header>
+<div class="container">
+  <h2>Audio Learning Section</h2>
+  <p>Local Storage aur Firebase Realtime Database se audio syncing live hai.</p>
+</div>
+<!-- Audio Player Bottom Bar -->
+<div class="audio-bar" id="audioTriggerBar">
+  <div>
+    <div id="barTrackTitle" style="font-weight: bold; font-size: 14px;">Select Audio Track</div>
+    <div id="barTrackSubtitle" style="font-size: 11px; opacity: 0.8;">Audio Player Off</div>
+  </div>
+  <div>
+    <button id="barQuickPlayBtn" style="padding: 5px 10px; border:none; border-radius:3px; cursor:pointer;">▶</button>
+  </div>
+</div>
+<!-- Audio Modal -->
+<div class="modal" id="audioModal">
+  <div class="modal-content">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3 id="audioTrackTitle">Audio Player</h3>
+      <button id="closeAudioModalBtn" style="border:none; background:none; font-size:18px; cursor:pointer; color:inherit;">✕</button>
+    </div>
+    <div id="audioTrackCourse" style="font-size: 12px; margin-top: 4px; color: #666;">Source: None</div>
+    <div class="controls">
+      <button id="prevAudioBtn">⏮</button>
+      <button id="playPauseAudioBtn">▶</button>
+      <button id="nextAudioBtn">⏭</button>
+    </div>
+    <h4>Playlist:</h4>
+    <div id="audioPlaylistContainer" style="max-height: 200px; overflow-y: auto; margin-top: 10px;"></div>
+  </div>
+</div>
+<audio id="mainAudioElement" style="display:none;"></audio>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE",
+  authDomain: "kaushal-institute-729bc.firebaseapp.com",
+  databaseURL: "https://kaushal-institute-729bc-default-rtdb.firebaseio.com",
+  projectId: "kaushal-institute-729bc",
+  storageBucket: "kaushal-institute-729bc.firebasestorage.app",
+  messagingSenderId: "699990199933",
+  appId: "1:699990199933:web:e5fae383e93de5d3c6ab14",
+  measurementId: "G-4VRTVZ3JPJ"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+let localAudioList = [];
+let firebaseAudioList = [];
+let combinedAudioList = [];
+let currentAudioIndex = 0;
+const audioElement = document.getElementById('mainAudioElement');
+window.addEventListener('DOMContentLoaded', () => {
+  initAudioPlayer();
+  document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+  document.getElementById('audioTriggerBar').addEventListener('click', openAudioModal);
+  document.getElementById('closeAudioModalBtn').addEventListener('click', closeAudioModal);
+  document.getElementById('playPauseAudioBtn').addEventListener('click', toggleAudioPlay);
+  document.getElementById('barQuickPlayBtn').addEventListener('click', (e) => { e.stopPropagation(); toggleAudioPlay(); });
+  document.getElementById('prevAudioBtn').addEventListener('click', playPrevAudio);
+  document.getElementById('nextAudioBtn').addEventListener('click', playNextAudio);
+  audioElement.addEventListener('ended', playNextAudio);
+  audioElement.addEventListener('play', () => {
+    document.getElementById('playPauseAudioBtn').innerText = '⏸';
+    document.getElementById('barQuickPlayBtn').innerText = '⏸';
+  });
+  audioElement.addEventListener('pause', () => {
+    document.getElementById('playPauseAudioBtn').innerText = '▶';
+    document.getElementById('barQuickPlayBtn').innerText = '▶';
+  });
+});
+function toggleTheme() { document.body.classList.toggle('dark-theme'); }
+function openAudioModal() { document.getElementById('audioModal').style.display = 'flex'; }
+function closeAudioModal() { document.getElementById('audioModal').style.display = 'none'; }
+function initAudioPlayer() {
+  loadLocalStorageAudios();
+  onValue(ref(db, 'course_audios'), (snapshot) => {
+    firebaseAudioList = [];
+    if (snapshot.exists()) {
+      const fbData = snapshot.val();
+      for (let key in fbData) { firebaseAudioList.push({ ...fbData[key], source: 'Firebase' }); }
+    }
+    mergeAndRenderAudios();
+  });
+}
+function loadLocalStorageAudios() {
+  try {
+    const rawLocal = localStorage.getItem('course_audios');
+    if (rawLocal) {
+      localAudioList = JSON.parse(rawLocal).map(item => ({ ...item, source: item.source || 'Local' }));
+    } else {
+      localAudioList = [{ title: "Welcome Audio", course: "Info", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", source: "Local" }];
+    }
+  } catch (err) {
+    localAudioList = [];
+  }
+}
+function mergeAndRenderAudios() {
+  combinedAudioList = [...localAudioList, ...firebaseAudioList];
+  renderAudioPlaylist();
+}
+function renderAudioPlaylist() {
+  const container = document.getElementById('audioPlaylistContainer');
+  container.innerHTML = '';
+  if (combinedAudioList.length === 0) {
+    container.innerHTML = '<p style="font-size:12px; text-align:center;">Koi audio nahi mila.</p>';
+    return;
+  }
+  combinedAudioList.forEach((track, index) => {
+    const item = document.createElement('div');
+    item.className = `playlist-item ${index === currentAudioIndex ? 'active' : ''}`;
+    const badge = track.source === 'Firebase' ? '<span style="font-size:9px; background:#0284c7; color:white; padding:1px 4px; border-radius:3px;">Firebase</span>' : '<span style="font-size:9px; background:#16a34a; color:white; padding:1px 4px; border-radius:3px;">Local</span>';
+    item.innerHTML = `<div><div><strong>${track.title || 'Track'}</strong> ${badge}</div><div style="font-size:10px; opacity:0.7;">Course: ${track.course || 'General'}</div></div><span>${index === currentAudioIndex ? '▶' : ''}</span>`;
+    item.addEventListener('click', () => loadAndPlayTrack(index));
+    container.appendChild(item);
+  });
+  if (combinedAudioList[currentAudioIndex]) { updateTrackHeaderInfo(combinedAudioList[currentAudioIndex]); }
+}
+function updateTrackHeaderInfo(track) {
+  document.getElementById('barTrackTitle').innerText = track.title || "Portal Audio";
+  document.getElementById('barTrackSubtitle').innerText = (track.course || "General") + " (" + (track.source || "Local") + ")";
+  document.getElementById('audioTrackTitle').innerText = track.title || "Audio Track";
+  document.getElementById('audioTrackCourse').innerText = `Source: ${track.source || 'Local'} | Course: ${track.course || 'General'}`;
+}
+function loadAndPlayTrack(index) {
+  if (index < 0 || index >= combinedAudioList.length) return;
+  currentAudioIndex = index;
+  const track = combinedAudioList[currentAudioIndex];
+  audioElement.src = track.url;
+  updateTrackHeaderInfo(track);
+  renderAudioPlaylist();
+  audioElement.play().catch(e => console.log(e));
+}
+function toggleAudioPlay() {
+  if (!audioElement.src && combinedAudioList.length > 0) { loadAndPlayTrack(0); return; }
+  audioElement.paused ? audioElement.play() : audioElement.pause();
+}
+function playNextAudio() {
+  if (combinedAudioList.length === 0) return;
+  loadAndPlayTrack((currentAudioIndex + 1) % combinedAudioList.length);
+}
+function playPrevAudio() {
+  if (combinedAudioList.length === 0) return;
+  loadAndPlayTrack((currentAudioIndex - 1 + combinedAudioList.length) % combinedAudioList.length);
+}
+window.addAudioToLocalStorage = function(title, course, url) {
+  let existing = JSON.parse(localStorage.getItem('course_audios') || '[]');
+  existing.push({ title, course, url, source: 'Local' });
+  localStorage.setItem('course_audios', JSON.stringify(existing));
+  loadLocalStorageAudios();
+  mergeAndRenderAudios();
+};
+</script>
+</body>
+</html>
