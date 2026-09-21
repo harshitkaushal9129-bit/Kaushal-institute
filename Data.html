@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registered Users Data - Kaushal Institute</title>
+  <style>
+    :root {
+      --bg-color: #f0f2f5;
+      --card-bg: #ffffff;
+      --text-color: #334155;
+      --primary-color: #2563eb;
+      --border-color: #cbd5e1;
+    }
+    body.dark-theme {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f8fafc;
+      --border-color: #475569;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .header-container {
+      max-width: 1100px;
+      margin: 0 auto 20px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .header-container h2 {
+      color: var(--primary-color);
+      font-size: 22px;
+    }
+    .btn-back {
+      background: var(--primary-color);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .btn-back:hover {
+      background: #1d4ed8;
+    }
+    .main-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .stats-box {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: rgba(37, 99, 235, 0.1);
+      padding: 15px 20px;
+      border-radius: 8px;
+      flex: 1;
+      border-left: 4px solid var(--primary-color);
+    }
+    .stat-card h4 {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 5px;
+    }
+    .stat-card span {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      text-align: left;
+    }
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+    th {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 600;
+    }
+    tr:hover {
+      background-color: rgba(0,0,0,0.02);
+    }
+    .user-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-color);
+    }
+    .no-data {
+      text-align: center;
+      padding: 30px;
+      font-size: 16px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-container">
+    <h2>👥 Registered Users Database</h2>
+    <a href="index.html" class="btn-back">⬅ Back to Portal</a>
+  </div>
+
+  <div class="main-container">
+    <div class="stats-box">
+      <div class="stat-card">
+        <h4>Total Registered Users</h4>
+        <span id="totalUsersCount">0</span>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Profile</th>
+            <th>Full Name</th>
+            <th>Mobile Number</th>
+            <th>Email ID</th>
+            <th>Password</th>
+            <th>Registered Date</th>
+          </tr>
+        <thead id="userTableBody">
+          <!-- Data dynamically inject hoga -->
+        </thead>
+      </table>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE", authDomain: "kaushal-institute-729bc.firebaseapp.com", databaseURL: "https://kaushal-institute-729bc-default-rtdb.firebaseio.com", projectId: "kaushal-institute-729bc", storageBucket: "kaushal-institute-729bc.firebasestorage.app", messagingSenderId: "699990199933", appId: "1:699990199933:web:e5fae383e93de5d3c6ab14", measurementId: "G-4VRTVZ3JPJ" };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-theme');
+    }
+
+    async function loadAllRegisteredUsers() {
+      const tableBody = document.getElementById('userTableBody');
+      const totalCountSpan = document.getElementById('totalUsersCount');
+      
+      let usersMap = new Map();
+
+      // 1. LocalStorage se data lein
+      let localUsers = JSON.parse(localStorage.getItem('users') || '[]');
+      localUsers.forEach(u => {
+        if(u.email) usersMap.set(u.email, u);
+      });
+
+      // 2. Firebase Database se data fetch karein
+      try {
+        const snapshot = await get(child(ref(db), 'users'));
+        if (snapshot.exists()) {
+          const fbUsers = snapshot.val();
+          for (let key in fbUsers) {
+            let user = fbUsers[key];
+            if(user.email) {
+              usersMap.set(user.email, user);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Firebase fetch error: ", err);
+      }
+
+      const allUsers = Array.from(usersMap.values());
+      totalCountSpan.innerText = allUsers.length;
+
+      tableBody.innerHTML = '';
+
+      if (allUsers.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6" class="no-data">Koi bhi registration data uplabdh nahi hai.</td></tr>`;
+        return;
+      }
+
+      allUsers.forEach((user, index) => {
+        const tr = document.createElement('tr');
+        const formattedDate = user.createdAt ? new Date(user.createdAt).toLocaleString() : 'N/A';
+        const userPic = user.pic ? user.pic : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+
+        tr.innerHTML = `
+          <td><img src="${userPic}" alt="Pic" class="user-img"></td>
+          <td><strong>${user.name || 'N/A'}</strong></td>
+          <td>${user.mobile || 'N/A'}</td>
+          <td>${user.email || 'N/A'}</td>
+          <td><code>${user.password || 'N/A'}</code></td>
+          <td style="font-size:12px; opacity:0.8;">${formattedDate}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', loadAllRegisteredUsers);
+  </script>
+</body>
+</html>
