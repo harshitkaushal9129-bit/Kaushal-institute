@@ -21,7 +21,7 @@ header{background-color:var(--header-bg);color:white;display:flex;justify-conten
 .course-card:hover,.course-card.active{border-color:var(--primary-color);transform:translateY(-3px);}
 .course-card h3{font-size:20px;margin-bottom:8px;color:var(--primary-color);}
 .course-card p{font-size:13px;opacity:0.8;margin-bottom:8px;}
-.course-card .fee-text{font-size:16px;font-weight:bold;color:#16a34a;margin-bottom:10px;}
+.course-card .fee-text{font-size:15px;font-weight:bold;color:#16a34a;margin-bottom:4px;}
 .course-card .badge{background:#e0e7ff;color:#3730a3;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:bold;}
 .form-container{background:var(--card-bg);color:var(--card-text);padding:25px 30px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.08);max-width:650px;margin:0 auto;}
 .form-group{margin-bottom:15px;}
@@ -46,12 +46,16 @@ th{background:rgba(0,0,0,0.03);font-weight:bold;}
 .utr-tag{font-family:monospace;background:#e0f2fe;color:#0369a1;padding:2px 6px;border-radius:4px;font-weight:bold;}
 .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:2000;justify-content:center;align-items:center;}
 .modal-overlay.active{display:flex;}
-.modal-box{background:var(--card-bg);color:var(--card-text);padding:25px;border-radius:10px;max-width:380px;width:90%;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);position:relative;}
+.modal-box{background:var(--card-bg);color:var(--card-text);padding:25px;border-radius:10px;max-width:420px;width:90%;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);position:relative;max-height:90vh;overflow-y:auto;}
 .modal-box h3{margin-bottom:15px;}
 .modal-box input{width:100%;padding:10px;margin-bottom:15px;border:1px solid var(--input-border);border-radius:6px;background:transparent;color:inherit;text-align:center;font-size:16px;}
 .close-modal{position:absolute;top:10px;right:15px;font-size:20px;cursor:pointer;border:none;background:none;color:inherit;}
 .qr-img{width:220px;height:220px;border-radius:10px;margin:15px 0;border:2px solid var(--primary-color);}
 .hidden{display:none !important;}
+.month-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:15px;text-align:left;}
+.month-box{background:rgba(0,0,0,0.03);padding:10px;border-radius:6px;border:1px solid var(--input-border);font-size:13px;}
+.month-box.paid{border-color:#16a34a;background:#dcfce7;color:#166534;}
+.month-box.pending{border-color:#ef4444;background:#fee2e2;color:#991b1b;}
 </style>
 </head>
 <body>
@@ -61,7 +65,7 @@ th{background:rgba(0,0,0,0.03);font-weight:bold;}
 </header>
 <div class="nav-tabs">
 <button id="tabCoursesBtn" class="active" onclick="switchMainTab('courses')">Course Information & Admissions</button>
-<button id="tabStudentsBtn" onclick="switchMainTab('students')">Student Details</button>
+<button id="tabStudentsBtn" onclick="switchMainTab('students')">Student Details & Months</button>
 </div>
 <div class="container">
 <div id="coursesSection">
@@ -71,7 +75,6 @@ th{background:rgba(0,0,0,0.03);font-weight:bold;}
 <h3 id="formTitle" style="margin-bottom:15px;color:var(--primary-color);">Course Admission Form</h3>
 <form id="courseAdmissionForm">
 <input type="hidden" id="selectedCourseName" value="ADCA">
-<input type="hidden" id="selectedCourseFee" value="12000">
 <div class="form-group">
 <label>Student Full Name *</label>
 <input type="text" id="stdName" placeholder="Enter full name" required>
@@ -95,8 +98,15 @@ th{background:rgba(0,0,0,0.03);font-weight:bold;}
 </select>
 </div>
 <div class="form-group">
-<label>Course Fee</label>
-<input type="text" id="displayFee" value="₹12,000" readonly style="background:rgba(0,0,0,0.05);font-weight:bold;">
+<label>Payment Plan Type *</label>
+<select id="feeTypeSelect" onchange="updateFeeDisplay()" required>
+<option value="Full">Full Course (One-Time)</option>
+<option value="Monthly">Monthly Fee</option>
+</select>
+</div>
+<div class="form-group">
+<label>Payable Amount</label>
+<input type="text" id="displayFee" readonly style="background:rgba(0,0,0,0.05);font-weight:bold;">
 </div>
 <button type="button" class="qr-btn" onclick="openPaymentQR()">1. Generate QR Code & Pay Fee</button>
 <div class="form-group" style="margin-top:15px;">
@@ -113,7 +123,7 @@ th{background:rgba(0,0,0,0.03);font-weight:bold;}
 </div>
 </div>
 <div id="studentsSection" class="hidden">
-<h2 class="section-title">Student Details</h2>
+<h2 class="section-title">Student Details & Month Tracking</h2>
 <div class="table-controls">
 <input type="text" id="searchInput" class="search-input" placeholder="Search by name, email, mobile or UTR..." onkeyup="filterStudents()">
 <select id="courseFilter" class="filter-select" onchange="filterStudents()">
@@ -126,13 +136,12 @@ th{background:rgba(0,0,0,0.03);font-weight:bold;}
 <thead>
 <tr>
 <th>Profile</th>
-<th>Name</th>
-<th>Mobile</th>
-<th>Email</th>
-<th>Course / Status</th>
+<th>Name & Contact</th>
+<th>Course & Plan</th>
 <th>Batch</th>
 <th>Fee Status</th>
 <th>UTR Number</th>
+<th>Action / Months</th>
 </tr>
 </thead>
 <tbody id="studentTableBody"></tbody>
@@ -159,29 +168,39 @@ th{background:rgba(0,0,0,0.03);font-weight:bold;}
 <p style="font-size:11px;opacity:0.8;margin-top:4px;">Scan with GPay, PhonePe, Paytm or any UPI App</p>
 </div>
 </div>
+<div class="modal-overlay" id="monthModal">
+<div class="modal-box" style="max-width:480px;">
+<button class="close-modal" onclick="closeMonthModal()">&times;</button>
+<h3 id="monthModalTitle" style="color:var(--primary-color);">Month-wise Fee Status</h3>
+<div id="monthModalBody" class="month-grid"></div>
+</div>
+</div>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
 import{getDatabase,ref,set,get,child}from"https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 const firebaseConfig={apiKey:"AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE",authDomain:"kaushal-institute-729bc.firebaseapp.com",databaseURL:"https://kaushal-institute-729bc-default-rtdb.firebaseio.com",projectId:"kaushal-institute-729bc",storageBucket:"kaushal-institute-729bc.firebasestorage.app",messagingSenderId:"699990199933",appId:"1:699990199933:web:e5fae383e93de5d3c6ab14"};
 const app=initializeApp(firebaseConfig);
 const db=getDatabase(app);
-let cachedFees={'ADCA':'12000','CCC':'3500','Tally':'4500','OLevel':'15000'};
+let cachedFees={'ADCA':{full:'12000',monthly:'1200'},'CCC':{full:'3500',monthly:'800'},'Tally':{full:'4500',monthly:'1000'},'OLevel':{full:'15000',monthly:'1500'}};
 let allStudentsData=[];
 let isUnlockedAll=false;
-async function fetchFeesAndInit(){try{const snapshot=await get(child(ref(db),'course_fees'));if(snapshot.exists()){cachedFees=snapshot.val();}}catch(e){console.log("Could not load fees from Firebase, using defaults.");}renderCourseGrid();updateCourseFilterDropdown();}
-function renderCourseGrid(){const grid=document.getElementById('dynamicCourseGrid');grid.innerHTML='';const firstCourse=Object.keys(cachedFees)[0]||'ADCA';for(let course in cachedFees){const fee=cachedFees[course];const card=document.createElement('div');card.className=`course-card ${course===firstCourse?'active':''}`;card.id=`card-${course}`;card.onclick=()=>selectCourse(course);card.innerHTML=`<h3>${course}</h3><p>Professional Certification Course</p><div class="fee-text" id="fee-${course}">₹${Number(fee).toLocaleString('en-IN')}</div><span class="badge">Active Batch</span>`;grid.appendChild(card);}selectCourse(firstCourse);}
+async function fetchFeesAndInit(){try{const snapshot=await get(child(ref(db),'course_fees'));if(snapshot.exists()){cachedFees=snapshot.val();}}catch(e){console.log("Using default fees.");}renderCourseGrid();updateCourseFilterDropdown();}
+function renderCourseGrid(){const grid=document.getElementById('dynamicCourseGrid');grid.innerHTML='';const firstCourse=Object.keys(cachedFees)[0]||'ADCA';for(let course in cachedFees){const feeObj=cachedFees[course];const fullVal=typeof feeObj==='object'?feeObj.full:feeObj;const monVal=typeof feeObj==='object'&&feeObj.monthly?feeObj.monthly:'1000';const card=document.createElement('div');card.className=`course-card ${course===firstCourse?'active':''}`;card.id=`card-${course}`;card.onclick=()=>selectCourse(course);card.innerHTML=`<h3>${course}</h3><p>Professional Course</p><div class="fee-text">Full: ₹${Number(fullVal).toLocaleString('en-IN')}</div><div class="fee-text" style="font-size:13px;opacity:0.9;">Monthly: ₹${Number(monVal).toLocaleString('en-IN')}</div><span class="badge" style="margin-top:6px;display:inline-block;">Active</span>`;grid.appendChild(card);}selectCourse(firstCourse);}
 function updateCourseFilterDropdown(){const filterSelect=document.getElementById('courseFilter');let html='<option value="ALL">All Courses</option>';for(let course in cachedFees){html+=`<option value="${course}">${course}</option>`;}filterSelect.innerHTML=html;}
 window.addEventListener('DOMContentLoaded',()=>{fetchFeesAndInit();loadStudentData();document.getElementById('courseAdmissionForm').addEventListener('submit',handleEnrollment);if(localStorage.getItem('theme')==='dark'){document.body.classList.add('dark-theme');}});
 window.switchMainTab=function(tab){const coursesSec=document.getElementById('coursesSection');const studentsSec=document.getElementById('studentsSection');const tabCoursesBtn=document.getElementById('tabCoursesBtn');const tabStudentsBtn=document.getElementById('tabStudentsBtn');if(tab==='courses'){coursesSec.classList.remove('hidden');studentsSec.classList.add('hidden');tabCoursesBtn.classList.add('active');tabStudentsBtn.classList.remove('active');}else{coursesSec.classList.add('hidden');studentsSec.classList.remove('hidden');tabStudentsBtn.classList.add('active');tabCoursesBtn.classList.remove('active');loadStudentData();}};
-window.selectCourse=function(courseName){document.querySelectorAll('.course-card').forEach(c=>c.classList.remove('active'));const activeCard=document.getElementById(`card-${courseName}`);if(activeCard)activeCard.classList.add('active');document.getElementById('formTitle').innerText=`${courseName} Course Admission Form`;document.getElementById('selectedCourseName').value=courseName;const currentFee=cachedFees[courseName]||'0';document.getElementById('selectedCourseFee').value=currentFee;document.getElementById('displayFee').value=`₹${Number(currentFee).toLocaleString('en-IN')}`;};
-window.openPaymentQR=function(){const course=document.getElementById('selectedCourseName').value;const fee=document.getElementById('selectedCourseFee').value;const upiId="mandavikaushal913@okaxis";const name="Kaushal Institute";const upiString=`upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${fee}&cu=INR`;const qrApiUrl=`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiString)}`;document.getElementById('qrCourseInfo').innerText=`${course} Course Fee: ₹${Number(fee).toLocaleString('en-IN')}`;document.getElementById('qrCodeImg').src=qrApiUrl;document.getElementById('qrModal').classList.add('active');};
+window.selectCourse=function(courseName){document.querySelectorAll('.course-card').forEach(c=>c.classList.remove('active'));const activeCard=document.getElementById(`card-${courseName}`);if(activeCard)activeCard.classList.add('active');document.getElementById('formTitle').innerText=`${courseName} Course Admission Form`;document.getElementById('selectedCourseName').value=courseName;updateFeeDisplay();};
+window.updateFeeDisplay=function(){const course=document.getElementById('selectedCourseName').value;const feeType=document.getElementById('feeTypeSelect').value;const courseData=cachedFees[course]||{full:'0',monthly:'0'};const feeVal=feeType==='Full'?(courseData.full||'0'):(courseData.monthly||'0');document.getElementById('displayFee').value=`₹${Number(feeVal).toLocaleString('en-IN')}`;};
+window.openPaymentQR=function(){const course=document.getElementById('selectedCourseName').value;const feeType=document.getElementById('feeTypeSelect').value;const courseData=cachedFees[course]||{full:'0',monthly:'0'};const feeVal=feeType==='Full'?(courseData.full||'0'):(courseData.monthly||'0');const upiId="mandavikaushal913@okaxis";const name="Kaushal Institute";const upiString=`upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${feeVal}&cu=INR`;const qrApiUrl=`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiString)}`;document.getElementById('qrCourseInfo').innerText=`${course} (${feeType} Fee): ₹${Number(feeVal).toLocaleString('en-IN')}`;document.getElementById('qrCodeImg').src=qrApiUrl;document.getElementById('qrModal').classList.add('active');};
 window.closeQRModal=function(){document.getElementById('qrModal').classList.remove('active');};
-async function handleEnrollment(e){e.preventDefault();const submitBtn=document.getElementById('enrollSubmitBtn');submitBtn.disabled=true;submitBtn.innerText="Processing Admission...";const stdName=document.getElementById('stdName').value.trim();const stdMobile=document.getElementById('stdMobile').value.trim();const stdEmail=document.getElementById('stdEmail').value.trim().toLowerCase();const selectedCourse=document.getElementById('selectedCourseName').value;const courseFee=`₹${document.getElementById('selectedCourseFee').value}`;const batchTiming=document.getElementById('batchTiming').value;const stdUtr=document.getElementById('stdUtr').value.trim();const screenshotFile=document.getElementById('payScreenshot').files[0];let screenshotBase64='';if(screenshotFile){screenshotBase64=await new Promise((resolve)=>{const reader=new FileReader();reader.onload=(e)=>resolve(e.target.result);reader.readAsDataURL(screenshotFile);});}const enrollmentData={name:stdName,mobile:stdMobile,email:stdEmail,course:selectedCourse,fee:courseFee,batch:batchTiming,utr:stdUtr,screenshot:screenshotBase64,enrollmentDate:new Date().toLocaleDateString(),pic:"https://via.placeholder.com/150/2563eb/ffffff?text=User"};try{const userDbKey=stdMobile||stdEmail.replace(/[^a-zA-Z0-9]/g,"_");const userRef=ref(db,'course_enrollments/'+userDbKey);await set(userRef,enrollmentData);alert(`Admission details submitted successfully for ${stdName}! UTR: ${stdUtr}`);document.getElementById('courseAdmissionForm').reset();}catch(err){console.error("Firebase Error: ",err);alert("Failed to submit admission to server.");}submitBtn.disabled=false;submitBtn.innerText="2. Submit Admission";loadStudentData();}
-async function loadStudentData(){allStudentsData=[];try{const snapshot=await get(child(ref(db),'course_enrollments'));if(snapshot.exists()){const fbEnrollments=snapshot.val();for(let key in fbEnrollments){let item=fbEnrollments[key];allStudentsData.push({name:item.name,mobile:item.mobile,email:item.email,course:item.course,batch:item.batch,fee:item.fee,utr:item.utr||'N/A',pic:item.pic||"https://via.placeholder.com/150/2563eb/ffffff?text=User",status:'enrolled'});}}}catch(err){console.log("Firebase Offline - cannot fetch students.");}filterStudents();}
+async function handleEnrollment(e){e.preventDefault();const submitBtn=document.getElementById('enrollSubmitBtn');submitBtn.disabled=true;submitBtn.innerText="Processing Admission...";const stdName=document.getElementById('stdName').value.trim();const stdMobile=document.getElementById('stdMobile').value.trim();const stdEmail=document.getElementById('stdEmail').value.trim().toLowerCase();const selectedCourse=document.getElementById('selectedCourseName').value;const feeType=document.getElementById('feeTypeSelect').value;const courseData=cachedFees[selectedCourse]||{full:'0',monthly:'0'};const feeVal=feeType==='Full'?(courseData.full||'0'):(courseData.monthly||'0');const batchTiming=document.getElementById('batchTiming').value;const stdUtr=document.getElementById('stdUtr').value.trim();const screenshotFile=document.getElementById('payScreenshot').files[0];let screenshotBase64='';if(screenshotFile){screenshotBase64=await new Promise((resolve)=>{const reader=new FileReader();reader.onload=(e)=>resolve(e.target.result);reader.readAsDataURL(screenshotFile);});}const currentMonthName=new Date().toLocaleString('default',{month:'long',year:'numeric'});let monthsRecord={};if(feeType==='Full'){monthsRecord['Full Course (Paid)']=true;}else{monthsRecord[currentMonthName]=true;}const enrollmentData={name:stdName,mobile:stdMobile,email:stdEmail,course:selectedCourse,feeType:feeType,fee:feeVal,batch:batchTiming,utr:stdUtr,screenshot:screenshotBase64,months:monthsRecord,enrollmentDate:new Date().toLocaleDateString(),pic:"https://via.placeholder.com/150/2563eb/ffffff?text=User"};try{const userDbKey=stdMobile||stdEmail.replace(/[^a-zA-Z0-9]/g,"_");const userRef=ref(db,'course_enrollments/'+userDbKey);await set(userRef,enrollmentData);alert(`Admission successful for ${stdName}! UTR: ${stdUtr}`);document.getElementById('courseAdmissionForm').reset();updateFeeDisplay();}catch(err){console.error(err);alert("Failed to submit admission to server.");}submitBtn.disabled=false;submitBtn.innerText="2. Submit Admission";loadStudentData();}
+async function loadStudentData(){allStudentsData=[];try{const snapshot=await get(child(ref(db),'course_enrollments'));if(snapshot.exists()){const fbEnrollments=snapshot.val();for(let key in fbEnrollments){let item=fbEnrollments[key];allStudentsData.push({id:key,name:item.name,mobile:item.mobile,email:item.email,course:item.course,feeType:item.feeType||'Full',batch:item.batch,fee:item.fee,utr:item.utr||'N/A',months:item.months||{},pic:item.pic||"https://via.placeholder.com/150/2563eb/ffffff?text=User"});}}}catch(err){console.log("Firebase offline.");}filterStudents();}
 window.openAdminModal=function(){if(isUnlockedAll){isUnlockedAll=false;const lockBtn=document.getElementById('lockToggleBtn');lockBtn.classList.remove('unlocked');lockBtn.innerHTML="🔒 Admin View";filterStudents();return;}document.getElementById('adminPassInput').value="";document.getElementById('adminPassError').innerText="";document.getElementById('adminModal').classList.add('active');};
 window.closeAdminModal=function(){document.getElementById('adminModal').classList.remove('active');};
-window.verifyAdminPass=function(){const pass=document.getElementById('adminPassInput').value;if(pass==="912919"){isUnlockedAll=true;const lockBtn=document.getElementById('lockToggleBtn');lockBtn.classList.add('unlocked');lockBtn.innerHTML="🔓 Unlocked";closeAdminModal();filterStudents();}else{document.getElementById('adminPassError').innerText="Galat Password! Kripya sahi password daalein.";}};
-function renderStudentTable(data){const tbody=document.getElementById('studentTableBody');tbody.innerHTML="";if(data.length===0){tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:20px;">No student records found.</td></tr>`;return;}data.forEach(std=>{const row=document.createElement('tr');row.innerHTML=`<td><img src="${std.pic}" class="user-img-td" alt="pic"></td><td><strong>${std.name}</strong></td><td>${std.mobile}</td><td>${std.email}</td><td><span class="status-badge status-enrolled">${std.course}</span></td><td>${std.batch}</td><td>${std.fee}</td><td><span class="${std.utr!=='N/A'?'utr-tag':''}">${std.utr}</span></td>`;tbody.appendChild(row);});}
+window.verifyAdminPass=function(){const pass=document.getElementById('adminPassInput').value;if(pass==="912919"){isUnlockedAll=true;const lockBtn=document.getElementById('lockToggleBtn');lockBtn.classList.add('unlocked');lockBtn.innerHTML="🔓 Unlocked";closeAdminModal();filterStudents();}else{document.getElementById('adminPassError').innerText="Galat Password!";}};
+function renderStudentTable(data){const tbody=document.getElementById('studentTableBody');tbody.innerHTML="";if(data.length===0){tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:20px;">No student records found.</td></tr>`;return;}data.forEach(std=>{const row=document.createElement('tr');row.innerHTML=`<td><img src="${std.pic}" class="user-img-td" alt="pic"></td><td><strong>${std.name}</strong><br><small>${std.email}</small><br><small>${std.mobile}</small></td><td><span class="status-badge status-enrolled">${std.course}</span><br><small>(${std.feeType})</small></td><td>${std.batch}</td><td>₹${Number(std.fee||0).toLocaleString('en-IN')}</td><td><span class="${std.utr!=='N/A'?'utr-tag':''}">${std.utr}</span></td><td><button class="submit-btn" style="padding:6px 10px;font-size:12px;margin-top:0;" onclick="viewStudentMonths('${std.id}')">View Months</button></td>`;tbody.appendChild(row);});}
+window.viewStudentMonths=function(studentId){const std=allStudentsData.find(s=>s.id===studentId);if(!std)return;document.getElementById('monthModalTitle').innerText=`${std.name} - Fee Status`;const bodyEl=document.getElementById('monthModalBody');bodyEl.innerHTML='';const allMonths=['January','February','March','April','May','June','July','August','September','October','November','December'];const currentYear=new Date().getFullYear();allMonths.forEach(m=>{const monthKey=`${m} ${currentYear}`;const isPaid=std.months[monthKey]||std.months['Full Course (Paid)'];const box=document.createElement('div');box.className=`month-box ${isPaid?'paid':'pending'}`;box.innerHTML=`<strong>${monthKey}</strong><br><span>${isPaid?'Paid ✓':'Pending ✗'}</span>`;bodyEl.appendChild(box);});document.getElementById('monthModal.active')||document.getElementById('monthModal').classList.add('active');};
+window.closeMonthModal=function(){document.getElementById('monthModal').classList.remove('active');};
 window.filterStudents=function(){const query=document.getElementById('searchInput').value.toLowerCase();const courseFilter=document.getElementById('courseFilter').value;const filtered=allStudentsData.filter(std=>{const matchesQuery=std.name.toLowerCase().includes(query)||std.email.toLowerCase().includes(query)||std.mobile.includes(query)||(std.utr&&std.utr.toLowerCase().includes(query));const matchesCourse=courseFilter==='ALL'||std.course===courseFilter;return matchesQuery&&matchesCourse;});renderStudentTable(filtered);};
 window.toggleTheme=function(){document.body.classList.toggle('dark-theme');const currentTheme=document.body.classList.contains('dark-theme')?'dark':'light';localStorage.setItem('theme',currentTheme);};
 </script>
