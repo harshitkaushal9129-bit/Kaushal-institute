@@ -44,6 +44,8 @@ th{background:rgba(0,0,0,0.03);font-weight:bold;}
 .status-badge{padding:4px 8px;border-radius:12px;font-size:11px;font-weight:bold;text-transform:uppercase;}
 .status-enrolled{background:#dcfce7;color:#166534;}
 .utr-tag{font-family:monospace;background:#e0f2fe;color:#0369a1;padding:2px 6px;border-radius:4px;font-weight:bold;}
+.delete-btn{background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:4px;font-size:12px;font-weight:bold;cursor:pointer;margin-top:4px;}
+.delete-btn:hover{background:#dc2626;}
 .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9999;justify-content:center;align-items:center;}
 .modal-overlay.active{display:flex;}
 .modal-box{background:var(--card-bg);color:var(--card-text);padding:25px;border-radius:10px;max-width:480px;width:90%;text-align:center;box-shadow:0 4px 25px rgba(0,0,0,0.4);position:relative;max-height:90vh;overflow-y:auto;z-index:10000;}
@@ -55,7 +57,6 @@ th{background:rgba(0,0,0,0.03);font-weight:bold;}
 .month-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:15px;text-align:left;}
 .month-box{background:rgba(0,0,0,0.03);padding:10px;border-radius:6px;border:1px solid var(--input-border);font-size:13px;}
 .month-box.paid{border-color:#16a34a;background:#dcfce7;color:#166534;}
-.month-box.pending{border-color:#ef4444;background:#fee2e2;color:#991b1b;}
 .sticky-modal-header{position:sticky;top:0;background:var(--card-bg);padding-bottom:10px;border-bottom:1px solid var(--input-border);z-index:10;}
 </style>
 </head>
@@ -180,7 +181,7 @@ th{background:rgba(0,0,0,0.03);font-weight:bold;}
 </div>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-import{getDatabase,ref,set,get,child}from"https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+import{getDatabase,ref,set,get,child,remove}from"https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 const firebaseConfig={apiKey:"AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE",authDomain:"kaushal-institute-729bc.firebaseapp.com",databaseURL:"https://kaushal-institute-729bc-default-rtdb.firebaseio.com",projectId:"kaushal-institute-729bc",storageBucket:"kaushal-institute-729bc.firebasestorage.app",messagingSenderId:"699990199933",appId:"1:699990199933:web:e5fae383e93de5d3c6ab14"};
 const app=initializeApp(firebaseConfig);
 const db=getDatabase(app);
@@ -218,7 +219,6 @@ window.selectCourse=function(courseName){document.querySelectorAll('.course-card
 
 window.handleCourseCardClick=function(courseName){
 selectCourse(courseName);
-// Open 12-month detail view for this course when card is clicked
 document.getElementById('monthModalTitle').innerText=`${courseName} - 12 Month Structure`;
 const bodyEl=document.getElementById('monthModalBody');
 bodyEl.innerHTML='';
@@ -264,7 +264,6 @@ try{
 const userDbKey=stdMobile||stdEmail.replace(/[^a-zA-Z0-9]/g,"_");
 const userRef=ref(db,'course_enrollments/'+userDbKey);
 await set(userRef,enrollmentData);
-// Save logged in user mobile to localStorage so student view shows only this user
 localStorage.setItem('loggedInUserMobile', stdMobile);
 alert(`Admission successful for ${stdName}! UTR: ${stdUtr}`);
 document.getElementById('courseAdmissionForm').reset();
@@ -303,10 +302,30 @@ return;
 }
 data.forEach(std=>{
 const row=document.createElement('tr');
-row.innerHTML=`<td><img src="${std.pic}" class="user-img-td" alt="pic"></td><td><strong>${std.name}</strong><br><small>${std.email}</small><br><small>${std.mobile}</small></td><td><span class="status-badge status-enrolled">${std.course}</span><br><small>(${std.feeType})</small></td><td>${std.batch}</td><td>₹${Number(std.fee||0).toLocaleString('en-IN')}</td><td><span class="${std.utr!=='N/A'?'utr-tag':''}">${std.utr}</span></td><td><button class="submit-btn" style="padding:6px 10px;font-size:12px;margin-top:0;" onclick="viewStudentMonths('${std.id}')">View Months</button></td>`;
+let actionButtons = `<button class="submit-btn" style="padding:6px 10px;font-size:12px;margin-top:0;" onclick="viewStudentMonths('${std.id}')">View Months</button>`;
+// Agar Admin unlocked hai, tab delete button bhi dikhega
+if(isUnlockedAll){
+actionButtons += `<br><button class="delete-btn" onclick="deleteStudent('${std.id}', '${std.name}')">🗑️ Delete</button>`;
+}
+
+row.innerHTML=`<td><img src="${std.pic}" class="user-img-td" alt="pic"></td><td><strong>${std.name}</strong><br><small>${std.email}</small><br><small>${std.mobile}</small></td><td><span class="status-badge status-enrolled">${std.course}</span><br><small>(${std.feeType})</small></td><td>${std.batch}</td><td>₹${Number(std.fee||0).toLocaleString('en-IN')}</td><td><span class="${std.utr!=='N/A'?'utr-tag':''}">${std.utr}</span></td><td>${actionButtons}</td>`;
 tbody.appendChild(row);
 });
 }
+
+// Student ko permanently delete karne ka function
+window.deleteStudent=async function(studentId, studentName){
+if(confirm(`Kya aap sach mein ${studentName} ka registration permanently delete karna chahte hain?`)){
+try{
+await remove(ref(db, 'course_enrollments/' + studentId));
+alert(`${studentName} ka data successfully delete kar diya gaya hai.`);
+loadStudentData();
+}catch(err){
+console.error(err);
+alert("Student data delete karne mein error aayi hai.");
+}
+}
+};
 
 window.viewStudentMonths=function(studentId){
 const std=allStudentsData.find(s=>s.id===studentId);
@@ -335,7 +354,6 @@ const courseFilter=document.getElementById('courseFilter').value;
 const loggedInMobile=localStorage.getItem('loggedInUserMobile');
 
 const filtered=allStudentsData.filter(std=>{
-// If not unlocked as admin, restrict view only to the logged-in student
 if(!isUnlockedAll){
 if(!loggedInMobile || std.mobile !== loggedInMobile){
 return false;
