@@ -69,26 +69,31 @@ async function fetchStudents(){
 const gridContainer=document.getElementById('studentGridContainer');
 let studentsMap=new Map();
 try{
-const snapshot=await get(child(ref(db),'course_enrollments'));
-if(snapshot.exists()){
-const data=snapshot.val();
-for(let key in data){let item=data[key];if(item)studentsMap.set(key,item);}
-}
-}catch(err){console.log("Firebase enrollments error:",err);}
-try{
 const userSnapshot=await get(child(ref(db),'users'));
 if(userSnapshot.exists()){
 const uData=userSnapshot.val();
 for(let key in uData){
 let uItem=uData[key];
-let identifier=uItem.email||uItem.mobile||key;
+let identifier=(uItem.email||uItem.mobile||key).toString().trim().toLowerCase();
+studentsMap.set(identifier,uItem);
+}
+}
+}catch(e){console.log(e);}
+try{
+const snapshot=await get(child(ref(db),'course_enrollments'));
+if(snapshot.exists()){
+const data=snapshot.val();
+for(let key in data){
+let item=data[key];
+let identifier=(item.email||item.mobile||key).toString().trim().toLowerCase();
 if(studentsMap.has(identifier)){
-let existing=studentsMap.get(identifier);
-studentsMap.set(identifier,{...uItem,...existing});
-}else{studentsMap.set(key,uItem);}
+studentsMap.set(identifier,{...studentsMap.get(identifier),...item});
+}else{
+studentsMap.set(identifier,item);
 }
 }
-}catch(e){console.log("Firebase users error:",e);}
+}
+}catch(err){console.log(err);}
 allStudents=Array.from(studentsMap.values());
 gridContainer.innerHTML='';
 if(allStudents.length===0){
@@ -130,6 +135,7 @@ let detailsHTML=`
 document.getElementById('modalDetailsContainer').innerHTML=detailsHTML;
 document.getElementById('studentModal').classList.add('active');
 };
+window.openModal=openStudentModal;
 window.closeModal=function(){document.getElementById('studentModal').classList.remove('active');};
 window.toggleTheme=function(){
 document.body.classList.toggle('light-theme');
