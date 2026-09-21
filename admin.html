@@ -61,11 +61,11 @@
   <div class="container">
     <div class="header">
       <h1>Kaushal Institute - Admin Dashboard</h1>
-      <p style="color:#94a3b8;">Manage Courses, Fees (Full/Monthly), Student Permissions, Videos & PDFs</p>
+      <p style="color:#94a3b8;">Manage Courses, Fees (Full/Monthly), Student Permissions, Videos, PDFs & Audio</p>
     </div>
     <div class="card">
       <h2>1. Student Payment Verification & Access Control</h2>
-      <p style="font-size:13px; color:#94a3b8; margin-bottom: 15px;">Verify student UTR/Payment and grant access to Video & PDF Materials.</p>
+      <p style="font-size:13px; color:#94a3b8; margin-bottom: 15px;">Verify student UTR/Payment and grant access to Video, PDF & Audio Materials.</p>
       <div class="table-responsive">
         <table>
           <thead>
@@ -143,6 +143,26 @@
       </form>
       <ul class="content-list" id="pdfList"></ul>
     </div>
+    <div class="card">
+      <h2>5. Upload Audio File (Max 10MB)</h2>
+      <form id="audioUploadForm">
+        <div class="form-group">
+          <label>Course</label>
+          <select id="audioCourseSelect"></select>
+        </div>
+        <div class="form-group">
+          <label>Audio Title</label>
+          <input type="text" id="audioTitle" placeholder="e.g. Chapter 1 Lecture Audio" required>
+        </div>
+        <div class="form-group">
+          <label>Select Audio File</label>
+          <input type="file" id="audioFile" accept="audio/*" required>
+        </div>
+        <button type="submit" class="btn" id="audioBtn">Upload Audio</button>
+        <div class="upload-status" id="audioStatus"></div>
+      </form>
+      <ul class="content-list" id="audioList"></ul>
+    </div>
   </div>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
@@ -188,9 +208,11 @@
       const listEl = document.getElementById('courseListAdmin');
       const vidSelect = document.getElementById('vidCourseSelect');
       const pdfSelect = document.getElementById('pdfCourseSelect');
+      const audioSelect = document.getElementById('audioCourseSelect');
       listEl.innerHTML = '';
       vidSelect.innerHTML = '';
       pdfSelect.innerHTML = '';
+      audioSelect.innerHTML = '';
       for (let course in feesData) {
         let fObj = feesData[course];
         let fullVal = typeof fObj === 'object' ? fObj.full : fObj;
@@ -201,6 +223,7 @@
         listEl.appendChild(li);
         vidSelect.innerHTML += `<option value="${course}">${course}</option>`;
         pdfSelect.innerHTML += `<option value="${course}">${course}</option>`;
+        audioSelect.innerHTML += `<option value="${course}">${course}</option>`;
       }
     }
     document.getElementById('courseManageForm').addEventListener('submit', async function(e) {
@@ -410,11 +433,80 @@
         renderPdfs();
       }
     };
+    
+    // Audio Upload Logic Added
+    document.getElementById('audioUploadForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const course = document.getElementById('audioCourseSelect').value;
+      const title = document.getElementById('audioTitle').value;
+      const fileInput = document.getElementById('audioFile');
+      const statusEl = document.getElementById('audioStatus');
+      const btn = document.getElementById('audioBtn');
+      if (!fileInput.files.length) return;
+      const file = fileInput.files[0];
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size is larger than 10MB!');
+        return;
+      }
+      try {
+        btn.disabled = true;
+        statusEl.innerText = "Processing Audio Data...";
+        const base64Data = await convertFileToBase64(file);
+        statusEl.innerText = "Saving to Database...";
+        const audioId = Date.now();
+        await set(ref(db, `course_audios/${audioId}`), {
+          id: audioId,
+          course: course,
+          title: title,
+          url: base64Data
+        });
+        statusEl.innerText = "Audio Uploaded Successfully!";
+        this.reset();
+        renderAudios();
+        alert('Audio uploaded successfully!');
+      } catch (err) {
+        alert("Upload failed. Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    async function renderAudios() {
+      const list = document.getElementById('audioList');
+      list.innerHTML = '<li>Loading audios...</li>';
+      try {
+        const snapshot = await get(child(ref(db), 'course_audios'));
+        list.innerHTML = '';
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          for (let id in data) {
+            const a = data[id];
+            const li = document.createElement('li');
+            li.className = 'content-item';
+            li.innerHTML = `<span><strong>[${a.course}]</strong> ${a.title}</span><div><a href="${a.url}" target="_blank" style="color:#38bdf8; margin-right:10px; font-size:12px;">Open/Listen Audio</a><button class="del-btn" onclick="deleteAudio('${id}')">Delete</button></div>`;
+            list.appendChild(li);
+          }
+        } else {
+          list.innerHTML = '<li style="font-size:12px; color:#94a3b8;">No audios uploaded.</li>';
+        }
+      } catch (e) {
+        list.innerHTML = '<li>Error loading audios</li>';
+      }
+    }
+
+    window.deleteAudio = async function(id) {
+      if(confirm("Are you sure you want to delete this audio?")){
+        await remove(ref(db, `course_audios/${id}`));
+        renderAudios();
+      }
+    };
+
     function initAdminData() {
       loadStudentPermissions();
       loadCoursesAdmin();
       renderVideos();
       renderPdfs();
+      renderAudios();
     }
   </script>
 </body>
