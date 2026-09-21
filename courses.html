@@ -261,7 +261,7 @@ let monthsRecord={};
 if(feeType==='Full'){monthsRecord['Full Course (Paid)']=true;}else{monthsRecord[currentMonthName]=true;}
 const enrollmentData={name:stdName,mobile:stdMobile,email:stdEmail,course:selectedCourse,feeType:feeType,fee:feeVal,batch:batchTiming,utr:stdUtr,screenshot:screenshotBase64,months:monthsRecord,enrollmentDate:new Date().toLocaleDateString(),pic:"https://via.placeholder.com/150/2563eb/ffffff?text=User"};
 try{
-const userDbKey=stdMobile||stdEmail.replace(/[^a-zA-Z0-9]/g,"_");
+const userDbKey=stdMobile||stdEmail.value.replace(/[^a-zA-Z0-9]/g,"_");
 const userRef=ref(db,'course_enrollments/'+userDbKey);
 await set(userRef,enrollmentData);
 localStorage.setItem('loggedInUserMobile', stdMobile);
@@ -303,7 +303,6 @@ return;
 data.forEach(std=>{
 const row=document.createElement('tr');
 let actionButtons = `<button class="submit-btn" style="padding:6px 10px;font-size:12px;margin-top:0;" onclick="viewStudentMonths('${std.id}')">View Months</button>`;
-// Agar Admin unlocked hai, tab delete button bhi dikhega
 if(isUnlockedAll){
 actionButtons += `<br><button class="delete-btn" onclick="deleteStudent('${std.id}', '${std.name}')">🗑️ Delete</button>`;
 }
@@ -313,7 +312,6 @@ tbody.appendChild(row);
 });
 }
 
-// Student ko permanently delete karne ka function
 window.deleteStudent=async function(studentId, studentName){
 if(confirm(`Kya aap sach mein ${studentName} ka registration permanently delete karna chahte hain?`)){
 try{
@@ -354,6 +352,7 @@ const courseFilter=document.getElementById('courseFilter').value;
 const loggedInMobile=localStorage.getItem('loggedInUserMobile');
 
 const filtered=allStudentsData.filter(std=>{
+// Agar admin mode unlocked nahi hai, toh sirf usi student ka data dikhega jo is device par logged in hai
 if(!isUnlockedAll){
 if(!loggedInMobile || std.mobile !== loggedInMobile){
 return false;
