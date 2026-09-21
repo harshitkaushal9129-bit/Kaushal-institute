@@ -1,370 +1,145 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kaushal Institute - Student Cards Portal</title>
-  <style>
-    :root {
-      --bg-color: #030712;
-      --card-bg: rgba(15, 23, 42, 0.88);
-      --text-color: #f8fafc;
-      --primary-color: #38bdf8;
-      --neon-glow: 0 0 15px rgba(56, 189, 248, 0.4), inset 0 0 10px rgba(56, 189, 248, 0.15);
-      --neon-border: 1px solid rgba(56, 189, 248, 0.5);
-      --accent-green: #22c55e;
-    }
-
-    body.light-theme {
-      --bg-color: #f8fafc;
-      --card-bg: rgba(255, 255, 255, 0.92);
-      --text-color: #0f172a;
-      --primary-color: #2563eb;
-      --neon-glow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      --neon-border: 1px solid #cbd5e1;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background-image: linear-gradient(rgba(3, 7, 18, 0.82), rgba(3, 7, 18, 0.82)), url('kaushal-institute.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      color: var(--text-color);
-      min-height: 100vh;
-      padding: 20px;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    body.light-theme {
-      background-image: linear-gradient(rgba(248, 250, 252, 0.88), rgba(248, 250, 252, 0.88)), url('kaushal-institute.png');
-    }
-
-    .header-container {
-      max-width: 1200px;
-      margin: 0 auto 30px auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      padding: 15px 25px;
-      border-radius: 14px;
-      box-shadow: var(--neon-glow);
-      border: var(--neon-border);
-    }
-
-    .header-container h2 {
-      color: var(--primary-color);
-      font-size: 22px;
-      text-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
-    }
-
-    .header-btns {
-      display: flex;
-      gap: 12px;
-    }
-
-    .btn-action {
-      background: linear-gradient(135deg, #2563eb, #38bdf8);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 13px;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
-      transition: 0.3s ease;
-    }
-
-    .btn-action:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 18px rgba(56, 189, 248, 0.7);
-    }
-
-    .main-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .student-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
-    }
-
-    /* Sirf Pic aur Name wala chota attractive Div Card */
-    .student-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      border-radius: 14px;
-      padding: 20px;
-      text-align: center;
-      border: var(--neon-border);
-      box-shadow: var(--neon-glow);
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .student-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.6);
-      border-color: var(--primary-color);
-    }
-
-    .student-avatar {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid var(--primary-color);
-      margin-bottom: 15px;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
-    }
-
-    .student-card h3 {
-      font-size: 16px;
-      color: var(--text-color);
-      font-weight: 600;
-    }
-
-    .student-card p {
-      font-size: 12px;
-      opacity: 0.7;
-      margin-top: 4px;
-    }
-
-    /* Modal Styling for Full Details */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(6px);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
-    .modal-box {
-      background: var(--card-bg);
-      color: var(--text-color);
-      width: 100%;
-      max-width: 500px;
-      padding: 30px;
-      border-radius: 18px;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), var(--neon-glow);
-      border: var(--neon-border);
-      position: relative;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .close-modal {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      font-size: 24px;
-      background: none;
-      border: none;
-      color: var(--text-color);
-      cursor: pointer;
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 15px;
-    }
-
-    .modal-avatar {
-      width: 75px;
-      height: 75px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--primary-color);
-    }
-
-    .detail-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 9px 12px;
-      margin-bottom: 8px;
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 6px;
-      font-size: 13px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .detail-label {
-      opacity: 0.75;
-      font-weight: 500;
-    }
-
-    .detail-value {
-      font-weight: 600;
-      color: var(--primary-color);
-      word-break: break-all;
-      text-align: right;
-    }
-
-    .no-data {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 40px;
-      background: var(--card-bg);
-      border-radius: 12px;
-      border: var(--neon-border);
-      opacity: 0.8;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaushal Institute - Student Cards Portal</title>
+<style>
+:root{--bg-color:#030712;--card-bg:rgba(15,23,42,0.88);--text-color:#f8fafc;--primary-color:#38bdf8;--neon-glow:0 0 15px rgba(56,189,248,0.4), inset 0 0 10px rgba(56,189,248,0.15);--neon-border:1px solid rgba(56,189,248,0.5);--accent-green:#22c55e;}
+body.light-theme{--bg-color:#f8fafc;--card-bg:rgba(255,255,255,0.92);--text-color:#0f172a;--primary-color:#2563eb;--neon-glow:0 4px 20px rgba(0,0,0,0.1);--neon-border:1px solid #cbd5e1;}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+body{background-image:linear-gradient(rgba(3,7,18,0.82),rgba(3,7,18,0.82)),url('kaushal-institute.png');background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;color:var(--text-color);min-height:100vh;padding:20px;transition:background 0.3s ease,color 0.3s ease;}
+body.light-theme{background-image:linear-gradient(rgba(248,250,252,0.88),rgba(248,250,252,0.88)),url('kaushal-institute.png');}
+.header-container{max-width:1200px;margin:0 auto 30px auto;display:flex;justify-content:space-between;align-items:center;background:var(--card-bg);backdrop-filter:blur(12px);padding:15px 25px;border-radius:14px;box-shadow:var(--neon-glow);border:var(--neon-border);}
+.header-container h2{color:var(--primary-color);font-size:22px;text-shadow:0 0 8px rgba(56,189,248,0.5);}
+.header-btns{display:flex;gap:12px;}
+.btn-action{background:linear-gradient(135deg,#2563eb,#38bdf8);color:white;padding:8px 16px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:13px;border:none;cursor:pointer;box-shadow:0 0 10px rgba(37,99,235,0.4);transition:0.3s ease;}
+.btn-action:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(56,189,248,0.7);}
+.main-container{max-width:1200px;margin:0 auto;}
+.student-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;}
+.student-card{background:var(--card-bg);backdrop-filter:blur(12px);border-radius:14px;padding:20px;text-align:center;border:var(--neon-border);box-shadow:var(--neon-glow);cursor:pointer;transition:transform 0.3s ease,box-shadow 0.3s ease;}
+.student-card:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(56,189,248,0.6);border-color:var(--primary-color);}
+.student-avatar{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid var(--primary-color);margin-bottom:15px;box-shadow:0 0 12px rgba(56,189,248,0.5);}
+.student-card h3{font-size:16px;color:var(--text-color);font-weight:600;}
+.student-card p{font-size:12px;opacity:0.7;margin-top:4px;}
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:1000;justify-content:center;align-items:center;padding:20px;}
+.modal-overlay.active{display:flex;}
+.modal-box{background:var(--card-bg);color:var(--text-color);width:100%;max-width:500px;padding:30px;border-radius:18px;box-shadow:0 15px 40px rgba(0,0,0,0.6),var(--neon-glow);border:var(--neon-border);position:relative;max-height:90vh;overflow-y:auto;}
+.close-modal{position:absolute;top:15px;right:20px;font-size:24px;background:none;border:none;color:var(--text-color);cursor:pointer;}
+.modal-header{display:flex;align-items:center;gap:15px;margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:15px;}
+.modal-avatar{width:75px;height:75px;border-radius:50%;object-fit:cover;border:2px solid var(--primary-color);}
+.detail-row{display:flex;justify-content:space-between;padding:9px 12px;margin-bottom:8px;background:rgba(255,255,255,0.04);border-radius:6px;font-size:13px;border:1px solid rgba(255,255,255,0.05);}
+.detail-label{opacity:0.75;font-weight:500;}
+.detail-value{font-weight:600;color:var(--primary-color);word-break:break-all;text-align:right;}
+.no-data{grid-column:1 / -1;text-align:center;padding:40px;background:var(--card-bg);border-radius:12px;border:var(--neon-border);opacity:0.8;}
+</style>
 </head>
 <body>
-
-  <div class="header-container">
-    <h2>⚡ Student Directory</h2>
-    <div class="header-btns">
-      <button class="btn-action" onclick="toggleTheme()">🌓 Theme Toggle</button>
-      <a href="index.html" class="btn-action">⬅ Portal</a>
-    </div>
-  </div>
-
-  <div class="main-container">
-    <div class="student-grid" id="studentGridContainer">
-      <!-- Dynamic Student Cards (Pic & Name only) -->
-    </div>
-  </div>
-
-  <!-- Detailed Modal Popup -->
-  <div class="modal-overlay" id="studentModal">
-    <div class="modal-box">
-      <button class="close-modal" onclick="closeModal()">&times;</button>
-      <div class="modal-header">
-        <img id="modalPic" src="" alt="Avatar" class="modal-avatar">
-        <div>
-          <h3 id="modalName" style="color:var(--primary-color); font-size:18px;"></h3>
-          <p id="modalCourse" style="font-size:13px; opacity:0.8;"></p>
-        </div>
-      </div>
-      <div id="modalDetailsContainer">
-        <!-- Full details will be injected here -->
-      </div>
-    </div>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
-
-    const firebaseConfig = { apiKey: "AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE", authDomain: "kaushal-institute-729bc.firebaseapp.com", databaseURL: "https://kaushal-institute-729bc-default-rtdb.firebaseio.com", projectId: "kaushal-institute-729bc", storageBucket: "kaushal-institute-729bc.firebasestorage.app", messagingSenderId: "699990199933", appId: "1:699990199933:web:e5fae383e93de5d3c6ab14" };
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    let allStudents = [];
-
-    async function fetchStudents() {
-      const gridContainer = document.getElementById('studentGridContainer');
-      let studentsMap = new Map();
-
-      try {
-        const snapshot = await get(child(ref(db), 'course_enrollments'));
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          for (let key in data) {
-            let item = data[key];
-            if (item.email || item.mobile || item.name) {
-              studentsMap.set(key, item);
-            }
-          }
-        }
-      } catch (err) {
-        console.log("Firebase fetch error:", err);
-      }
-
-      allStudents = Array.from(studentsMap.values());
-      gridContainer.innerHTML = '';
-
-      if (allStudents.length === 0) {
-        gridContainer.innerHTML = `<div class="no-data">⚡ Abhi tak koi student registered nahi hai.</div>`;
-        return;
-      }
-
-      allStudents.forEach((student, index) => {
-        let userPic = student.pic ? student.pic : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-        let studentName = student.name || 'Unnamed Student';
-
-        const card = document.createElement('div');
-        card.className = 'student-card';
-        card.onclick = () => openStudentModal(index);
-        card.innerHTML = `
-          <img src="${userPic}" alt="Student" class="student-avatar">
-          <h3>${studentName}</h3>
-          <p>${student.course || 'Course Not Set'}</p>
-        `;
-        gridContainer.appendChild(card);
-      });
-    }
-
-    window.openStudentModal = function(index) {
-      const student = allStudents[index];
-      if (!student) return;
-
-      document.getElementById('modalPic').src = student.pic || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-      document.getElementById('modalName').innerText = student.name || 'Unnamed Student';
-      document.getElementById('modalCourse').innerText = `Course: ${student.course || 'N/A'}`;
-
-      let detailsHTML = `
-        <div class="detail-row"><span class="detail-label">📧 Email ID:</span><span class="detail-value">${student.email || 'N/A'}</span></div>
-        <div class="detail-row"><span class="detail-label">📱 Mobile Number:</span><span class="detail-value">${student.mobile || 'N/A'}</span></div>
-        <div class="detail-row"><span class="detail-label">🔑 Password:</span><span class="detail-value">${student.password || student.pass || 'Not Saved'}</span></div>
-        <div class="detail-row"><span class="detail-label">📚 Available Course:</span><span class="detail-value">${student.course || 'N/A'}</span></div>
-        <div class="detail-row"><span class="detail-label">⏱️ Batch Timing:</span><span class="detail-value">${student.batch || 'N/A'}</span></div>
-        <div class="detail-row"><span class="detail-label">💰 Fee Type / Plan:</span><span class="detail-value">${student.feeType || 'Full'}</span></div>
-        <div class="detail-row"><span class="detail-label">💵 Fee Amount Paid:</span><span class="detail-value" style="color:var(--accent-green);">₹${Number(student.fee || 0).toLocaleString('en-IN')}</span></div>
-        <div class="detail-row"><span class="detail-label">🔢 UTR / Transaction ID:</span><span class="detail-value">${student.utr || 'N/A'}</span></div>
-        <div class="detail-row"><span class="detail-label">📅 Enrollment Date:</span><span class="detail-value">${student.enrollmentDate || 'N/A'}</span></div>
-      `;
-
-      document.getElementById('modalDetailsContainer').innerHTML = detailsHTML;
-      document.getElementById('studentModal').classList.add('active');
-    };
-
-    window.closeModal = function() {
-      document.getElementById('studentModal').classList.remove('active');
-    };
-
-    window.toggleTheme = function() {
-      document.body.classList.toggle('light-theme');
-      const isLight = document.body.classList.contains('light-theme');
-      localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    };
-
-    window.addEventListener('DOMContentLoaded', () => {
-      fetchStudents();
-      if (localStorage.getItem('theme') === 'light') {
-        document.body.classList.add('light-theme');
-      }
-    });
-  </script>
+<div class="header-container">
+<h2>⚡ Student Directory</h2>
+<div class="header-btns">
+<button class="btn-action" onclick="toggleTheme()">🌓 Theme Toggle</button>
+<a href="index.html" class="btn-action">⬅ Portal</a>
+</div>
+</div>
+<div class="main-container">
+<div class="student-grid" id="studentGridContainer"></div>
+</div>
+<div class="modal-overlay" id="studentModal">
+<div class="modal-box">
+<button class="close-modal" onclick="closeModal()">&times;</button>
+<div class="modal-header">
+<img id="modalPic" src="" alt="Avatar" class="modal-avatar">
+<div>
+<h3 id="modalName" style="color:var(--primary-color); font-size:18px;"></h3>
+<p id="modalCourse" style="font-size:13px; opacity:0.8;"></p>
+</div>
+</div>
+<div id="modalDetailsContainer"></div>
+</div>
+</div>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+import{getDatabase,ref,get,child}from"https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+const firebaseConfig={apiKey:"AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE",authDomain:"kaushal-institute-729bc.firebaseapp.com",databaseURL:"https://kaushal-institute-729bc-default-rtdb.firebaseio.com",projectId:"kaushal-institute-729bc",storageBucket:"kaushal-institute-729bc.firebasestorage.app",messagingSenderId:"699990199933",appId:"1:699990199933:web:e5fae383e93de5d3c6ab14"};
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+let allStudents=[];
+async function fetchStudents(){
+const gridContainer=document.getElementById('studentGridContainer');
+let studentsMap=new Map();
+try{
+const snapshot=await get(child(ref(db),'course_enrollments'));
+if(snapshot.exists()){
+const data=snapshot.val();
+for(let key in data){let item=data[key];if(item)studentsMap.set(key,item);}
+}
+}catch(err){console.log("Firebase enrollments error:",err);}
+try{
+const userSnapshot=await get(child(ref(db),'users'));
+if(userSnapshot.exists()){
+const uData=userSnapshot.val();
+for(let key in uData){
+let uItem=uData[key];
+let identifier=uItem.email||uItem.mobile||key;
+if(studentsMap.has(identifier)){
+let existing=studentsMap.get(identifier);
+studentsMap.set(identifier,{...uItem,...existing});
+}else{studentsMap.set(key,uItem);}
+}
+}
+}catch(e){console.log("Firebase users error:",e);}
+allStudents=Array.from(studentsMap.values());
+gridContainer.innerHTML='';
+if(allStudents.length===0){
+gridContainer.innerHTML=`<div class="no-data">⚡ Abhi tak koi student registered nahi hai.</div>`;
+return;
+}
+allStudents.forEach((student,index)=>{
+let userPic=student.pic||student.image||student.photo||'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+let studentName=student.name||student.fullName||'Unnamed Student';
+let courseName=student.course||student.courseName||'Course Not Set';
+const card=document.createElement('div');
+card.className='student-card';
+card.onclick=()=>openStudentModal(index);
+card.innerHTML=`<img src="${userPic}" alt="Student" class="student-avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><h3>${studentName}</h3><p>${courseName}</p>`;
+gridContainer.appendChild(card);
+});
+}
+window.openStudentModal=function(index){
+const student=allStudents[index];
+if(!student)return;
+let userPic=student.pic||student.image||student.photo||'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+document.getElementById('modalPic').src=userPic;
+document.getElementById('modalName').innerText=student.name||student.fullName||'Unnamed Student';
+document.getElementById('modalCourse').innerText=`Course: ${student.course||student.courseName||'N/A'}`;
+let passwordVal=student.password||student.pass||student.pwd||'Not Available';
+let feeVal=student.fee||student.amount||student.feePaid||student.paid||'0';
+let formattedFee=typeof feeVal==='number'?'₹'+feeVal.toLocaleString('en-IN'):(feeVal.toString().startsWith('₹')?feeVal:'₹'+feeVal);
+let detailsHTML=`
+<div class="detail-row"><span class="detail-label">📧 Email ID:</span><span class="detail-value">${student.email||'N/A'}</span></div>
+<div class="detail-row"><span class="detail-label">📱 Mobile Number:</span><span class="detail-value">${student.mobile||student.phone||'N/A'}</span></div>
+<div class="detail-row"><span class="detail-label">🔑 Password:</span><span class="detail-value" style="color:var(--accent-green);">${passwordVal}</span></div>
+<div class="detail-row"><span class="detail-label">📚 Available Course:</span><span class="detail-value">${student.course||student.courseName||'N/A'}</span></div>
+<div class="detail-row"><span class="detail-label">⏱️ Batch Timing:</span><span class="detail-value">${student.batch||'N/A'}</span></div>
+<div class="detail-row"><span class="detail-label">💰 Fee Type / Plan:</span><span class="detail-value">${student.feeType||'Full'}</span></div>
+<div class="detail-row"><span class="detail-label">💵 Fee Paid Amount:</span><span class="detail-value" style="color:var(--accent-green); font-weight:700;">${formattedFee}</span></div>
+<div class="detail-row"><span class="detail-label">🔢 UTR / Transaction ID:</span><span class="detail-value">${student.utr||student.transactionId||'N/A'}</span></div>
+<div class="detail-row"><span class="detail-label">📅 Enrollment Date:</span><span class="detail-value">${student.enrollmentDate||student.createdAt||'N/A'}</span></div>
+`;
+document.getElementById('modalDetailsContainer').innerHTML=detailsHTML;
+document.getElementById('studentModal').classList.add('active');
+};
+window.closeModal=function(){document.getElementById('studentModal').classList.remove('active');};
+window.toggleTheme=function(){
+document.body.classList.toggle('light-theme');
+const isLight=document.body.classList.contains('light-theme');
+localStorage.setItem('theme',isLight?'light':'dark');
+};
+window.addEventListener('DOMContentLoaded',()=>{
+fetchStudents();
+if(localStorage.getItem('theme')==='light'){document.body.classList.add('light-theme');}
+});
+</script>
 </body>
 </html>
