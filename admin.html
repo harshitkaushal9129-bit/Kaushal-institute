@@ -30,16 +30,12 @@
     .btn-sm { padding: 6px 12px; font-size: 12px; width: auto; border-radius: 4px; display: inline-block; }
     .btn-danger { background: #ef4444; }
     .btn-danger:hover { background: #dc2626; }
-    
     .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 1000; display: flex; justify-content: center; align-items: center; }
     .auth-box { background: var(--card-bg); padding: 30px; border-radius: 12px; text-align: center; width: 320px; border: 1px solid var(--border-color); }
     .auth-box input { width: 100%; padding: 10px; margin: 15px 0; border-radius: 6px; border: 1px solid var(--border-color); background: #0f172a; color: white; text-align: center; font-size: 18px; }
-    
     .content-list { margin-top: 15px; list-style: none; }
     .content-item { background: #0f172a; padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); }
     .del-btn { background: #ef4444; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
-
-    /* Table Styles */
     .table-responsive { overflow-x: auto; margin-top: 15px; }
     table { width: 100%; border-collapse: collapse; text-align: left; }
     th, td { padding: 12px 10px; border-bottom: 1px solid var(--border-color); font-size: 13px; }
@@ -53,8 +49,6 @@
   </style>
 </head>
 <body>
-
-  <!-- Lock Modal -->
   <div class="auth-overlay" id="authModal">
     <div class="auth-box">
       <h2 style="color:var(--accent-color);">🔒 Admin Access</h2>
@@ -64,14 +58,11 @@
       <p id="passErr" style="color:#ef4444; font-size:13px; margin-top:10px;"></p>
     </div>
   </div>
-
   <div class="container">
     <div class="header">
       <h1>Kaushal Institute - Admin Dashboard</h1>
-      <p style="color:#94a3b8;">Manage Course Fees, Student Permissions, Video Lectures & PDF Resources</p>
+      <p style="color:#94a3b8;">Manage Courses, Fees (Full/Monthly), Student Permissions, Videos & PDFs</p>
     </div>
-
-    <!-- Student Permission Section -->
     <div class="card">
       <h2>1. Student Payment Verification & Access Control</h2>
       <p style="font-size:13px; color:#94a3b8; margin-bottom: 15px;">Verify student UTR/Payment and grant access to Video & PDF Materials.</p>
@@ -80,7 +71,7 @@
           <thead>
             <tr>
               <th>Student Details</th>
-              <th>Course / Fee</th>
+              <th>Course / Plan & Fee</th>
               <th>UTR Number</th>
               <th>Screenshot</th>
               <th>Access Status</th>
@@ -91,40 +82,33 @@
         </table>
       </div>
     </div>
-
-    <!-- Course Fees Section -->
     <div class="card">
-      <h2>2. Modify Course Fees</h2>
-      <form id="feeUpdateForm">
+      <h2>2. Manage Courses & Fees (One-Time & Monthly)</h2>
+      <form id="courseManageForm" style="margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:15px;">
+        <h3 style="font-size:16px; color:var(--accent-color); margin-bottom:10px;">Add New Course / Update Existing Course</h3>
         <div class="form-group">
-          <label>Select Course</label>
-          <select id="feeCourseSelect" onchange="loadCurrentFee()">
-            <option value="ADCA">ADCA</option>
-            <option value="CCC">CCC</option>
-            <option value="Tally">Tally Prime</option>
-            <option value="OLevel">O Level</option>
-          </select>
+          <label>Course Code / Name (e.g. ADCA, CCC, DCA)</label>
+          <input type="text" id="manageCourseName" placeholder="Enter Course Name" required>
         </div>
         <div class="form-group">
-          <label>New Fee Amount (₹)</label>
-          <input type="number" id="newFeeInput" placeholder="e.g. 12000" required>
+          <label>Full Course Fee (One-Time) (₹)</label>
+          <input type="number" id="manageFullFee" placeholder="e.g. 12000" required>
         </div>
-        <button type="submit" class="btn btn-green">Update Fee</button>
+        <div class="form-group">
+          <label>Monthly Fee (Per Month) (₹)</label>
+          <input type="number" id="manageMonthlyFee" placeholder="e.g. 1000" required>
+        </div>
+        <button type="submit" class="btn btn-green">Save / Update Course</button>
       </form>
+      <h3 style="font-size:16px; color:var(--accent-color); margin-bottom:10px;">Existing Courses List</h3>
+      <ul class="content-list" id="courseListAdmin"></ul>
     </div>
-
-    <!-- Video Upload Section (Realtime DB Base64) -->
     <div class="card">
       <h2>3. Upload Video File (Max 10MB)</h2>
       <form id="videoUploadForm">
         <div class="form-group">
           <label>Course</label>
-          <select id="vidCourseSelect">
-            <option value="ADCA">ADCA</option>
-            <option value="CCC">CCC</option>
-            <option value="Tally">Tally Prime</option>
-            <option value="OLevel">O Level</option>
-          </select>
+          <select id="vidCourseSelect"></select>
         </div>
         <div class="form-group">
           <label>Video Title</label>
@@ -139,19 +123,12 @@
       </form>
       <ul class="content-list" id="videoList"></ul>
     </div>
-
-    <!-- PDF Upload Section (Realtime DB Base64) -->
     <div class="card">
       <h2>4. Upload PDF Study Material File</h2>
       <form id="pdfUploadForm">
         <div class="form-group">
           <label>Course</label>
-          <select id="pdfCourseSelect">
-            <option value="ADCA">ADCA</option>
-            <option value="CCC">CCC</option>
-            <option value="Tally">Tally Prime</option>
-            <option value="OLevel">O Level</option>
-          </select>
+          <select id="pdfCourseSelect"></select>
         </div>
         <div class="form-group">
           <label>PDF Title</label>
@@ -167,12 +144,9 @@
       <ul class="content-list" id="pdfList"></ul>
     </div>
   </div>
-
-  <!-- Firebase Realtime Database Only -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, get, child, set, remove, update } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
-
     const firebaseConfig = {
       apiKey: "AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE",
       authDomain: "kaushal-institute-729bc.firebaseapp.com",
@@ -182,12 +156,14 @@
       messagingSenderId: "699990199933",
       appId: "1:699990199933:web:e5fae383e93de5d3c6ab14"
     };
-
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
-    const DEFAULT_FEES = { 'ADCA': '12000', 'CCC': '3500', 'Tally': '4500', 'OLevel': '15000' };
-
+    const DEFAULT_FEES = {
+      'ADCA': { full: '12000', monthly: '1200' },
+      'CCC': { full: '3500', monthly: '800' },
+      'Tally': { full: '4500', monthly: '1000' },
+      'OLevel': { full: '15000', monthly: '1500' }
+    };
     window.verifyAdminPass = function() {
       const pass = document.getElementById('adminPassInput').value;
       if (pass === '912919') {
@@ -197,29 +173,70 @@
         document.getElementById('passErr').innerText = 'Incorrect Password! Try again.';
       }
     };
-
-    function getFees() {
-      const savedFees = localStorage.getItem('course_fees');
-      return savedFees ? JSON.parse(savedFees) : DEFAULT_FEES;
+    async function loadCoursesAdmin() {
+      let feesData = DEFAULT_FEES;
+      try {
+        const snapshot = await get(child(ref(db), 'course_fees'));
+        if (snapshot.exists()) {
+          feesData = snapshot.val();
+        } else {
+          await set(ref(db, 'course_fees'), DEFAULT_FEES);
+        }
+      } catch (e) {
+        console.log("Error loading courses", e);
+      }
+      const listEl = document.getElementById('courseListAdmin');
+      const vidSelect = document.getElementById('vidCourseSelect');
+      const pdfSelect = document.getElementById('pdfCourseSelect');
+      listEl.innerHTML = '';
+      vidSelect.innerHTML = '';
+      pdfSelect.innerHTML = '';
+      for (let course in feesData) {
+        let fObj = feesData[course];
+        let fullVal = typeof fObj === 'object' ? fObj.full : fObj;
+        let monVal = typeof fObj === 'object' && fObj.monthly ? fObj.monthly : '1000';
+        const li = document.createElement('li');
+        li.className = 'content-item';
+        li.innerHTML = `<span><strong>${course}</strong> - Full: ₹${fullVal} | Monthly: ₹${monVal}</span><div><button class="btn btn-sm btn-danger" onclick="deleteCourse('${course}')">Delete</button></div>`;
+        listEl.appendChild(li);
+        vidSelect.innerHTML += `<option value="${course}">${course}</option>`;
+        pdfSelect.innerHTML += `<option value="${course}">${course}</option>`;
+      }
     }
-
-    window.loadCurrentFee = function() {
-      const course = document.getElementById('feeCourseSelect').value;
-      const fees = getFees();
-      document.getElementById('newFeeInput').value = fees[course] || '';
-    };
-
-    document.getElementById('feeUpdateForm').addEventListener('submit', function(e) {
+    document.getElementById('courseManageForm').addEventListener('submit', async function(e) {
       e.preventDefault();
-      const course = document.getElementById('feeCourseSelect').value;
-      const feeVal = document.getElementById('newFeeInput').value;
-      const fees = getFees();
-      fees[course] = feeVal;
-      localStorage.setItem('course_fees', JSON.stringify(fees));
-      alert(`Fees for ${course} updated to ₹${feeVal} successfully!`);
+      const courseName = document.getElementById('manageCourseName').value.trim();
+      const fullFee = document.getElementById('manageFullFee').value.trim();
+      const monthlyFee = document.getElementById('manageMonthlyFee').value.trim();
+      if (!courseName) return;
+      try {
+        const snapshot = await get(child(ref(db), 'course_fees'));
+        let currentFees = snapshot.exists() ? snapshot.val() : DEFAULT_FEES;
+        currentFees[courseName] = { full: fullFee, monthly: monthlyFee };
+        await set(ref(db, 'course_fees'), currentFees);
+        alert(`Course ${courseName} saved successfully in Firebase!`);
+        this.reset();
+        loadCoursesAdmin();
+      } catch (err) {
+        alert("Failed to save course: " + err.message);
+      }
     });
-
-    // Helper: File Ko Base64 Me Convert Karne Ke Liye
+    window.deleteCourse = async function(courseName) {
+      if (confirm(`Are you sure you want to delete course ${courseName}?`)) {
+        try {
+          const snapshot = await get(child(ref(db), 'course_fees'));
+          if (snapshot.exists()) {
+            let currentFees = snapshot.val();
+            delete currentFees[courseName];
+            await set(ref(db, 'course_fees'), currentFees);
+            alert(`Course ${courseName} deleted successfully!`);
+            loadCoursesAdmin();
+          }
+        } catch (e) {
+          alert("Error deleting course.");
+        }
+      }
+    };
     function convertFileToBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -228,13 +245,10 @@
         reader.onerror = (error) => reject(error);
       });
     }
-
-    // Student Access Permission Load & Render
     async function loadStudentPermissions() {
       const tbody = document.getElementById('permissionTableBody');
       tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Loading Submissions...</td></tr>';
       let enrollments = [];
-
       try {
         const snapshot = await get(child(ref(db), 'course_enrollments'));
         if (snapshot.exists()) {
@@ -246,40 +260,18 @@
       } catch (e) {
         console.log('Firebase fetch error', e);
       }
-
       if (enrollments.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:15px;">No enrollment or payment requests found.</td></tr>';
         return;
       }
-
       tbody.innerHTML = '';
       enrollments.forEach((std) => {
         const accessStatus = std.accessGranted ? 'approved' : (std.accessDenied ? 'rejected' : 'pending');
         const row = document.createElement('tr');
-        
-        row.innerHTML = `
-          <td>
-            <strong>${std.name}</strong><br>
-            <small style="opacity:0.8">${std.email}</small><br>
-            <small style="opacity:0.8">${std.mobile}</small>
-          </td>
-          <td><strong>${std.course}</strong><br>(${std.fee || 'N/A'})</td>
-          <td><span class="utr-code">${std.utr || 'N/A'}</span></td>
-          <td>
-            ${std.screenshot ? `<a href="${std.screenshot}" target="_blank" style="color:#38bdf8; text-decoration:underline;">View Image</a>` : 'No Image'}
-          </td>
-          <td>
-            <span class="status-badge status-${accessStatus}">${accessStatus}</span>
-          </td>
-          <td>
-            <button class="btn btn-sm btn-green" onclick="toggleAccess('${std.fbKey}', true)">Grant Access</button>
-            <button class="btn btn-sm btn-danger" onclick="toggleAccess('${std.fbKey}', false)">Revoke</button>
-          </td>
-        `;
+        row.innerHTML = `<td><strong>${std.name}</strong><br><small style="opacity:0.8">${std.email}</small><br><small style="opacity:0.8">${std.mobile}</small></td><td><strong>${std.course}</strong><br>(${std.feeType || 'Full'} : ${std.fee || 'N/A'})</td><td><span class="utr-code">${std.utr || 'N/A'}</span></td><td>${std.screenshot ? `<a href="${std.screenshot}" target="_blank" style="color:#38bdf8; text-decoration:underline;">View Image</a>` : 'No Image'}</td><td><span class="status-badge status-${accessStatus}">${accessStatus}</span></td><td><button class="btn btn-sm btn-green" onclick="toggleAccess('${std.fbKey}', true)">Grant Access</button> <button class="btn btn-sm btn-danger" onclick="toggleAccess('${std.fbKey}', false)">Revoke</button></td>`;
         tbody.appendChild(row);
       });
     }
-
     window.toggleAccess = async function(key, isGranted) {
       try {
         await update(ref(db, `course_enrollments/${key}`), {
@@ -292,8 +284,6 @@
         alert("Failed to update status.");
       }
     };
-
-    // Video Upload (Direct to Realtime DB)
     document.getElementById('videoUploadForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const course = document.getElementById('vidCourseSelect').value;
@@ -301,20 +291,16 @@
       const fileInput = document.getElementById('vidFile');
       const statusEl = document.getElementById('vidStatus');
       const btn = document.getElementById('vidBtn');
-
       if (!fileInput.files.length) return;
       const file = fileInput.files[0];
-
       if (file.size > 10 * 1024 * 1024) {
-        alert('File size is larger than 10MB! Please upload smaller files into Realtime DB.');
+        alert('File size is larger than 10MB!');
         return;
       }
-
       try {
         btn.disabled = true;
         statusEl.innerText = "Processing File Data...";
         const base64Data = await convertFileToBase64(file);
-
         statusEl.innerText = "Saving to Database...";
         const videoId = Date.now();
         await set(ref(db, `course_videos/${videoId}`), {
@@ -323,7 +309,6 @@
           title: title,
           url: base64Data
         });
-
         statusEl.innerText = "Video Uploaded Successfully!";
         this.reset();
         renderVideos();
@@ -334,7 +319,6 @@
         btn.disabled = false;
       }
     });
-
     async function renderVideos() {
       const list = document.getElementById('videoList');
       list.innerHTML = '<li>Loading videos...</li>';
@@ -347,11 +331,7 @@
             const v = data[id];
             const li = document.createElement('li');
             li.className = 'content-item';
-            li.innerHTML = `<span><strong>[${v.course}]</strong> ${v.title}</span> 
-            <div>
-              <a href="${v.url}" target="_blank" style="color:#38bdf8; margin-right:10px; font-size:12px;">Open/View File</a>
-              <button class="del-btn" onclick="deleteVideo('${id}')">Delete</button>
-            </div>`;
+            li.innerHTML = `<span><strong>[${v.course}]</strong> ${v.title}</span><div><a href="${v.url}" target="_blank" style="color:#38bdf8; margin-right:10px; font-size:12px;">Open/View File</a><button class="del-btn" onclick="deleteVideo('${id}')">Delete</button></div>`;
             list.appendChild(li);
           }
         } else {
@@ -361,15 +341,12 @@
         list.innerHTML = '<li>Error loading videos</li>';
       }
     }
-
     window.deleteVideo = async function(id) {
       if(confirm("Are you sure you want to delete this video?")){
         await remove(ref(db, `course_videos/${id}`));
         renderVideos();
       }
     };
-
-    // PDF Upload (Direct to Realtime DB)
     document.getElementById('pdfUploadForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const course = document.getElementById('pdfCourseSelect').value;
@@ -377,20 +354,16 @@
       const fileInput = document.getElementById('pdfFile');
       const statusEl = document.getElementById('pdfStatus');
       const btn = document.getElementById('pdfBtn');
-
       if (!fileInput.files.length) return;
       const file = fileInput.files[0];
-
       if (file.size > 10 * 1024 * 1024) {
         alert('File size is larger than 10MB!');
         return;
       }
-
       try {
         btn.disabled = true;
         statusEl.innerText = "Processing PDF Data...";
         const base64Data = await convertFileToBase64(file);
-
         statusEl.innerText = "Saving to Database...";
         const pdfId = Date.now();
         await set(ref(db, `course_pdfs/${pdfId}`), {
@@ -399,7 +372,6 @@
           title: title,
           url: base64Data
         });
-
         statusEl.innerText = "PDF Uploaded Successfully!";
         this.reset();
         renderPdfs();
@@ -410,7 +382,6 @@
         btn.disabled = false;
       }
     });
-
     async function renderPdfs() {
       const list = document.getElementById('pdfList');
       list.innerHTML = '<li>Loading PDFs...</li>';
@@ -423,11 +394,7 @@
             const p = data[id];
             const li = document.createElement('li');
             li.className = 'content-item';
-            li.innerHTML = `<span><strong>[${p.course}]</strong> ${p.title}</span> 
-            <div>
-              <a href="${p.url}" target="_blank" style="color:#38bdf8; margin-right:10px; font-size:12px;">Open/View PDF</a>
-              <button class="del-btn" onclick="deletePdf('${id}')">Delete</button>
-            </div>`;
+            li.innerHTML = `<span><strong>[${p.course}]</strong> ${p.title}</span><div><a href="${p.url}" target="_blank" style="color:#38bdf8; margin-right:10px; font-size:12px;">Open/View PDF</a><button class="del-btn" onclick="deletePdf('${id}')">Delete</button></div>`;
             list.appendChild(li);
           }
         } else {
@@ -437,17 +404,15 @@
         list.innerHTML = '<li>Error loading PDFs</li>';
       }
     }
-
     window.deletePdf = async function(id) {
       if(confirm("Are you sure you want to delete this PDF?")){
         await remove(ref(db, `course_pdfs/${id}`));
         renderPdfs();
       }
     };
-
     function initAdminData() {
       loadStudentPermissions();
-      loadCurrentFee();
+      loadCoursesAdmin();
       renderVideos();
       renderPdfs();
     }
