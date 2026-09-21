@@ -3,157 +3,237 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registered Users Data - Kaushal Institute</title>
+  <title>Registered Students Data - Ultra Neon Portal</title>
   <style>
     :root {
-      --bg-color: #f0f2f5;
-      --card-bg: #ffffff;
-      --text-color: #334155;
-      --primary-color: #2563eb;
-      --border-color: #cbd5e1;
-    }
-    body.dark-theme {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
+      --bg-color: #030712;
+      --card-bg: rgba(15, 23, 42, 0.85);
       --text-color: #f8fafc;
-      --border-color: #475569;
+      --primary-color: #38bdf8;
+      --neon-glow: 0 0 15px rgba(56, 189, 248, 0.5), inset 0 0 15px rgba(56, 189, 248, 0.2);
+      --neon-border: 1px solid rgba(56, 189, 248, 0.6);
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
     }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+
     body {
-      background-color: var(--bg-color);
+      background-image: linear-gradient(rgba(3, 7, 18, 0.82), rgba(3, 7, 18, 0.82)), url('kaushalji.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
       color: var(--text-color);
+      min-height: 100vh;
       padding: 20px;
-      transition: background 0.3s, color 0.3s;
     }
+
     .header-container {
-      max-width: 1100px;
-      margin: 0 auto 20px auto;
+      max-width: 1200px;
+      margin: 0 auto 30px auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: var(--card-bg);
-      padding: 15px 25px;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 20px 30px;
+      border-radius: 14px;
+      box-shadow: var(--neon-glow);
+      border: var(--neon-border);
     }
+
     .header-container h2 {
       color: var(--primary-color);
-      font-size: 22px;
+      font-size: 24px;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+      letter-spacing: 1px;
     }
+
     .btn-back {
-      background: var(--primary-color);
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
       color: white;
-      padding: 8px 16px;
-      border-radius: 6px;
+      padding: 10px 20px;
+      border-radius: 8px;
       text-decoration: none;
       font-weight: bold;
       font-size: 14px;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+      transition: 0.3s ease;
     }
+
     .btn-back:hover {
-      background: #1d4ed8;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.8);
+      transform: translateY(-2px);
     }
+
     .main-container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
+    }
+
+    .stats-bar {
       background: var(--card-bg);
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    }
-    .stats-box {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 15px 25px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      border: var(--neon-border);
+      box-shadow: var(--neon-glow);
       display: flex;
-      gap: 20px;
-      margin-bottom: 20px;
+      justify-content: space-between;
+      align-items: center;
     }
-    .stat-card {
-      background: rgba(37, 99, 235, 0.1);
-      padding: 15px 20px;
-      border-radius: 8px;
-      flex: 1;
-      border-left: 4px solid var(--primary-color);
-    }
-    .stat-card h4 {
-      font-size: 14px;
-      opacity: 0.8;
-      margin-bottom: 5px;
-    }
-    .stat-card span {
-      font-size: 22px;
-      font-weight: bold;
+
+    .stats-bar span {
       color: var(--primary-color);
+      font-weight: bold;
+      font-size: 18px;
     }
-    .table-responsive {
-      overflow-x: auto;
+
+    .student-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 25px;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      text-align: left;
+
+    .student-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 16px;
+      padding: 25px;
+      border: var(--neon-border);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), var(--neon-glow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
-    th, td {
-      padding: 12px 15px;
-      border-bottom: 1px solid var(--border-color);
-      font-size: 14px;
+
+    .student-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(56, 189, 248, 0.8);
     }
-    th {
-      background-color: var(--primary-color);
-      color: white;
-      font-weight: 600;
+
+    .student-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 15px;
     }
-    tr:hover {
-      background-color: rgba(0,0,0,0.02);
-    }
-    .user-img {
-      width: 40px;
-      height: 40px;
+
+    .student-avatar {
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--primary-color);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
     }
-    .no-data {
-      text-align: center;
-      padding: 30px;
-      font-size: 16px;
+
+    .student-title-info h3 {
+      font-size: 18px;
+      color: var(--primary-color);
+      margin-bottom: 4px;
+      text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+    }
+
+    .student-title-info p {
+      font-size: 12px;
       opacity: 0.7;
+    }
+
+    .info-group {
+      margin-bottom: 10px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .info-label {
+      opacity: 0.75;
+      font-weight: 500;
+    }
+
+    .info-value {
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-allowed {
+      background: rgba(34, 197, 94, 0.2);
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green);
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+    }
+
+    .status-restricted {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--accent-red);
+      border: 1px solid var(--accent-red);
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+    }
+
+    .utr-code {
+      font-family: monospace;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary-color);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .no-data {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: var(--neon-border);
+      box-shadow: var(--neon-glow);
+      font-size: 16px;
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
 
   <div class="header-container">
-    <h2>👥 Registered Users Database</h2>
+    <h2>⚡ Ultra Neon Student Database Portal</h2>
     <a href="index.html" class="btn-back">⬅ Back to Portal</a>
   </div>
 
   <div class="main-container">
-    <div class="stats-box">
-      <div class="stat-card">
-        <h4>Total Registered Users</h4>
-        <span id="totalUsersCount">0</span>
-      </div>
+    <div class="stats-bar">
+      <span>Registered Students Overview</span>
+      <div>Total Students: <span id="totalStudentsCount">0</span></div>
     </div>
 
-    <div class="table-responsive">
-      <table>
-        <thead>
-          <tr>
-            <th>Profile</th>
-            <th>Full Name</th>
-            <th>Mobile Number</th>
-            <th>Email ID</th>
-            <th>Password</th>
-            <th>Registered Date</th>
-          </tr>
-        <thead id="userTableBody">
-          <!-- Data dynamically inject hoga -->
-        </thead>
-      </table>
+    <div class="student-grid" id="studentGridContainer">
+      <!-- Dynamic Student Cards will be injected here -->
     </div>
   </div>
 
@@ -161,70 +241,99 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
-    const firebaseConfig = { apiKey: "AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE", authDomain: "kaushal-institute-729bc.firebaseapp.com", databaseURL: "https://kaushal-institute-729bc-default-rtdb.firebaseio.com", projectId: "kaushal-institute-729bc", storageBucket: "kaushal-institute-729bc.firebasestorage.app", messagingSenderId: "699990199933", appId: "1:699990199933:web:e5fae383e93de5d3c6ab14", measurementId: "G-4VRTVZ3JPJ" };
+    const firebaseConfig = { apiKey: "AIzaSyCM0GFOIbXogloRj9cwWeNdk2PjCzm4gFE", authDomain: "kaushal-institute-729bc.firebaseapp.com", databaseURL: "https://kaushal-institute-729bc-default-rtdb.firebaseio.com", projectId: "kaushal-institute-729bc", storageBucket: "kaushal-institute-729bc.firebasestorage.app", messagingSenderId: "699990199933", appId: "1:699990199933:web:e5fae383e93de5d3c6ab14" };
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    if (localStorage.getItem('theme') === 'dark') {
-      document.body.classList.add('dark-theme');
-    }
-
-    async function loadAllRegisteredUsers() {
-      const tableBody = document.getElementById('userTableBody');
-      const totalCountSpan = document.getElementById('totalUsersCount');
+    async function loadAllStudentsData() {
+      const gridContainer = document.getElementById('studentGridContainer');
+      const totalCountSpan = document.getElementById('totalStudentsCount');
       
-      let usersMap = new Map();
+      let studentsMap = new Map();
 
-      // 1. LocalStorage se data lein
-      let localUsers = JSON.parse(localStorage.getItem('users') || '[]');
-      localUsers.forEach(u => {
-        if(u.email) usersMap.set(u.email, u);
-      });
-
-      // 2. Firebase Database se data fetch karein
+      // 1. Firebase se course_enrollments fetch karein
       try {
-        const snapshot = await get(child(ref(db), 'users'));
+        const snapshot = await get(child(ref(db), 'course_enrollments'));
         if (snapshot.exists()) {
-          const fbUsers = snapshot.val();
-          for (let key in fbUsers) {
-            let user = fbUsers[key];
-            if(user.email) {
-              usersMap.set(user.email, user);
+          const fbData = snapshot.val();
+          for (let key in fbData) {
+            let item = fbData[key];
+            if(item.email || item.mobile) {
+              studentsMap.set(item.email || item.mobile, item);
             }
           }
         }
       } catch (err) {
-        console.error("Firebase fetch error: ", err);
+        console.log("Firebase database fetch warning:", err);
       }
 
-      const allUsers = Array.from(usersMap.values());
-      totalCountSpan.innerText = allUsers.length;
+      const studentsArray = Array.from(studentsMap.values());
+      totalCountSpan.innerText = studentsArray.length;
+      gridContainer.innerHTML = '';
 
-      tableBody.innerHTML = '';
-
-      if (allUsers.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="6" class="no-data">Koi bhi registration data uplabdh nahi hai.</td></tr>`;
+      if (studentsArray.length === 0) {
+        gridContainer.innerHTML = `<div class="no-data">⚡ Abhi tak koi bhi student enrolled nahi hai.</div>`;
         return;
       }
 
-      allUsers.forEach((user, index) => {
-        const tr = document.createElement('tr');
-        const formattedDate = user.createdAt ? new Date(user.createdAt).toLocaleString() : 'N/A';
-        const userPic = user.pic ? user.pic : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+      studentsArray.forEach((student) => {
+        let userPic = student.pic ? student.pic : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+        let courseName = student.course || 'General Course';
+        let feeAmount = student.fee ? '₹' + Number(student.fee).toLocaleString('en-IN') : '₹0';
+        let feeType = student.feeType ? `(${student.feeType})` : '';
+        let batchTime = student.batch || 'Not Selected';
+        let utrNumber = student.utr || 'N/A';
+        let enrollDate = student.enrollmentDate || 'N/A';
+        
+        // Check if full paid or active
+        let hasPaid = student.utr && student.utr !== 'N/A';
+        let statusClass = hasPaid ? 'status-allowed' : 'status-restricted';
+        let statusText = hasPaid ? 'Allowed (Verified)' : 'Restricted (Pending)';
 
-        tr.innerHTML = `
-          <td><img src="${userPic}" alt="Pic" class="user-img"></td>
-          <td><strong>${user.name || 'N/A'}</strong></td>
-          <td>${user.mobile || 'N/A'}</td>
-          <td>${user.email || 'N/A'}</td>
-          <td><code>${user.password || 'N/A'}</code></td>
-          <td style="font-size:12px; opacity:0.8;">${formattedDate}</td>
+        const card = document.createElement('div');
+        card.className = 'student-card';
+        card.innerHTML = `
+          <div class="student-header">
+            <img src="${userPic}" alt="Student Avatar" class="student-avatar">
+            <div class="student-title-info">
+              <h3>${student.name || 'Unnamed Student'}</h3>
+              <p>Enrolled: ${enrollDate}</p>
+            </div>
+          </div>
+          <div class="info-group">
+            <span class="info-label">📱 Mobile:</span>
+            <span class="info-value">${student.mobile || 'N/A'}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">📧 Email:</span>
+            <span class="info-value" style="font-size:12px; word-break:break-all;">${student.email || 'N/A'}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">📚 Course Available:</span>
+            <span class="info-value" style="color: var(--primary-color);">${courseName} ${feeType}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">⏰ Batch Timing:</span>
+            <span class="info-value" style="font-size: 11px;">${batchTime}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">💰 Fee Paid:</span>
+            <span class="info-value" style="color: var(--accent-green); font-weight:700;">${feeAmount}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">🔢 UTR Number:</span>
+            <span class="utr-code">${utrNumber}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">🔒 Access Status:</span>
+            <span class="status-badge ${statusClass}">${statusText}</span>
+          </div>
         `;
-        tableBody.appendChild(tr);
+        gridContainer.appendChild(card);
       });
     }
 
-    window.addEventListener('DOMContentLoaded', loadAllRegisteredUsers);
+    window.addEventListener('DOMContentLoaded', loadAllStudentsData);
   </script>
 </body>
 </html>
