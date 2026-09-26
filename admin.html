@@ -61,32 +61,11 @@
   <div class="container">
     <div class="header">
       <h1>Kaushal Institute - Admin Dashboard</h1>
-      <p style="color:#94a3b8;">Manage Courses, Fees (Full/Monthly), Student Permissions, Videos, PDFs & Audio</p>
+      <p style="color:#94a3b8;">Manage Courses, Fees (Full/Monthly), Student Permissions, Videos, PDFs, Images & Audio</p>
     </div>
-    
-    <!-- 1. Student Payment Verification & Access Control (Added Manual Entry & Image Upload Form) -->
     <div class="card">
       <h2>1. Student Payment Verification & Access Control</h2>
       <p style="font-size:13px; color:#94a3b8; margin-bottom: 15px;">Verify student UTR/Payment and grant access to Video, PDF & Audio Materials.</p>
-      
-      <!-- Naya Enrollment/Screenshot Upload Form jisse aap test ya entry kar sakein -->
-      <form id="manualEnrollForm" style="margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:15px;">
-        <h3 style="font-size:15px; color:var(--accent-color); margin-bottom:10px;">Add Student / Test Payment Entry with Screenshot</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <div class="form-group"><label>Student Name</label><input type="text" id="enName" placeholder="Name" required></div>
-          <div class="form-group"><label>Email</label><input type="email" id="enEmail" placeholder="Email" required></div>
-          <div class="form-group"><label>Mobile</label><input type="text" id="enMobile" placeholder="Mobile" required></div>
-          <div class="form-group"><label>Course</label><input type="text" id="enCourse" placeholder="Course Name" required></div>
-          <div class="form-group"><label>UTR Number</label><input type="text" id="enUtr" placeholder="UTR Transaction ID" required></div>
-          <div class="form-group">
-            <label>Payment Screenshot Image (Max 10MB)</label>
-            <input type="file" id="enScreenshotFile" accept="image/*" required>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-green" style="margin-top:10px;" id="enBtn">Upload & Save Enrollment</button>
-        <div class="upload-status" id="enStatus"></div>
-      </form>
-
       <div class="table-responsive">
         <table>
           <thead>
@@ -103,7 +82,6 @@
         </table>
       </div>
     </div>
-
     <div class="card">
       <h2>2. Manage Courses & Fees (One-Time & Monthly)</h2>
       <form id="courseManageForm" style="margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:15px;">
@@ -165,8 +143,31 @@
       </form>
       <ul class="content-list" id="pdfList"></ul>
     </div>
+
+    <!-- NEW IMAGE UPLOAD SECTION ADDED HERE -->
     <div class="card">
-      <h2>5. Upload Audio File (Max 10MB)</h2>
+      <h2>5. Upload Image Study Material File (Max 10MB)</h2>
+      <form id="imageUploadForm">
+        <div class="form-group">
+          <label>Course</label>
+          <select id="imageCourseSelect"></select>
+        </div>
+        <div class="form-group">
+          <label>Image Title</label>
+          <input type="text" id="imageTitle" placeholder="e.g. Shortcut Keys Infographic" required>
+        </div>
+        <div class="form-group">
+          <label>Select Image File</label>
+          <input type="file" id="imageFile" accept="image/*" required>
+        </div>
+        <button type="submit" class="btn" id="imageBtn">Upload Image Material</button>
+        <div class="upload-status" id="imageStatus"></div>
+      </form>
+      <ul class="content-list" id="imageList"></ul>
+    </div>
+
+    <div class="card">
+      <h2>6. Upload Audio File (Max 10MB)</h2>
       <form id="audioUploadForm">
         <div class="form-group">
           <label>Course</label>
@@ -230,10 +231,12 @@
       const listEl = document.getElementById('courseListAdmin');
       const vidSelect = document.getElementById('vidCourseSelect');
       const pdfSelect = document.getElementById('pdfCourseSelect');
+      const imageSelect = document.getElementById('imageCourseSelect');
       const audioSelect = document.getElementById('audioCourseSelect');
       listEl.innerHTML = '';
       vidSelect.innerHTML = '';
       pdfSelect.innerHTML = '';
+      imageSelect.innerHTML = '';
       audioSelect.innerHTML = '';
       for (let course in feesData) {
         let fObj = feesData[course];
@@ -245,6 +248,7 @@
         listEl.appendChild(li);
         vidSelect.innerHTML += `<option value="${course}">${course}</option>`;
         pdfSelect.innerHTML += `<option value="${course}">${course}</option>`;
+        imageSelect.innerHTML += `<option value="${course}">${course}</option>`;
         audioSelect.innerHTML += `<option value="${course}">${course}</option>`;
       }
     }
@@ -290,55 +294,6 @@
         reader.onerror = (error) => reject(error);
       });
     }
-
-    // Manual Enrollment & Screenshot Upload Logic Added
-    document.getElementById('manualEnrollForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const name = document.getElementById('enName').value;
-      const email = document.getElementById('enEmail').value;
-      const mobile = document.getElementById('enMobile').value;
-      const course = document.getElementById('enCourse').value;
-      const utr = document.getElementById('enUtr').value;
-      const fileInput = document.getElementById('enScreenshotFile');
-      const statusEl = document.getElementById('enStatus');
-      const btn = document.getElementById('enBtn');
-
-      if (!fileInput.files.length) return;
-      const file = fileInput.files[0];
-      if (file.size > 10 * 1024 * 1024) {
-        alert('Screenshot image size is larger than 10MB!');
-        return;
-      }
-
-      try {
-        btn.disabled = true;
-        statusEl.innerText = "Processing Image...";
-        const base64Data = await convertFileToBase64(file);
-        statusEl.innerText = "Saving Enrollment Data...";
-        const enrollId = Date.now();
-        await set(ref(db, `course_enrollments/${enrollId}`), {
-          name: name,
-          email: email,
-          mobile: mobile,
-          course: course,
-          utr: utr,
-          screenshot: base64Data,
-          accessGranted: false,
-          accessDenied: false,
-          feeType: 'Full',
-          fee: 'N/A'
-        });
-        statusEl.innerText = "Screenshot Uploaded & Saved!";
-        this.reset();
-        loadStudentPermissions();
-        alert('Student enrollment and screenshot added successfully!');
-      } catch (err) {
-        alert("Upload failed: " + err.message);
-      } finally {
-        btn.disabled = false;
-      }
-    });
-
     async function loadStudentPermissions() {
       const tbody = document.getElementById('permissionTableBody');
       tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Loading Submissions...</td></tr>';
@@ -505,6 +460,73 @@
       }
     };
     
+    // NEW IMAGE UPLOAD LOGIC ADDED HERE
+    document.getElementById('imageUploadForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const course = document.getElementById('imageCourseSelect').value;
+      const title = document.getElementById('imageTitle').value;
+      const fileInput = document.getElementById('imageFile');
+      const statusEl = document.getElementById('imageStatus');
+      const btn = document.getElementById('imageBtn');
+      if (!fileInput.files.length) return;
+      const file = fileInput.files[0];
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size is larger than 10MB!');
+        return;
+      }
+      try {
+        btn.disabled = true;
+        statusEl.innerText = "Processing Image Data...";
+        const base64Data = await convertFileToBase64(file);
+        statusEl.innerText = "Saving to Database...";
+        const imageId = Date.now();
+        await set(ref(db, `course_images/${imageId}`), {
+          id: imageId,
+          course: course,
+          title: title,
+          url: base64Data
+        });
+        statusEl.innerText = "Image Uploaded Successfully!";
+        this.reset();
+        renderImages();
+        alert('Image uploaded successfully!');
+      } catch (err) {
+        alert("Upload failed. Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    async function renderImages() {
+      const list = document.getElementById('imageList');
+      list.innerHTML = '<li>Loading images...</li>';
+      try {
+        const snapshot = await get(child(ref(db), 'course_images'));
+        list.innerHTML = '';
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          for (let id in data) {
+            const img = data[id];
+            const li = document.createElement('li');
+            li.className = 'content-item';
+            li.innerHTML = `<span><strong>[${img.course}]</strong> ${img.title}</span><div><a href="${img.url}" target="_blank" style="color:#38bdf8; margin-right:10px; font-size:12px;">Open/View Image</a><button class="del-btn" onclick="deleteImage('${id}')">Delete</button></div>`;
+            list.appendChild(li);
+          }
+        } else {
+          list.innerHTML = '<li style="font-size:12px; color:#94a3b8;">No images uploaded.</li>';
+        }
+      } catch (e) {
+        list.innerHTML = '<li>Error loading images</li>';
+      }
+    }
+
+    window.deleteImage = async function(id) {
+      if(confirm("Are you sure you want to delete this image?")){
+        await remove(ref(db, `course_images/${id}`));
+        renderImages();
+      }
+    };
+
     document.getElementById('audioUploadForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const course = document.getElementById('audioCourseSelect').value;
@@ -576,6 +598,7 @@
       loadCoursesAdmin();
       renderVideos();
       renderPdfs();
+      renderImages();
       renderAudios();
     }
   </script>
