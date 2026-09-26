@@ -256,7 +256,8 @@
         if (item.type === 'video') {
           actionBtn = `<button class="action-btn play-vid-btn" data-url="${item.url}" data-title="${item.title}">Watch Video ▶</button>`;
         } else if (item.type === 'pdf') {
-          actionBtn = `<a href="${item.url}" target="_blank" class="action-btn green">Download PDF 📥</a>`;
+          // 'download' attribute add kiya gaya hai taaki PDF download ho sake
+          actionBtn = `<a href="${item.url}" download target="_blank" class="action-btn green">Download PDF 📥</a>`;
         } else {
           actionBtn = `<a href="${item.url}" target="_blank" class="action-btn">View Image 🖼️</a>`;
         }
